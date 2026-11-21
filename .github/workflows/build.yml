@@ -23,53 +23,91 @@ jobs:
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>NUX MG-101 Studio</title>
+            <title>NUX MG-101 Pro Studio</title>
             <style>
-              body { font-family: sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 16px; text-align: center; }
-              .header { background: #1e293b; padding: 15px; border-radius: 12px; border-bottom: 3px solid #ef4444; margin-bottom: 15px; }
-              .card { background: #1e293b; padding: 16px; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-              button { background: #ef4444; color: white; border: none; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; }
-              button:active { background: #dc2626; }
-              .patch-box { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
-              .patch-display { font-size: 28px; font-weight: bold; color: #38bdf8; }
-              .slider-group { text-align: left; margin: 12px 0; }
-              input[type=range] { width: 100%; accent-color: #ef4444; margin-top: 6px; }
-              #status { font-size: 14px; color: #94a3b8; margin-top: 8px; }
+              body { font-family: sans-serif; background: #090d16; color: #f8fafc; margin: 0; padding: 14px; text-align: center; }
+              .header { background: #1e293b; padding: 14px; border-radius: 12px; border-bottom: 3px solid #ef4444; margin-bottom: 12px; }
+              .card { background: #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
+              .title { font-size: 12px; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px; font-weight: bold; }
+              button { background: #ef4444; color: white; border: none; padding: 10px 16px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; }
+              .patch-box { display: flex; justify-content: space-between; align-items: center; }
+              .patch-display { font-size: 26px; font-weight: bold; color: #38bdf8; }
+              .fx-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+              .fx-btn { background: #334155; color: #cbd5e1; padding: 12px 6px; border-radius: 8px; font-size: 13px; border: 2px solid transparent; }
+              .fx-btn.active { background: #065f46; color: #34d399; border-color: #10b981; }
+              .slider-group { text-align: left; margin: 10px 0; font-size: 14px; }
+              input[type=range] { width: 100%; accent-color: #ef4444; margin-top: 4px; }
+              .save-row { display: flex; gap: 8px; margin-top: 8px; }
+              .save-btn { background: #0284c7; flex: 1; }
+              .load-btn { background: #475569; flex: 1; }
+              #status { font-size: 13px; color: #94a3b8; margin-top: 6px; }
             </style>
           </head>
           <body>
             <div class="header">
-              <h2 style="margin:0;">🎸 NUX MG-101 Studio</h2>
+              <h2 style="margin:0; font-size:20px;">🎸 NUX MG-101 Pro Studio</h2>
               <div id="status">Status: Not Connected (Plug OTG)</div>
-              <button style="margin-top:12px; width:100%;" onclick="connectMIDI()">🔌 Connect NUX MG-101</button>
+              <button style="margin-top:10px; width:100%;" onclick="connectMIDI()">🔌 Connect NUX MG-101</button>
             </div>
 
             <div class="card">
-              <div style="font-size:14px; color:#94a3b8;">PRESET PATCH</div>
+              <div class="title">PRESET PATCH & MEMORY</div>
               <div class="patch-box">
                 <button onclick="changePatch(-1)">◀ PREV</button>
                 <div class="patch-display" id="patchDisplay">1A</div>
                 <button onclick="changePatch(1)">NEXT ▶</button>
               </div>
+              <div class="save-row">
+                <button class="save-btn" onclick="saveLocalTone()">💾 Save Tone</button>
+                <button class="load-btn" onclick="loadLocalTone()">📂 Load Tone</button>
+              </div>
             </div>
 
             <div class="card">
-              <div style="font-size:14px; color:#94a3b8; margin-bottom:10px;">AMP & EFFECTS CONTROL</div>
+              <div class="title">SIGNAL CHAIN (TAP TO ON/OFF)</div>
+              <div class="fx-grid">
+                <button class="fx-btn active" id="fx-cmp" onclick="toggleFX('fx-cmp', 20)">CMP</button>
+                <button class="fx-btn active" id="fx-od" onclick="toggleFX('fx-od', 21)">OD / DIST</button>
+                <button class="fx-btn active" id="fx-amp" onclick="toggleFX('fx-amp', 22)">AMP</button>
+                <button class="fx-btn" id="fx-mod" onclick="toggleFX('fx-mod', 23)">MOD</button>
+                <button class="fx-btn active" id="fx-dly" onclick="toggleFX('fx-dly', 24)">DELAY</button>
+                <button class="fx-btn active" id="fx-rvb" onclick="toggleFX('fx-rvb', 25)">REVERB</button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="title">AMP & 3-BAND EQ</div>
               <div class="slider-group">
                 <label>Amp Gain: <span id="gainVal">50</span>%</label>
-                <input type="range" min="0" max="127" value="64" oninput="sendCC(1, this.value, 'gainVal')">
+                <input type="range" id="gainSlider" min="0" max="127" value="64" oninput="sendCC(1, this.value, 'gainVal')">
+              </div>
+              <div class="slider-group">
+                <label>Bass: <span id="bassVal">50</span>%</label>
+                <input type="range" id="bassSlider" min="0" max="127" value="64" oninput="sendCC(14, this.value, 'bassVal')">
+              </div>
+              <div class="slider-group">
+                <label>Middle: <span id="midVal">50</span>%</label>
+                <input type="range" id="midSlider" min="0" max="127" value="64" oninput="sendCC(15, this.value, 'midVal')">
+              </div>
+              <div class="slider-group">
+                <label>Treble: <span id="trebVal">50</span>%</label>
+                <input type="range" id="trebSlider" min="0" max="127" value="64" oninput="sendCC(16, this.value, 'trebVal')">
               </div>
               <div class="slider-group">
                 <label>Master Level: <span id="volVal">70</span>%</label>
-                <input type="range" min="0" max="127" value="90" oninput="sendCC(7, this.value, 'volVal')">
+                <input type="range" id="volSlider" min="0" max="127" value="90" oninput="sendCC(7, this.value, 'volVal')">
               </div>
+            </div>
+
+            <div class="card">
+              <div class="title">TIME & AMBIENCE</div>
               <div class="slider-group">
                 <label>Delay Mix: <span id="dlyVal">30</span>%</label>
-                <input type="range" min="0" max="127" value="38" oninput="sendCC(12, this.value, 'dlyVal')">
+                <input type="range" id="dlySlider" min="0" max="127" value="38" oninput="sendCC(12, this.value, 'dlyVal')">
               </div>
               <div class="slider-group">
                 <label>Reverb Mix: <span id="revVal">35</span>%</label>
-                <input type="range" min="0" max="127" value="45" oninput="sendCC(91, this.value, 'revVal')">
+                <input type="range" id="revSlider" min="0" max="127" value="45" oninput="sendCC(91, this.value, 'revVal')">
               </div>
             </div>
 
@@ -108,25 +146,45 @@ jobs:
                 if (midiOut) midiOut.send([0xC0, patchIndex]);
               }
 
+              function toggleFX(btnId, cc) {
+                const btn = document.getElementById(btnId);
+                btn.classList.toggle('active');
+                const isOn = btn.classList.contains('active') ? 127 : 0;
+                if (midiOut) midiOut.send([0xB0, cc, isOn]);
+              }
+
               function sendCC(cc, val, labelId) {
                 document.getElementById(labelId).innerText = Math.round((val / 127) * 100);
                 if (midiOut) midiOut.send([0xB0, cc, parseInt(val)]);
               }
-            </script>
-          </body>
-          </html>
-          EOF
-          echo '{"name":"nux-mg101-editor","version":"1.0.0"}' > package.json
-          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap init "NUX MG101" "com.nux.mg101" --web-dir www
-          npx cap add android
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: NUX-MG101-App
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+
+              function saveLocalTone() {
+                const toneData = {
+                  gain: document.getElementById('gainSlider').value,
+                  bass: document.getElementById('bassSlider').value,
+                  mid: document.getElementById('midSlider').value,
+                  treb: document.getElementById('trebSlider').value,
+                  vol: document.getElementById('volSlider').value,
+                  dly: document.getElementById('dlySlider').value,
+                  rev: document.getElementById('revSlider').value
+                };
+                localStorage.setItem('nuxSavedTone_' + patchIndex, JSON.stringify(toneData));
+                document.getElementById('status').innerText = "💾 Tone Saved for Patch " + document.getElementById('patchDisplay').innerText;
+                document.getElementById('status').style.color = "#38bdf8";
+              }
+
+              function loadLocalTone() {
+                const saved = localStorage.getItem('nuxSavedTone_' + patchIndex);
+                if (!saved) {
+                  document.getElementById('status').innerText = "⚠️ No Saved Tone for this Patch";
+                  return;
+                }
+                const d = JSON.parse(saved);
+                document.getElementById('gainSlider').value = d.gain; sendCC(1, d.gain, 'gainVal');
+                document.getElementById('bassSlider').value = d.bass; sendCC(14, d.bass, 'bassVal');
+                document.getElementById('midSlider').value = d.mid; sendCC(15, d.mid, 'midVal');
+                document.getElementById('trebSlider').value = d.treb; sendCC(16, d.treb, 'trebVal');
+                document.getElementById('volSlider').value = d.vol; sendCC(7, d.vol, 'volVal');
+                
           
 
