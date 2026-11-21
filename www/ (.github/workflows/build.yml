@@ -13,8 +13,15 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+      - name: Prepare Web Folder
+        run: |
+          mkdir -p www
+          if [ ! -f www/index.html ]; then
+            echo "<h2>NUX MG-101 Editor</h2>" > www/index.html
+          fi
       - name: Install & Build Android
         run: |
+          rm -f package.json package-lock.json capacitor.config.json
           npm init -y
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
           npx cap init "NUX MG101" "com.nux.mg101" --web-dir www
@@ -27,4 +34,5 @@ jobs:
         with:
           name: NUX-MG101-App
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
 
