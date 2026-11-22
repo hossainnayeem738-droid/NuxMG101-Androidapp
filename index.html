@@ -2,417 +2,455 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NUX MG-101 Controller</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>NUX MG-101 QuickTone</title>
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body {
-      margin: 0;
-      padding: 14px;
-      background: #121212;
-      color: #f5f5f5;
-    }
-    h2, h3 { margin: 0 0 10px 0; }
-    .card {
-      background: #1e1e1e;
-      border: 1px solid #2e2e2e;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-    .row {
+      background: #0b0d12;
+      color: #f1f5f9;
       display: flex;
-      gap: 8px;
+      flex-direction: column;
       align-items: center;
-      flex-wrap: wrap;
+      padding: 14px;
+      gap: 12px;
+      min-height: 100vh;
     }
-    button {
-      background: #2b2b2b;
+    .top-bar {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #121722;
+      border: 1px solid #242d3d;
+      border-radius: 14px;
+      padding: 12px 14px;
+    }
+    .brand-title { font-size: 17px; font-weight: 800; color: #f8fafc; }
+    .brand-sub { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #38bdf8; }
+    .btn-otg {
+      background: #dc2626;
       color: #fff;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 9px 12px;
-      font-weight: bold;
+      border: 1px solid #f87171;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
       cursor: pointer;
     }
-    button.primary {
-      background: #e53935;
-      border-color: #e53935;
+    .status-bar {
       width: 100%;
-      padding: 12px;
-      font-size: 15px;
-    }
-    button.active-block {
-      outline: 2px solid #29b6f6;
-    }
-    button.off-block {
-      background: #181818;
-      color: #888;
-    }
-    #statusBox {
-      text-align: center;
-      color: #4caf50;
-      font-weight: bold;
-      padding: 8px;
-    }
-    .chain-bar {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-    }
-    .chain-btn {
-      min-width: 54px;
-      background: #e53935;
-      border-color: #e53935;
-    }
-    .block-header {
+      max-width: 450px;
+      background: #0d1118;
+      border: 1px solid #1e293b;
+      border-left: 4px solid #38bdf8;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #7dd3fc;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
+      gap: 8px;
     }
-    .param-group {
-      margin-bottom: 14px;
-    }
-    .param-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .digital-stepper {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .digital-stepper input[type="number"] {
-      width: 56px;
-      padding: 4px;
-      text-align: center;
-      background: #141414;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 6px;
-    }
-    input[type="range"] {
+    .card {
       width: 100%;
-      accent-color: #29b6f6;
+      max-width: 450px;
+      background: #121722;
+      border: 1px solid #222b3a;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-    .patch-label {
-      font-size: 18px;
-      font-weight: bold;
+    .card-header { display: flex; justify-content: space-between; align-items: center; }
+    .card-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #cbd5e1; }
+    .btn-reset {
+      background: #1b2232;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .patch-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .btn-nav {
+      background: #1a2232;
+      color: #f1f5f9;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .patch-lcd {
       flex: 1;
+      background: #06080c;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-family: monospace;
+      font-size: 26px;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: 2px;
+    }
+    .bank-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .slot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
+    .q-btn {
+      background: #171e2c;
+      color: #cbd5e1;
+      border: 1px solid #2b364b;
+      border-radius: 8px;
+      padding: 7px 4px;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .q-btn.active { background: #0284c7; color: #fff; border-color: #7dd3fc; }
+
+    .chain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; padding: 4px 0; }
+    .chain-node {
+      padding: 9px 4px;
+      border-radius: 10px;
+      background: #171e2c;
+      border: 1.5px solid #2b364b;
+      text-align: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .chain-node.active { background: #122436; border-color: #22c55e; }
+    .chain-node.selected { border-color: #facc15; box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.45); }
+    .node-code { font-size: 12px; font-weight: 900; color: #f8fafc; }
+    .node-dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px auto 0; background: #475569; }
+    .chain-node.active .node-dot { background: #22c55e; }
+
+    .order-controls { display: flex; gap: 8px; }
+    .btn-small {
+      flex: 1;
+      background: #171e2c;
+      color: #e2e8f0;
+      border: 1px solid #2b364b;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-small:active { background: #2563eb; border-color: #60a5fa; }
+
+    .block-header { display: flex; justify-content: space-between; align-items: center; }
+    .toggle-btn { padding: 6px 14px; border-radius: 20px; border: none; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .toggle-on { background: #22c55e; color: #052e16; }
+    .toggle-off { background: #273042; color: #94a3b8; }
+
+    .param-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #0d1118;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #1e2736;
+    }
+    .param-top { display: flex; justify-content: space-between; align-items: center; }
+    .param-label { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+    .digital-stepper { display: flex; align-items: center; gap: 5px; }
+    .step-btn {
+      width: 28px;
+      height: 28px;
+      background: #1b2333;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .digital-input {
+      width: 54px;
+      height: 28px;
+      background: #06080c;
+      border: 1px solid #25446b;
+      border-radius: 7px;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 800;
+      color: #38bdf8;
       text-align: center;
     }
+    input[type="range"] { width: 100%; accent-color: #38bdf8; height: 6px; }
   </style>
 </head>
 <body>
-  <h2>NUX MG-101 Controller</h2>[cite: 1]
+  <div class="top-bar">
+    <div>
+      <div class="brand-title">NUX MG-101</div>
+      <div class="brand-sub">QUICKTONE DIGITAL STUDIO</div>
+    </div>
+    <button class="btn-otg" id="connectBtn">Connect via OTG</button>
+  </div>
 
-  <div class="card">
-    <button id="connectBtn" class="primary">Connect via OTG</button>[cite: 1, 12]
-    <div id="statusBox">Disconnected</div>
+  <div class="status-bar" id="statusBar">
+    <span>READY • AUTO-SAVE ON</span>
+    <span>MIDI: OFF</span>
   </div>
 
   <div class="card">
-    <h3>Patch Select</h3>[cite: 1]
-    <div class="row">
-      <button id="prevPatch">◀ Prev</button>[cite: 1, 12]
-      <div id="patchName" class="patch-label">Patch 0</div>
-      <button id="nextPatch">Next ▶</button>[cite: 1, 12]
-      <button id="resetPatchBtn">Reset</button>[cite: 12]
+    <div class="card-header">
+      <div class="card-title">Patch Bank & Slot (1A–10D)</div>
+      <button class="btn-reset" id="resetPatchBtn">Reset Patch</button>
+    </div>
+    <div class="patch-row">
+      <button class="btn-nav" id="prevPatch">◀ Prev</button>
+      <div class="patch-lcd" id="patchDisplay">1A</div>
+      <button class="btn-nav" id="nextPatch">Next ▶</button>
+    </div>
+    <div>
+      <div class="bank-grid" id="bankGrid"></div>
+      <div class="slot-grid" id="slotGrid"></div>
     </div>
   </div>
 
   <div class="card">
-    <h3>Signal Chain</h3>[cite: 3, 4]
-    <div id="signalChainBar" class="chain-bar"></div>
-    <div class="row" style="margin-top:8px;">
-      <button id="moveLeftBtn">◀ Move Left</button>[cite: 11]
-      <button id="moveRightBtn">Move Right ▶</button>[cite: 11]
+    <div class="card-title">Signal Chain (Tap Block to Edit)</div>
+    <div class="chain-grid" id="chainContainer"></div>
+    <div class="order-controls">
+      <button class="btn-small" id="moveLeftBtn">◀ Move Left</button>
+      <button class="btn-small" id="moveRightBtn">Move Right ▶</button>
     </div>
   </div>
 
   <div class="card">
     <div class="block-header">
-      <h3 id="blockTitle">AMP Controls</h3>[cite: 3, 4]
-      <label>
-        <input type="checkbox" id="blockToggle" checked /> Active[cite: 3, 4, 10]
-      </label>
+      <span class="card-title" id="blockTitle">AMP • Amplifier</span>
+      <button class="toggle-btn toggle-on" id="blockToggleBtn">ACTIVE</button>
     </div>
-    <div id="paramsContainer"></div>
+    <div id="paramsContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
   </div>
 
   <script>
-    let midiAccess = null;[cite: 2]
-    let midiOut = null;[cite: 12]
-    const MIDI_CHANNEL = 0;[cite: 2]
+    const KEY = "nux_qt_final_v1";
+    const LETTERS = ["A", "B", "C", "D"];
+    const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
+    let midiAccess = null, midiOut = null;
 
-    const BLOCK_CC = {
-      NG: 21,
-      CMP: 22,
-      EFX: 23,
-      AMP: 24,
-      IR: 25,
-      EQ: 26,
-      MOD: 27,
-      DLY: 28,
-      RVB: 29,
-      PL: 31
-    };
-
-    const defaultChain = ["NG", "CMP", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB", "PL"];
-
-    function createDefaultBlocks() {
+    function defaultPatch() {
       return {
-        NG: { on: true, p: { Threshold: 40, Decay: 50 } },
-        CMP: { on: false, p: { Sustain: 50, Level: 60 } },
-        EFX: { on: true, p: { Drive: 55, Tone: 50, Level: 65 } },
-        AMP: { on: true, p: { Gain: 86, Master: 68, Bass: 50, Mid: 82, Treble: 55, Presence: 52 } },[cite: 1, 3, 4]
-        IR: { on: true, p: { Level: 75, LowCut: 20, HighCut: 80 } },
-        EQ: { on: false, p: { B100: 50, B220: 50, B500: 50, B1k2: 50, B2k6: 50, B6k4: 50 } },
-        MOD: { on: false, p: { Rate: 45, Depth: 50, Mix: 50 } },
-        DLY: { on: false, p: { Time: 40, Feedback: 35, Mix: 30 } },
-        RVB: { on: true, p: { Level: 35, Decay: 45, Tone: 50 } },[cite: 1]
-        PL: { on: true, p: { Pedal: 100, PatchLevel: 80 } }
+        chain: ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"],
+        blocks: {
+          NR:  { name: "Noise Gate", on: true,  p: { Threshold: 35, Decay: 40 } },
+          EFX: { name: "Overdrive",  on: true,  p: { Drive: 55, Tone: 60, Level: 70 } },
+          AMP: { name: "Amplifier",  on: true,  p: { Gain: 75, Master: 70, Bass: 55, Middle: 50, Treble: 65 } },
+          IR:  { name: "Cabinet IR", on: true,  p: { Level: 80, LowCut: 20, HighCut: 75 } },
+          EQ:  { name: "6-Band EQ",  on: false, p: { "100Hz": 50, "220Hz": 50, "500Hz": 52, "1.2kHz": 55, "2.6kHz": 54, "6.4kHz": 50 } },
+          MOD: { name: "Modulation", on: false, p: { Rate: 40, Depth: 50, Mix: 45 } },
+          DLY: { name: "Delay",      on: true,  p: { Time: 45, Feedback: 35, Mix: 30 } },
+          RVB: { name: "Reverb",     on: true,  p: { Decay: 50, Tone: 60, Mix: 35 } }
+        }
       };
     }
 
-    function createDefaultPatches(count = 36) {
-      const list = [];
-      for (let i = 0; i < count; i++) {
-        list.push({
-          name: `Patch ${i}`,
-          chain: [...defaultChain],
-          blocks: createDefaultBlocks()
-        });
+    let state = { idx: 0, sel: "AMP", patches: {} };
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.idx === "number" && parsed.patches) state = parsed;
       }
-      return list;
+    } catch (e) {}
+
+    function save() {
+      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
     }
 
-    const state = {
-      idx: 0,
-      sel: "AMP",
-      patches: createDefaultPatches(36)
-    };
-
     function curPatch() {
+      if (!state.patches[state.idx] || !state.patches[state.idx].blocks) {
+        state.patches[state.idx] = defaultPatch();
+      }
       return state.patches[state.idx];
     }
 
-    function patchName(idx) {
-      return state.patches[idx]?.name || `Patch ${idx}`;
+    function patchName(i) {
+      return (Math.floor(i / 4) + 1) + LETTERS[i % 4];
     }
 
-    function setStatus(msg) {
-      document.getElementById("statusBox").textContent = msg;[cite: 12]
+    function setStatus(txt) {
+      const m = midiOut ? "MIDI: " + midiOut.name : "MIDI: OFF";
+      document.getElementById("statusBar").innerHTML = "<span>" + txt + "</span><span>" + m + "</span>";
     }
 
-    function save() {
-      try {
-        localStorage.setItem("nux_mg101_state_v1", JSON.stringify(state));
-      } catch (e) {}
+    function sendPC(i) {
+      if (midiOut) midiOut.send([0xC0, Math.max(0, Math.min(127, i))]);
     }
 
-    function loadSaved() {
-      try {
-        const raw = localStorage.getItem("nux_mg101_state_v1");
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed.patches) && parsed.patches.length > 0) {
-          state.idx = Math.max(0, Math.min(parsed.patches.length - 1, parsed.idx || 0));
-          state.sel = parsed.sel || "AMP";
-          state.patches = parsed.patches;
-        }
-      } catch (e) {}
+    function sendCC(cc, v) {
+      if (midiOut) midiOut.send([0xB0, cc, Math.max(0, Math.min(127, Math.round((v / 100) * 127)))]);
     }
 
-    function sendProgramChange(patchIndex) {
-      if (!midiOut) return;[cite: 2]
-      const program = Math.max(0, Math.min(127, patchIndex));[cite: 2]
-      midiOut.send([0xC0 | MIDI_CHANNEL, program]);[cite: 2]
-      setStatus(`MIDI PC Sent: ${program} (${patchName(program)})`);[cite: 2]
+    function selectPatch(newIdx) {
+      state.idx = (newIdx + 40) % 40;
+      save();
+      sendPC(state.idx);
+      renderAll();
+      setStatus("PATCH " + patchName(state.idx) + " LOADED");
     }
 
-    function sendCC(ccNumber, value0to100) {
-      if (!midiOut) return;[cite: 2]
-      const ccVal = Math.max(0, Math.min(127, Math.round((value0to100 / 100) * 127)));[cite: 2]
-      midiOut.send([0xB0 | MIDI_CHANNEL, ccNumber, ccVal]);[cite: 2]
-    }
-
-    function refreshMidiPorts() {
-      if (!midiAccess) return;[cite: 2]
-      const outs = Array.from(midiAccess.outputs.values());[cite: 2]
-      if (outs.length > 0) {
-        midiOut = outs[0];[cite: 2]
-        setStatus(`OTG CONNECTED: ${midiOut.name}`);[cite: 2, 12]
-      } else {
-        midiOut = null;[cite: 2]
-        setStatus("USB MIDI Not Detected • Check OTG Cable & MG-101");[cite: 2]
-      }
-    }
-
-    function renderPatchBar() {
-      document.getElementById("patchName").textContent = patchName(state.idx);
-    }
-
-    function renderChainBar() {
-      const bar = document.getElementById("signalChainBar");
-      bar.innerHTML = "";
+    function setParam(code, k, v) {
+      const n = parseInt(v, 10);
       const p = curPatch();
-      p.chain.forEach((blkId) => {
-        const blk = p.blocks[blkId];
-        const btn = document.createElement("button");
-        btn.textContent = blkId;
-        btn.className = "chain-btn";
-        if (!blk.on) btn.classList.add("off-block");
-        if (state.sel === blkId) btn.classList.add("active-block");
-        btn.onclick = () => {
-          state.sel = blkId;
-          save();
-          renderAll();
-        };
-        bar.appendChild(btn);
-      });
-    }
-
-    function renderParams() {
-      const p = curPatch();
-      const curBlk = p.blocks[state.sel];
-      document.getElementById("blockTitle").textContent = `${state.sel} Controls`;
-      document.getElementById("blockToggle").checked = curBlk.on;[cite: 10]
-
-      const paramsEl = document.getElementById("paramsContainer");[cite: 10]
-      paramsEl.innerHTML = "";[cite: 10]
-
-      Object.entries(curBlk.p).forEach(([k, val], index) => {[cite: 10]
-        const grp = document.createElement("div");[cite: 10]
-        grp.className = "param-group";[cite: 10]
-
-        const top = document.createElement("div");
-        top.className = "param-top";
-
-        const lbl = document.createElement("span");
-        lbl.className = "param-label";
-        lbl.textContent = k;
-
-        const stepper = document.createElement("div");
-        stepper.className = "digital-stepper";
-
-        const decBtn = document.createElement("button");
-        decBtn.type = "button";
-        decBtn.textContent = "-";
-
-        const numIn = document.createElement("input");
-        numIn.type = "number";
-        numIn.min = "0";
-        numIn.max = "100";
-        numIn.value = val;
-
-        const incBtn = document.createElement("button");
-        incBtn.type = "button";
-        incBtn.textContent = "+";
-
-        const rangeIn = document.createElement("input");
-        rangeIn.type = "range";
-        rangeIn.min = "0";
-        rangeIn.max = "100";
-        rangeIn.value = val;
-
-        const paramCC = (BLOCK_CC[state.sel] || 21) + 20 + index;
-
-        const applyValue = (nextVal) => {
-          const clamped = Math.max(0, Math.min(100, Number(nextVal) || 0));
-          curBlk.p[k] = clamped;
-          numIn.value = clamped;
-          rangeIn.value = clamped;
-          sendCC(paramCC, clamped);
-          save();
-        };
-
-        decBtn.onclick = () => applyValue(curBlk.p[k] - 1);
-        incBtn.onclick = () => applyValue(curBlk.p[k] + 1);
-        numIn.onchange = () => applyValue(numIn.value);
-        rangeIn.oninput = () => applyValue(rangeIn.value);
-
-        top.appendChild(lbl);
-        stepper.appendChild(decBtn);
-        stepper.appendChild(numIn);
-        stepper.appendChild(incBtn);
-        top.appendChild(stepper);
-
-        grp.appendChild(top);
-        grp.appendChild(rangeIn);
-        paramsEl.appendChild(grp);[cite: 10]
-      });
+      const val = isNaN(n) ? p.blocks[code].p[k] : Math.max(0, Math.min(100, n));
+      p.blocks[code].p[k] = val;
+      save();
+      sendCC(20, val);
+      const sl = document.getElementById("sl_" + k);
+      const inp = document.getElementById("in_" + k);
+      if (sl) sl.value = val;
+      if (inp) inp.value = val;
+      setStatus(code + " " + k + ": " + val + "%");
     }
 
     function renderAll() {
-      renderPatchBar();
-      renderChainBar();
-      renderParams();
+      const p = curPatch();
+      if (!p.blocks[state.sel]) state.sel = p.chain[0] || "AMP";
+      document.getElementById("patchDisplay").textContent = patchName(state.idx);
+
+      const bGrid = document.getElementById("bankGrid");
+      const sGrid = document.getElementById("slotGrid");
+      const activeB = Math.floor(state.idx / 4);
+      const activeS = state.idx % 4;
+      bGrid.innerHTML = "";
+      for (let b = 0; b < 10; b++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "q-btn" + (b === activeB ? " active" : "");
+        btn.textContent = "B" + (b + 1);
+        btn.onclick = () => selectPatch(b * 4 + activeS);
+        bGrid.appendChild(btn);
+      }
+      sGrid.innerHTML = "";
+      LETTERS.forEach((lt, s) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "q-btn" + (s === activeS ? " active" : "");
+        btn.textContent = (activeB + 1) + lt;
+        btn.onclick = () => selectPatch(activeB * 4 + s);
+        sGrid.appendChild(btn);
+      });
+
+      const chainEl = document.getElementById("chainContainer");
+      chainEl.innerHTML = "";
+      p.chain.forEach((code) => {
+        const blk = p.blocks[code];
+        const node = document.createElement("button");
+        node.type = "button";
+        node.className = "chain-node" + (blk.on ? " active" : "") + (state.sel === code ? " selected" : "");
+        node.innerHTML = '<div class="node-code">' + code + '</div><div class="node-dot"></div>';
+        node.onclick = () => {
+          state.sel = code;
+          save();
+          renderAll();
+          setStatus("SELECTED: " + code);
+        };
+        chainEl.appendChild(node);
+      });
+
+      const curBlk = p.blocks[state.sel];
+      document.getElementById("blockTitle").textContent = state.sel + " • " + curBlk.name;
+      const tBtn = document.getElementById("blockToggleBtn");
+      tBtn.textContent = curBlk.on ? "ACTIVE" : "BYPASS";
+      tBtn.className = "toggle-btn " + (curBlk.on ? "toggle-on" : "toggle-off");
+
+      const paramsEl = document.getElementById("paramsContainer");
+      paramsEl.innerHTML = "";
+      Object.entries(curBlk.p).forEach(([k, val]) => {
+        const grp = document.createElement("div");
+        grp.className = "param-group";
+        grp.innerHTML =
+          '<div class="param-top">' +
+            '<span class="param-label">' + k + '</span>' +
+            '<div class="digital-stepper">' +
+              '<button type="button" class="step-btn" id="m_' + k + '">−</button>' +
+              '<input type="number" min="0" max="100" class="digital-input" id="in_' + k + '" value="' + val + '" />' +
+              '<button type="button" class="step-btn" id="p_' + k + '">+</button>' +
+            '</div>' +
+          '</div>' +
+          '<input type="range" min="0" max="100" id="sl_' + k + '" value="' + val + '" />';
+        paramsEl.appendChild(grp);
+
+        document.getElementById("m_" + k).onclick = () => setParam(state.sel, k, curBlk.p[k] - 1);
+        document.getElementById("p_" + k).onclick = () => setParam(state.sel, k, curBlk.p[k] + 1);
+        document.getElementById("in_" + k).onchange = (e) => setParam(state.sel, k, e.target.value);
+        document.getElementById("sl_" + k).oninput = (e) => setParam(state.sel, k, e.target.value);
+      });
     }
 
-    document.getElementById("blockToggle").onchange = () => {[cite: 10]
-      const b = curPatch().blocks[state.sel];[cite: 10]
-      if (!b) return;[cite: 10]
-      b.on = !b.on;[cite: 10]
-      sendCC(BLOCK_CC[state.sel] || 21, b.on ? 100 : 0);[cite: 10]
-      save();[cite: 10]
-      renderAll();[cite: 10]
-      setStatus(`${state.sel} ${b.on ? "ACTIVE" : "BYPASSED"}`);[cite: 10]
+    document.getElementById("blockToggleBtn").onclick = () => {
+      const b = curPatch().blocks[state.sel];
+      if (!b) return;
+      b.on = !b.on;
+      sendCC(BLOCK_CC[state.sel] || 21, b.on ? 100 : 0);
+      save();
+      renderAll();
+      setStatus(state.sel + (b.on ? " ACTIVE" : " BYPASS"));
     };
 
-    document.getElementById("moveLeftBtn").onclick = () => {[cite: 11]
-      const c = curPatch().chain;[cite: 11]
-      const i = c.indexOf(state.sel);[cite: 11]
-      if (i > 0) {[cite: 11]
-        [c[i - 1], c[i]] = [c[i], c[i - 1]];[cite: 11]
-        sendCC(30, Math.round((i / Math.max(1, c.length - 1)) * 100));[cite: 11]
-        save();[cite: 11]
-        renderAll();[cite: 11]
-        setStatus(`MOVED ${state.sel} LEFT`);[cite: 11]
+    document.getElementById("moveLeftBtn").onclick = () => {
+      const c = curPatch().chain;
+      const i = c.indexOf(state.sel);
+      if (i > 0) {
+        [c[i - 1], c[i]] = [c[i], c[i - 1]];
+        sendCC(30, Math.round((i / Math.max(1, c.length - 1)) * 100));
+        save();
+        renderAll();
+        setStatus("MOVED " + state.sel + " LEFT");
       }
     };
 
-    document.getElementById("moveRightBtn").onclick = () => {[cite: 11]
-      const c = curPatch().chain;[cite: 11]
-      const i = c.indexOf(state.sel);[cite: 11]
-      if (i >= 0 && i < c.length - 1) {[cite: 11]
-        [c[i + 1], c[i]] = [c[i], c[i + 1]];[cite: 11]
-        sendCC(30, Math.round(((i + 1) / Math.max(1, c.length - 1)) * 100));[cite: 11]
-        save();[cite: 11]
-        renderAll();[cite: 11]
-        setStatus(`MOVED ${state.sel} RIGHT`);[cite: 11]
+    document.getElementById("moveRightBtn").onclick = () => {
+      const c = curPatch().chain;
+      const i = c.indexOf(state.sel);
+      if (i >= 0 && i < c.length - 1) {
+        [c[i + 1], c[i]] = [c[i], c[i + 1]];
+        sendCC(30, Math.round(((i + 1) / Math.max(1, c.length - 1)) * 100));
+        save();
+        renderAll();
+        setStatus("MOVED " + state.sel + " RIGHT");
       }
     };
 
-    document.getElementById("prevPatch").onclick = () => {[cite: 12]
-      state.idx = Math.max(0, state.idx - 1);
-      sendProgramChange(state.idx);
+    document.getElementById("prevPatch").onclick = () => selectPatch(state.idx - 1);
+    document.getElementById("nextPatch").onclick = () => selectPatch(state.idx + 1);
+    document.getElementById("resetPatchBtn").onclick = () => {
+      state.patches[state.idx] = defaultPatch();
       save();
       renderAll();
+      setStatus("PATCH " + patchName(state.idx) + " RESET");
     };
 
-    document.getElementById("nextPatch").onclick = () => {[cite: 12]
-      state.idx = Math.min(state.patches.length - 1, state.idx + 1);
-      sendProgramChange(state.idx);
-      save();
-      renderAll();
+    document.getElementById("connectBtn").onclick = async () => {
+      if (!navigator.requestMIDIAccess) { setStatus("WEB-MIDI UNSUPPORTED"); return; }
+      try {
+        setStatus("REQUESTING USB MIDI...");
+        midiAccess = await navigator.requestMIDIAccess({ sysex: true });
+        const outs = Array.from(midiAccess.outputs.values());
+        midiOut = outs.length > 0 ? outs[0] : null;
+        setStatus(midiOut ? "OTG CONNECTED" : "NO USB MIDI FOUND");
+      } catch (e) {
+        setStatus("MIDI ERR: " + (e.message || "DENIED"));
+      }
     };
 
-    document.getElementById("resetPatchBtn").onclick = () => {[cite: 12]
-      state.patches[state.idx] = {[cite: 12]
-        name: `Patch ${state.idx}`,
-        chain: [...defaultChain],
-        blocks: createDefaultBlocks()
-      };
-      save();[cite: 12]
-      renderAll();[cite: 12]
-      setStatus(`RESET ${patchName(state.idx)}`);[cite: 12]
-    };
-
-    document.getElementById("connectBtn").onclick = async () => {[cite: 12]
-      if (!navigator.requestMIDIAccess) {[cite: 12]
-        setStatus("WebMIDI unsupported in this WebView");
+    renderAll();
+  </script>
+</body>
+        </html>
