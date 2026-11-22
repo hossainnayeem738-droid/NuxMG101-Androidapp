@@ -1,5 +1,9 @@
 name: Build Android APK
-on: [push]
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,13 +19,14 @@ jobs:
           java-version: '17'
       - name: Build APK
         run: |
-          rm -rf www android package.json package-lock.json capacitor.config.json capacitor.config.ts
+          rm -rf www android package.json package-lock.json
           mkdir -p www
           cp index.html www/index.html
           echo '{"name":"nux-mg101-editor","version":"1.0.0"}' > package.json
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap init "NUX MG101" "com.nux.mg101" --web-dir www
+          npx cap init "NUX MG101" "com.nux.mg101" --web-dir=www
           npx cap add android
+          npx cap copy android
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
