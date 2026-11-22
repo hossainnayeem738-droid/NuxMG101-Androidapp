@@ -530,3 +530,177 @@
   </script>
 </body>
                                 </html>
+<!-- Effect blocks Card (আপনার Signal Chain কার্ডের জায়গায় বা ভেতরে বসান) -->
+<div class="card">
+  <h3>Effect blocks</h3>
+  <div id="effectBlocksGrid" class="eb-grid"></div>
+</div>
+
+<style>
+  .eb-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  @media (max-width: 520px) {
+    .eb-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .eb-tile {
+    background: #181a19;
+    border: 1px solid #2b2f2d;
+    border-radius: 14px;
+    padding: 10px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #d6dbd8;
+    transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .eb-tile:active {
+    transform: scale(0.97);
+  }
+  .eb-tile.is-on {
+    border-color: #4caf50;
+    background: #1c241e;
+  }
+  .eb-tile.is-selected {
+    outline: 2px solid #ffb300;
+    border-color: #ffb300;
+  }
+  .eb-tile.is-off {
+    opacity: 0.65;
+  }
+  .eb-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .eb-icon {
+    width: 38px;
+    height: 38px;
+    image-rendering: pixelated;
+  }
+</style>
+
+<script>
+  const EFFECT_ICONS = {
+    WAH: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="4" y="2" width="8" height="12" fill="#4f5659" stroke="#222" stroke-width="1"/>
+        <rect x="5" y="4" width="6" height="1" fill="#2c3032"/>
+        <rect x="5" y="6" width="6" height="1" fill="#2c3032"/>
+        <rect x="5" y="8" width="6" height="1" fill="#2c3032"/>
+        <rect x="5" y="10" width="6" height="1" fill="#2c3032"/>
+      </svg>`,
+    PEDAL: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="4" y="2" width="8" height="12" rx="1" fill="#6b7378" stroke="#222" stroke-width="1"/>
+        <rect x="6" y="4" width="1" height="2" fill="#222"/>
+        <rect x="8" y="4" width="1" height="2" fill="#222"/>
+        <rect x="10" y="4" width="1" height="2" fill="#222"/>
+        <rect x="7" y="10" width="2" height="2" fill="#cfd6da"/>
+      </svg>`,
+    AMP: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
+        <rect x="3" y="5" width="10" height="2" fill="#222"/>
+        <circle cx="5" cy="6" r="0.6" fill="#e53935"/>
+        <circle cx="7" cy="6" r="0.6" fill="#cfd6da"/>
+        <circle cx="9" cy="6" r="0.6" fill="#cfd6da"/>
+        <circle cx="11" cy="6" r="0.6" fill="#cfd6da"/>
+        <rect x="3" y="8" width="10" height="3" fill="#2f3437"/>
+      </svg>`,
+    EQ: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="2" y="4" width="12" height="8" fill="#4f5659" stroke="#222" stroke-width="1"/>
+        <rect x="4" y="5" width="1" height="6" fill="#222"/>
+        <rect x="7" y="5" width="1" height="6" fill="#222"/>
+        <rect x="10" y="5" width="1" height="6" fill="#222"/>
+        <rect x="12" y="5" width="1" height="6" fill="#222"/>
+        <rect x="3.5" y="7" width="2" height="1" fill="#e0e6e9"/>
+        <rect x="6.5" y="9" width="2" height="1" fill="#e0e6e9"/>
+        <rect x="9.5" y="6" width="2" height="1" fill="#e0e6e9"/>
+        <rect x="11.5" y="8" width="2" height="1" fill="#e0e6e9"/>
+      </svg>`,
+    CAB: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="3" y="3" width="10" height="10" fill="#464c50" stroke="#202325" stroke-width="1"/>
+        <rect x="4" y="4" width="8" height="8" fill="#2c3032"/>
+        <circle cx="6" cy="6" r="1.5" fill="#5b6266"/>
+        <circle cx="10" cy="6" r="1.5" fill="#5b6266"/>
+        <circle cx="6" cy="10" r="1.5" fill="#5b6266"/>
+        <circle cx="10" cy="10" r="1.5" fill="#5b6266"/>
+      </svg>`,
+    SR: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="2" y="5" width="12" height="6" fill="#4f5659" stroke="#222" stroke-width="1"/>
+        <circle cx="5" cy="8" r="1.5" fill="#cfd6da"/>
+        <circle cx="11" cy="8" r="1.5" fill="#cfd6da"/>
+        <rect x="7" y="7.5" width="2" height="1" fill="#cfd6da"/>
+      </svg>`,
+    VOL: `
+      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+        <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
+        <rect x="3" y="9" width="1.5" height="2" fill="#81c784"/>
+        <rect x="5" y="8" width="1.5" height="3" fill="#81c784"/>
+        <rect x="7" y="7" width="1.5" height="4" fill="#aed581"/>
+        <rect x="9" y="6" width="1.5" height="5" fill="#ffd54f"/>
+        <rect x="11" y="5" width="1.5" height="6" fill="#e57373"/>
+      </svg>`
+  };
+
+  function getBlockIcon(id) {
+    if (id === "WAH") return EFFECT_ICONS.WAH;
+    if (id === "AMP") return EFFECT_ICONS.AMP;
+    if (id === "EQ") return EFFECT_ICONS.EQ;
+    if (id === "IR") return EFFECT_ICONS.CAB;
+    if (id === "S/R") return EFFECT_ICONS.SR;
+    if (id === "VOL") return EFFECT_ICONS.VOL;
+    return EFFECT_ICONS.PEDAL;
+  }
+
+  function renderEffectBlocksGrid() {
+    const grid = document.getElementById("effectBlocksGrid");
+    if (!grid || typeof curPatch !== "function") return;
+    grid.innerHTML = "";
+
+    const patch = curPatch();
+    patch.chain.forEach((blkId) => {
+      const blk = patch.blocks[blkId];
+      if (!blk) return;
+
+      const tile = document.createElement("div");
+      tile.className = "eb-tile";
+      if (blk.on) tile.classList.add("is-on");
+      else tile.classList.add("is-off");
+      if (state.sel === blkId) tile.classList.add("is-selected");
+
+      tile.innerHTML = `${getBlockIcon(blkId)}<span class="eb-label">${blkId}</span>`;
+
+      tile.onclick = () => {
+        if (state.sel === blkId) {
+          // ইতিমধ্যে সিলেক্ট করা ব্লকে আবার ট্যাপ করলে On/Off টগল হবে
+          blk.on = !blk.on;
+          if (typeof sendCC === "function" && typeof BLOCK_CC !== "undefined") {
+            sendCC(BLOCK_CC[blkId] || 21, blk.on ? 100 : 0);
+          }
+          if (typeof save === "function") save();
+        } else {
+          // অন্য ব্লকে ট্যাপ করলে সেটি সিলেক্ট হয়ে নিচের প্যারামিটার এডিটরে খুলবে
+          state.sel = blkId;
+          if (typeof save === "function") save();
+        }
+        if (typeof renderAll === "function") renderAll();
+        else renderEffectBlocksGrid();
+      };
+
+      grid.appendChild(tile);
+    });
+  }
+</script>
