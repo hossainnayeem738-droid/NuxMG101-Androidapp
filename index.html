@@ -95,14 +95,36 @@
       background: #06080c;
       border: 1px solid #1e3a5f;
       border-radius: 10px;
-      padding: 8px;
+      padding: 6px 8px;
       text-align: center;
       font-family: monospace;
-      font-size: 26px;
-      font-weight: 900;
       color: #38bdf8;
-      letter-spacing: 2px;
     }
+    .patch-code { font-size: 24px; font-weight: 900; letter-spacing: 2px; line-height: 1.1; }
+    .patch-preset-label { font-size: 11px; font-weight: 700; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .preset-row { display: flex; gap: 8px; align-items: center; }
+    .preset-input {
+      flex: 1;
+      background: #06080c;
+      border: 1px solid #2b364b;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #f8fafc;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .btn-save-name {
+      background: #0284c7;
+      color: #fff;
+      border: 1px solid #7dd3fc;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .bank-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
     .slot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
     .q-btn {
@@ -164,6 +186,7 @@
     }
     .param-top { display: flex; justify-content: space-between; align-items: center; }
     .param-label { font-size: 13px; font-weight: 700; color: #e2e8f0; }
+    .param-cc-tag { font-family: monospace; font-size: 10px; color: #64748b; margin-left: 6px; }
     .digital-stepper { display: flex; align-items: center; gap: 5px; }
     .step-btn {
       width: 28px;
@@ -212,8 +235,15 @@
     </div>
     <div class="patch-row">
       <button class="btn-nav" id="prevPatch">◀ Prev</button>
-      <div class="patch-lcd" id="patchDisplay">1A</div>
+      <div class="patch-lcd">
+        <div class="patch-code" id="patchDisplay">1A</div>
+        <div class="patch-preset-label" id="presetNameDisplay">Clean Studio</div>
+      </div>
       <button class="btn-nav" id="nextPatch">Next ▶</button>
+    </div>
+    <div class="preset-row">
+      <input type="text" maxlength="24" class="preset-input" id="presetNameInput" placeholder="Set Preset Name (e.g. Lead Boost)" />
+      <button type="button" class="btn-save-name" id="savePresetNameBtn">Set Name</button>
     </div>
     <div>
       <div class="bank-grid" id="bankGrid"></div>
@@ -239,13 +269,24 @@
   </div>
 
   <script>
-    const KEY = "nux_qt_final_v1";
+    const KEY = "nux_qt_preset_knobs_v1";
     const LETTERS = ["A", "B", "C", "D"];
     const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
+    const PARAM_CC = {
+      NR:  { Threshold: 40, Decay: 41 },
+      EFX: { Drive: 42, Tone: 43, Level: 44 },
+      AMP: { Gain: 45, Master: 46, Bass: 47, Middle: 48, Treble: 49 },
+      IR:  { Level: 50, LowCut: 51, HighCut: 52 },
+      EQ:  { "100Hz": 53, "220Hz": 54, "500Hz": 55, "1.2kHz": 56, "2.6kHz": 57, "6.4kHz": 58 },
+      MOD: { Rate: 59, Depth: 60, Mix: 61 },
+      DLY: { Time: 62, Feedback: 63, Mix: 64 },
+      RVB: { Decay: 65, Tone: 66, Mix: 67 }
+    };
     let midiAccess = null, midiOut = null;
 
-    function defaultPatch() {
+    function defaultPatch(idx = 0) {
       return {
+        presetName: "Patch " + patchName(idx),
         chain: ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"],
         blocks: {
           NR:  { name: "Noise Gate", on: true,  p: { Threshold: 35, Decay: 40 } },
@@ -275,13 +316,20 @@
 
     function curPatch() {
       if (!state.patches[state.idx] || !state.patches[state.idx].blocks) {
-        state.patches[state.idx] = defaultPatch();
+        state.patches[state.idx] = defaultPatch(state.idx);
+      }
+      if (!state.patches[state.idx].presetName) {
+        state.patches[state.idx].presetName = "Patch " + patchName(state.idx);
       }
       return state.patches[state.idx];
     }
 
     function patchName(i) {
       return (Math.floor(i / 4) + 1) + LETTERS[i % 4];
+    }
+
+    function getParamCC(code, k) {
+      return (PARAM_CC[code] && PARAM_CC[code][k]) || 20;
     }
 
     function setStatus(txt) {
@@ -299,10 +347,21 @@
 
     function selectPatch(newIdx) {
       state.idx = (newIdx + 40) % 40;
+      const p = curPatch();
       save();
       sendPC(state.idx);
       renderAll();
-      setStatus("PATCH " + patchName(state.idx) + " LOADED");
+      setStatus("PATCH " + patchName(state.idx) + " • " + p.presetName);
+    }
+
+    function applyPresetName() {
+      const inp = document.getElementById("presetNameInput");
+      const name = (inp.value || "").trim() || ("Patch " + patchName(state.idx));
+      const p = curPatch();
+      p.presetName = name;
+      save();
+      renderAll();
+      setStatus("PRESET SET: " + name);
     }
 
     function setParam(code, k, v) {
@@ -311,18 +370,24 @@
       const val = isNaN(n) ? p.blocks[code].p[k] : Math.max(0, Math.min(100, n));
       p.blocks[code].p[k] = val;
       save();
-      sendCC(20, val);
+      const cc = getParamCC(code, k);
+      sendCC(cc, val);
       const sl = document.getElementById("sl_" + k);
       const inp = document.getElementById("in_" + k);
       if (sl) sl.value = val;
       if (inp) inp.value = val;
-      setStatus(code + " " + k + ": " + val + "%");
+      setStatus(code + " " + k + " [CC" + cc + "]: " + val + "%");
     }
 
     function renderAll() {
       const p = curPatch();
       if (!p.blocks[state.sel]) state.sel = p.chain[0] || "AMP";
       document.getElementById("patchDisplay").textContent = patchName(state.idx);
+      document.getElementById("presetNameDisplay").textContent = p.presetName;
+      const presetInp = document.getElementById("presetNameInput");
+      if (document.activeElement !== presetInp) {
+        presetInp.value = p.presetName;
+      }
 
       const bGrid = document.getElementById("bankGrid");
       const sGrid = document.getElementById("slotGrid");
@@ -359,7 +424,7 @@
           state.sel = code;
           save();
           renderAll();
-          setStatus("SELECTED: " + code);
+          setStatus("SELECTED: " + code + " (" + blk.name + ")");
         };
         chainEl.appendChild(node);
       });
@@ -373,11 +438,12 @@
       const paramsEl = document.getElementById("paramsContainer");
       paramsEl.innerHTML = "";
       Object.entries(curBlk.p).forEach(([k, val]) => {
+        const ccNum = getParamCC(state.sel, k);
         const grp = document.createElement("div");
         grp.className = "param-group";
         grp.innerHTML =
           '<div class="param-top">' +
-            '<span class="param-label">' + k + '</span>' +
+            '<div><span class="param-label">' + k + '</span><span class="param-cc-tag">CC' + ccNum + '</span></div>' +
             '<div class="digital-stepper">' +
               '<button type="button" class="step-btn" id="m_' + k + '">−</button>' +
               '<input type="number" min="0" max="100" class="digital-input" id="in_' + k + '" value="' + val + '" />' +
@@ -393,6 +459,14 @@
         document.getElementById("sl_" + k).oninput = (e) => setParam(state.sel, k, e.target.value);
       });
     }
+
+    document.getElementById("savePresetNameBtn").onclick = applyPresetName;
+    document.getElementById("presetNameInput").onkeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        applyPresetName();
+      }
+    };
 
     document.getElementById("blockToggleBtn").onclick = () => {
       const b = curPatch().blocks[state.sel];
@@ -431,7 +505,9 @@
     document.getElementById("prevPatch").onclick = () => selectPatch(state.idx - 1);
     document.getElementById("nextPatch").onclick = () => selectPatch(state.idx + 1);
     document.getElementById("resetPatchBtn").onclick = () => {
-      state.patches[state.idx] = defaultPatch();
+      const oldName = curPatch().presetName;
+      state.patches[state.idx] = defaultPatch(state.idx);
+      state.patches[state.idx].presetName = oldName;
       save();
       renderAll();
       setStatus("PATCH " + patchName(state.idx) + " RESET");
@@ -453,4 +529,4 @@
     renderAll();
   </script>
 </body>
-        </html>
+                                </html>
