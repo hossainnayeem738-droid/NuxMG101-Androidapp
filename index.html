@@ -291,3 +291,40 @@
   </script>
 </body>
 </html>
+const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
+
+blockToggleBtn.onclick = () => {
+  const patch = getCurrentPatch();
+  const block = patch.blocks[appState.selectedBlock];
+  if (!block) return;
+  block.enabled = !block.enabled;
+  saveState();
+  sendControlChange(BLOCK_CC[appState.selectedBlock] || 21, block.enabled ? 100 : 0);
+  renderChain();
+  renderEditor();
+  updateStatus(`${appState.selectedBlock} ${block.enabled ? "ACTIVE" : "BYPASS"}`);
+};
+
+document.getElementById("moveLeftBtn").onclick = () => {
+  const patch = getCurrentPatch();
+  const idx = patch.chain.indexOf(appState.selectedBlock);
+  if (idx > 0) {
+    [patch.chain[idx - 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx - 1]];
+    saveState();
+    sendControlChange(30, Math.round((idx / Math.max(1, patch.chain.length - 1)) * 100));
+    renderChain();
+    updateStatus(`MOVED ${appState.selectedBlock} LEFT`);
+  }
+};
+
+document.getElementById("moveRightBtn").onclick = () => {
+  const patch = getCurrentPatch();
+  const idx = patch.chain.indexOf(appState.selectedBlock);
+  if (idx >= 0 && idx < patch.chain.length - 1) {
+    [patch.chain[idx + 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx + 1]];
+    saveState();
+    sendControlChange(30, Math.round(((idx + 1) / Math.max(1, patch.chain.length - 1)) * 100));
+    renderChain();
+    updateStatus(`MOVED ${appState.selectedBlock} RIGHT`);
+  }
+};
