@@ -242,12 +242,18 @@
         document.getElementById("p_" + k).onclick = () => setParam(state.sel, k, curBlk.p[k] + 1);
         document.getElementById("in_" + k).onchange = (e) => setParam(state.sel, k, e.target.value);
         document.getElementById("sl_" + k).oninput = (e) => setParam(state.sel, k, e.target.value);
-      });
+      })
+      const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
+
+    function sendCC(cc, v) {
+      if (midiOut) midiOut.send([0xB0, cc, Math.max(0, Math.min(127, Math.round((v / 100) * 127)))]);
     }
 
     document.getElementById("blockToggleBtn").onclick = () => {
       const b = curPatch().blocks[state.sel];
+      if (!b) return;
       b.on = !b.on;
+      sendCC(BLOCK_CC[state.sel] || 21, b.on ? 100 : 0);
       save();
       renderAll();
       setStatus(state.sel + (b.on ? " ACTIVE" : " BYPASS"));
@@ -256,34 +262,24 @@
     document.getElementById("moveLeftBtn").onclick = () => {
       const c = curPatch().chain;
       const i = c.indexOf(state.sel);
-      if (i > 0) { [c[i - 1], c[i]] = [c[i], c[i - 1]]; save(); renderAll(); setStatus("MOVED " + state.sel + " LEFT"); }
+      if (i > 0) {
+        [c[i - 1], c[i]] = [c[i], c[i - 1]];
+        sendCC(30, Math.round((i / Math.max(1, c.length - 1)) * 100));
+        save();
+        renderAll();
+        setStatus("MOVED " + state.sel + " LEFT");
+      }
     };
 
     document.getElementById("moveRightBtn").onclick = () => {
       const c = curPatch().chain;
       const i = c.indexOf(state.sel);
-      if (i < c.length - 1) { [c[i + 1], c[i]] = [c[i], c[i + 1]]; save(); renderAll(); setStatus("MOVED " + state.sel + " RIGHT"); }
-    };
-
-    document.getElementById("prevPatch").onclick = () => selectPatch(state.idx - 1);
-    document.getElementById("nextPatch").onclick = () => selectPatch(state.idx + 1);
-    document.getElementById("resetPatchBtn").onclick = () => {
-      state.patches[state.idx] = defaultPatch();
-      save();
-      renderAll();
-      setStatus("PATCH " + patchName(state.idx) + " RESET");
-    };
-
-    document.getElementById("connectBtn").onclick = async () => {
-      if (!navigator.requestMIDIAccess) { setStatus("WEB-MIDI UNSUPPORTED"); return; }
-      try {
-        setStatus("REQUESTING USB MIDI...");
-        midiAccess = await navigator.requestMIDIAccess({ sysex: true });
-        const outs = Array.from(midiAccess.outputs.values());
-        midiOut = outs.length > 0 ? outs[0] : null;
-        setStatus(midiOut ? "OTG CONNECTED" : "NO USB MIDI FOUND");
-      } catch (e) {
-        setStatus("MIDI ERR: " + (e.message || "DENIED"));
+      if (i >= 0 && i < c.length - 1) {
+        [c[i + 1], c[i]] = [c[i], c[i + 1]];
+        sendCC(30, Math.round(((i + 1) / Math.max(1, c.length - 1)) * 100));
+        save();
+        renderAll();
+        setStatus("MOVED " + state.sel + " RIGHT");
       }
     };
 
@@ -291,40 +287,3 @@
   </script>
 </body>
 </html>
-const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
-
-blockToggleBtn.onclick = () => {
-  const patch = getCurrentPatch();
-  const block = patch.blocks[appState.selectedBlock];
-  if (!block) return;
-  block.enabled = !block.enabled;
-  saveState();
-  sendControlChange(BLOCK_CC[appState.selectedBlock] || 21, block.enabled ? 100 : 0);
-  renderChain();
-  renderEditor();
-  updateStatus(`${appState.selectedBlock} ${block.enabled ? "ACTIVE" : "BYPASS"}`);
-};
-
-document.getElementById("moveLeftBtn").onclick = () => {
-  const patch = getCurrentPatch();
-  const idx = patch.chain.indexOf(appState.selectedBlock);
-  if (idx > 0) {
-    [patch.chain[idx - 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx - 1]];
-    saveState();
-    sendControlChange(30, Math.round((idx / Math.max(1, patch.chain.length - 1)) * 100));
-    renderChain();
-    updateStatus(`MOVED ${appState.selectedBlock} LEFT`);
-  }
-};
-
-document.getElementById("moveRightBtn").onclick = () => {
-  const patch = getCurrentPatch();
-  const idx = patch.chain.indexOf(appState.selectedBlock);
-  if (idx >= 0 && idx < patch.chain.length - 1) {
-    [patch.chain[idx + 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx + 1]];
-    saveState();
-    sendControlChange(30, Math.round(((idx + 1) / Math.max(1, patch.chain.length - 1)) * 100));
-    renderChain();
-    updateStatus(`MOVED ${appState.selectedBlock} RIGHT`);
-  }
-};
