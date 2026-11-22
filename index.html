@@ -3,83 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>NUX MG-101 Controller</title>
+  <title>NUX MG-101 QuickTone Controller</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #121214; color: #f4f4f6; display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 14px; min-height: 100vh; }
-    h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    body {
+      background: radial-gradient(circle at top, #171d2b 0%, #0b0d12 65%);
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px;
+      gap: 12px;
+      min-height: 100vh;
+    }
 
-    .btn-primary { background: #e63946; color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 16px; font-weight: 600; cursor: pointer; }
-    .btn-primary:active { opacity: 0.85; }
+    .top-bar {
+      width: 100%;
+      max-width: 450px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #121722;
+      border: 1px solid #242d3d;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+    .brand-box { display: flex; flex-direction: column; gap: 2px; }
+    .brand-title { font-size: 17px; font-weight: 800; letter-spacing: 0.4px; color: #f8fafc; }
+    .brand-sub { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #38bdf8; text-transform: uppercase; }
 
-    .status-bar { width: 100%; max-width: 440px; background: #1c1c21; border-radius: 10px; padding: 11px; text-align: center; color: #38bdf8; font-size: 14px; font-weight: 500; border: 1px solid #2b2b33; }
+    .btn-otg {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #ffffff;
+      border: 1px solid #f87171;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.28);
+    }
+    .btn-otg:active { transform: scale(0.98); }
 
-    .card { width: 100%; max-width: 440px; background: #1c1c21; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; border: 1px solid #27272f; }
+    .status-bar {
+      width: 100%;
+      max-width: 450px;
+      background: #0d1118;
+      border: 1px solid #1e293b;
+      border-left: 4px solid #38bdf8;
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #7dd3fc;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 450px;
+      background: #121722;
+      border: 1px solid #222b3a;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    }
     .card-header { display: flex; justify-content: space-between; align-items: center; }
-    .card-title { font-size: 16px; font-weight: 700; color: #e4e4e7; }
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #cbd5e1;
+    }
 
-    /* Patch Controls */
-    .patch-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .patch-digital { background: #09090b; border: 1px solid #27272a; border-radius: 10px; padding: 8px 18px; font-family: "Courier New", monospace; font-size: 24px; font-weight: 800; color: #38bdf8; letter-spacing: 1px; text-shadow: 0 0 8px rgba(56, 189, 248, 0.35); }
-    .btn-reset { background: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .btn-reset:active { background: #3f3f46; color: #fff; }
+    .btn-reset {
+      background: #1b2232;
+      color: #94a3b8;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-reset:active { background: #334155; color: #f8fafc; }
 
-    /* Signal Chain Horizontal Strip */
-    .chain-scroll { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 6px 2px; scrollbar-width: none; }
+    /* Patch LCD Row */
+    .patch-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .btn-nav {
+      background: #1a2232;
+      color: #f1f5f9;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-nav:active { background: #2563eb; border-color: #60a5fa; }
+
+    .patch-lcd {
+      flex: 1;
+      background: #06080c;
+      border: 1px solid #1e3a5f;
+      border-radius: 10px;
+      padding: 8px 14px;
+      text-align: center;
+      font-family: "Courier New", monospace;
+      font-size: 26px;
+      font-weight: 900;
+      color: #38bdf8;
+      letter-spacing: 2px;
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    /* Quick Bank (1-10) & Slot (A-D) Grid */
+    .quick-patch-box { display: flex; flex-direction: column; gap: 7px; }
+    .bank-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .slot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .q-btn {
+      background: #171e2c;
+      color: #cbd5e1;
+      border: 1px solid #2b364b;
+      border-radius: 8px;
+      padding: 7px 4px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.12s ease;
+    }
+    .q-btn.active {
+      background: linear-gradient(180deg, #0284c7, #0369a1);
+      color: #ffffff;
+      border-color: #7dd3fc;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.28);
+    }
+    .q-btn:active { transform: scale(0.97); }
+
+    /* Signal Chain Strip */
+    .chain-scroll {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      padding: 6px 2px;
+      scrollbar-width: none;
+    }
     .chain-scroll::-webkit-scrollbar { display: none; }
-    .chain-node { min-width: 58px; padding: 10px 6px; border-radius: 10px; background: #26262e; border: 2px solid #3f3f46; text-align: center; cursor: pointer; transition: all 0.15s ease; user-select: none; }
-    .chain-node.active { background: #1f2937; border-color: #3b82f6; }
-    .chain-node.selected { box-shadow: 0 0 0 2px #facc15; border-color: #facc15; }
-    .node-code { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
-    .node-dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px auto 0; background: #52525b; }
-    .chain-node.active .node-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
-    .chain-arrow { color: #71717a; font-size: 12px; font-weight: bold; }
+    .chain-node {
+      min-width: 54px;
+      padding: 9px 5px;
+      border-radius: 10px;
+      background: #171e2c;
+      border: 1.5px solid #2b364b;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.14s ease;
+    }
+    .chain-node.active {
+      background: #122436;
+      border-color: #22c55e;
+      box-shadow: inset 0 0 8px rgba(34, 197, 94, 0.15);
+    }
+    .chain-node.selected {
+      border-color: #facc15;
+      box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.45);
+    }
+    .node-code { font-size: 12px; font-weight: 900; letter-spacing: 0.4px; color: #f8fafc; }
+    .node-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin: 6px auto 0;
+      background: #475569;
+    }
+    .chain-node.active .node-dot {
+      background: #22c55e;
+      box-shadow: 0 0 7px #22c55e;
+    }
+    .chain-arrow { color: #64748b; font-size: 12px; font-weight: 800; }
 
-    /* Block Order Controls */
-    .order-controls { display: flex; justify-content: space-between; gap: 10px; }
-    .btn-small { flex: 1; background: #27272a; color: #e4e4e7; border: 1px solid #3f3f46; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .btn-small:active { background: #3f3f46; }
+    .order-controls { display: flex; gap: 8px; }
+    .btn-small {
+      flex: 1;
+      background: #171e2c;
+      color: #e2e8f0;
+      border: 1px solid #2b364b;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-small:active { background: #263248; }
 
-    /* Parameter Editor & Digital Controls */
-    .block-header { display: flex; justify-content: space-between; align-items: center; }
-    .toggle-btn { padding: 6px 14px; border-radius: 20px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .toggle-on { background: #22c55e; color: #052e16; }
-    .toggle-off { background: #3f3f46; color: #d4d4d8; }
+    /* Block Editor */
+    .block-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .toggle-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+    }
+    .toggle-on {
+      background: #22c55e;
+      color: #052e16;
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+    }
+    .toggle-off {
+      background: #273042;
+      color: #94a3b8;
+      border: 1px solid #3b4861;
+    }
 
-    .param-group { display: flex; flex-direction: column; gap: 8px; background: #16161a; padding: 10px 12px; border-radius: 10px; border: 1px solid #26262e; }
-    .param-top { display: flex; justify-content: space-between; align-items: center; }
-    .param-label { font-size: 14px; font-weight: 600; color: #d4d4d8; }
+    .param-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #0d1118;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #1e2736;
+    }
+    .param-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .param-label { font-size: 13px; font-weight: 700; color: #e2e8f0; }
 
-    .digital-stepper { display: flex; align-items: center; gap: 6px; }
-    .step-btn { width: 30px; height: 28px; background: #27272a; color: #f4f4f6; border: 1px solid #3f3f46; border-radius: 6px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
-    .step-btn:active { background: #3b82f6; border-color: #3b82f6; }
-    .digital-readout { min-width: 52px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; padding: 4px 8px; font-family: "Courier New", monospace; font-size: 14px; font-weight: 700; color: #38bdf8; text-align: center; }
+    .digital-stepper { display: flex; align-items: center; gap: 5px; }
+    .step-btn {
+      width: 28px;
+      height: 28px;
+      background: #1b2333;
+      color: #f8fafc;
+      border: 1px solid #334155;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .step-btn:active { background: #0284c7; border-color: #38bdf8; }
 
-    input[type="range"] { width: 100%; accent-color: #3b82f6; height: 6px; border-radius: 4px; cursor: pointer; }
+    .digital-input {
+      width: 56px;
+      height: 28px;
+      background: #06080c;
+      border: 1px solid #25446b;
+      border-radius: 7px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      font-weight: 800;
+      color: #38bdf8;
+      text-align: center;
+      outline: none;
+    }
+    .digital-input:focus {
+      border-color: #facc15;
+      box-shadow: 0 0 8px rgba(250, 204, 21, 0.25);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #38bdf8;
+      height: 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <h1>🎸 NUX MG-101 Controller</h1>
-  <button class="btn-primary" id="connectBtn">Connect via OTG</button>
-  <div class="status-bar" id="statusBar">Ready • Auto-Save Enabled</div>
+  <div class="top-bar">
+    <div class="brand-box">
+      <div class="brand-title">NUX MG-101</div>
+      <div class="brand-sub">QuickTone Digital Studio</div>
+    </div>
+    <button class="btn-otg" id="connectBtn">Connect via OTG</button>
+  </div>
 
-  <!-- Patch Select -->
+  <div class="status-bar" id="statusBar">
+    <span>READY • AUTO-SAVE ON</span>
+    <span id="midiTag">MIDI: OFF</span>
+  </div>
+
+  <!-- Patch Select + Quick 1A-10D -->
   <div class="card">
     <div class="card-header">
-      <div class="card-title">Patch Select</div>
+      <div class="card-title">Patch Bank & Slot (1A–10D)</div>
       <button class="btn-reset" id="resetPatchBtn">Reset Patch</button>
     </div>
     <div class="patch-row">
-      <button class="btn-primary" id="prevPatch">◀ Prev</button>
-      <div class="patch-digital" id="patchDisplay">1A</div>
-      <button class="btn-primary" id="nextPatch">Next ▶</button>
+      <button class="btn-nav" id="prevPatch">◀ Prev</button>
+      <div class="patch-lcd" id="patchDisplay">1A</div>
+      <button class="btn-nav" id="nextPatch">Next ▶</button>
+    </div>
+    <div class="quick-patch-box">
+      <div class="bank-grid" id="bankGrid"></div>
+      <div class="slot-grid" id="slotGrid"></div>
     </div>
   </div>
 
   <!-- Signal Chain -->
   <div class="card">
-    <div class="card-title">Signal Chain (Tap to Edit)</div>
+    <div class="card-title">Signal Chain (Tap Block to Edit)</div>
     <div class="chain-scroll" id="chainContainer"></div>
     <div class="order-controls">
       <button class="btn-small" id="moveLeftBtn">◀ Move Left</button>
@@ -93,11 +337,11 @@
       <span class="card-title" id="blockTitle">AMP • Amplifier</span>
       <button class="toggle-btn toggle-on" id="blockToggleBtn">ON</button>
     </div>
-    <div id="paramsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+    <div id="paramsContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
   </div>
 
   <script>
-    const STORAGE_KEY = "nux_mg101_digital_state_v1";
+    const STORAGE_KEY = "nux_mg101_quicktone_v1";
     const BANK_LETTERS = ["A", "B", "C", "D"];
     const TOTAL_PATCHES = 40;
 
@@ -153,13 +397,19 @@
 
     const statusBar = document.getElementById("statusBar");
     const patchDisplay = document.getElementById("patchDisplay");
+    const bankGrid = document.getElementById("bankGrid");
+    const slotGrid = document.getElementById("slotGrid");
     const chainContainer = document.getElementById("chainContainer");
     const blockTitle = document.getElementById("blockTitle");
     const blockToggleBtn = document.getElementById("blockToggleBtn");
     const paramsContainer = document.getElementById("paramsContainer");
 
+    function getMidiBadgeText() {
+      return activeMidiOutput ? `MIDI: ${activeMidiOutput.name}` : "MIDI: READY";
+    }
+
     function updateStatus(msg) {
-      statusBar.textContent = msg;
+      statusBar.innerHTML = `<span>${msg}</span><span>${getMidiBadgeText()}</span>`;
     }
 
     function sendProgramChange(patchIndex) {
@@ -179,15 +429,49 @@
       const outputs = Array.from(midiAccess.outputs.values());
       if (outputs.length > 0) {
         activeMidiOutput = outputs[0];
-        updateStatus(`OTG Connected: ${activeMidiOutput.name}`);
+        updateStatus(`OTG LINKED • ${formatPatchName(appState.currentPatchIndex)}`);
       } else {
         activeMidiOutput = null;
-        updateStatus("USB MIDI Not Detected • Check OTG Cable & MG-101");
+        updateStatus("NO USB MIDI • CHECK OTG");
       }
+    }
+
+    function selectPatchIndex(newIndex) {
+      appState.currentPatchIndex = (newIndex + TOTAL_PATCHES) % TOTAL_PATCHES;
+      saveState();
+      sendProgramChange(appState.currentPatchIndex);
+      renderPatchHeader();
+      renderPatchGrid();
+      renderChain();
+      renderEditor();
+      updateStatus(`PATCH ${formatPatchName(appState.currentPatchIndex)} LOADED`);
     }
 
     function renderPatchHeader() {
       patchDisplay.textContent = formatPatchName(appState.currentPatchIndex);
+    }
+
+    function renderPatchGrid() {
+      const activeBank = Math.floor(appState.currentPatchIndex / 4);
+      const activeSlot = appState.currentPatchIndex % 4;
+
+      bankGrid.innerHTML = "";
+      for (let b = 0; b < 10; b++) {
+        const btn = document.createElement("button");
+        btn.className = "q-btn" + (b === activeBank ? " active" : "");
+        btn.textContent = `B${b + 1}`;
+        btn.onclick = () => selectPatchIndex(b * 4 + activeSlot);
+        bankGrid.appendChild(btn);
+      }
+
+      slotGrid.innerHTML = "";
+      BANK_LETTERS.forEach((letter, s) => {
+        const btn = document.createElement("button");
+        btn.className = "q-btn" + (s === activeSlot ? " active" : "");
+        btn.textContent = `${activeBank + 1}${letter}`;
+        btn.onclick = () => selectPatchIndex(activeBank * 4 + s);
+        slotGrid.appendChild(btn);
+      });
     }
 
     function renderChain() {
@@ -209,24 +493,27 @@
         if (index < patch.chain.length - 1) {
           const arrow = document.createElement("span");
           arrow.className = "chain-arrow";
-          arrow.textContent = "→";
+          arrow.textContent = "›";
           chainContainer.appendChild(arrow);
         }
       });
     }
 
-    function updateParamValue(blockCode, paramKey, newVal) {
-      const clamped = Math.max(0, Math.min(100, Number(newVal)));
+    function updateParamValue(blockCode, paramKey, newVal, syncInput = true) {
+      const parsed = parseInt(newVal, 10);
       const patch = getCurrentPatch();
+      const currentVal = patch.blocks[blockCode].params[paramKey];
+      const clamped = Number.isNaN(parsed) ? currentVal : Math.max(0, Math.min(100, parsed));
+
       patch.blocks[blockCode].params[paramKey] = clamped;
       saveState();
       sendControlChange(20, clamped);
 
       const slider = document.getElementById(`slider_${paramKey}`);
-      const readout = document.getElementById(`readout_${paramKey}`);
+      const inputBox = document.getElementById(`input_${paramKey}`);
       if (slider) slider.value = clamped;
-      if (readout) readout.textContent = `${clamped}%`;
-      updateStatus(`${blockCode} • ${paramKey}: ${clamped}% (Saved)`);
+      if (inputBox && syncInput) inputBox.value = clamped;
+      updateStatus(`${blockCode} ${paramKey}: ${clamped}%`);
     }
 
     function renderEditor() {
@@ -235,7 +522,7 @@
       const block = patch.blocks[code];
 
       blockTitle.textContent = `${code} • ${block.name}`;
-      blockToggleBtn.textContent = block.enabled ? "ON" : "OFF";
+      blockToggleBtn.textContent = block.enabled ? "ACTIVE" : "BYPASS";
       blockToggleBtn.className = "toggle-btn " + (block.enabled ? "toggle-on" : "toggle-off");
 
       paramsContainer.innerHTML = "";
@@ -256,20 +543,31 @@
         const minusBtn = document.createElement("button");
         minusBtn.className = "step-btn";
         minusBtn.textContent = "−";
-        minusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] - 1);
+        minusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] - 1, true);
 
-        const readout = document.createElement("div");
-        readout.className = "digital-readout";
-        readout.id = `readout_${key}`;
-        readout.textContent = `${val}%`;
+        const inputBox = document.createElement("input");
+        inputBox.type = "number";
+        inputBox.min = 0;
+        inputBox.max = 100;
+        inputBox.className = "digital-input";
+        inputBox.id = `input_${key}`;
+        inputBox.value = val;
+        inputBox.onfocus = (e) => e.target.select();
+        inputBox.onchange = (e) => updateParamValue(code, key, e.target.value, true);
+        inputBox.onkeydown = (e) => {
+          if (e.key === "Enter") {
+            updateParamValue(code, key, e.target.value, true);
+            e.target.blur();
+          }
+        };
 
         const plusBtn = document.createElement("button");
         plusBtn.className = "step-btn";
         plusBtn.textContent = "+";
-        plusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] + 1);
+        plusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] + 1, true);
 
         stepper.appendChild(minusBtn);
-        stepper.appendChild(readout);
+        stepper.appendChild(inputBox);
         stepper.appendChild(plusBtn);
 
         top.appendChild(label);
@@ -281,7 +579,7 @@
         slider.min = 0;
         slider.max = 100;
         slider.value = val;
-        slider.oninput = (e) => updateParamValue(code, key, e.target.value);
+        slider.oninput = (e) => updateParamValue(code, key, e.target.value, true);
 
         group.appendChild(top);
         group.appendChild(slider);
@@ -296,7 +594,7 @@
       saveState();
       renderChain();
       renderEditor();
-      updateStatus(`${block.name} turned ${block.enabled ? "ON" : "OFF"} (Saved)`);
+      updateStatus(`${appState.selectedBlock} ${block.enabled ? "ACTIVE" : "BYPASS"}`);
     };
 
     document.getElementById("moveLeftBtn").onclick = () => {
@@ -306,7 +604,7 @@
         [patch.chain[idx - 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx - 1]];
         saveState();
         renderChain();
-        updateStatus(`Moved ${appState.selectedBlock} left (Saved)`);
+        updateStatus(`MOVED ${appState.selectedBlock} LEFT`);
       }
     };
 
@@ -314,59 +612,4 @@
       const patch = getCurrentPatch();
       const idx = patch.chain.indexOf(appState.selectedBlock);
       if (idx < patch.chain.length - 1) {
-        [patch.chain[idx + 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx + 1]];
-        saveState();
-        renderChain();
-        updateStatus(`Moved ${appState.selectedBlock} right (Saved)`);
-      }
-    };
-
-    document.getElementById("prevPatch").onclick = () => {
-      appState.currentPatchIndex = (appState.currentPatchIndex - 1 + TOTAL_PATCHES) % TOTAL_PATCHES;
-      saveState();
-      sendProgramChange(appState.currentPatchIndex);
-      renderPatchHeader();
-      renderChain();
-      renderEditor();
-      updateStatus(`Loaded Patch ${formatPatchName(appState.currentPatchIndex)}`);
-    };
-
-    document.getElementById("nextPatch").onclick = () => {
-      appState.currentPatchIndex = (appState.currentPatchIndex + 1) % TOTAL_PATCHES;
-      saveState();
-      sendProgramChange(appState.currentPatchIndex);
-      renderPatchHeader();
-      renderChain();
-      renderEditor();
-      updateStatus(`Loaded Patch ${formatPatchName(appState.currentPatchIndex)}`);
-    };
-
-    document.getElementById("resetPatchBtn").onclick = () => {
-      appState.patches[appState.currentPatchIndex] = createDefaultPatchData();
-      saveState();
-      renderChain();
-      renderEditor();
-      updateStatus(`Patch ${formatPatchName(appState.currentPatchIndex)} reset to default`);
-    };
-
-    document.getElementById("connectBtn").onclick = async () => {
-      if (navigator.requestMIDIAccess) {
-        try {
-          updateStatus("Requesting USB MIDI access...");
-          midiAccess = await navigator.requestMIDIAccess({ sysex: true });
-          midiAccess.onstatechange = () => refreshMidiPorts();
-          refreshMidiPorts();
-        } catch (err) {
-          updateStatus(`MIDI Error: ${err.message || "Permission denied"}`);
-        }
-      } else {
-        updateStatus("WebMIDI unsupported in this WebView");
-      }
-    };
-
-    renderPatchHeader();
-    renderChain();
-    renderEditor();
-  </script>
-</body>
-  </html>
+        [patch.chain[idx + 1], patch.chain[idx]]
