@@ -1,345 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>NUX MG-101 Controller</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #121214; color: #f4f4f6; display: flex; flex-direction: column; align-items: center; padding: 16px; gap: 14px; min-height: 100vh; }
-    h1 { font-size: 20px; display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-    
-    .btn-primary { background: #e63946; color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 16px; font-weight: 600; cursor: pointer; }
-    .btn-primary:active { opacity: 0.85; }
-    
-    .status-bar { width: 100%; max-width: 440px; background: #1c1c21; border-radius: 10px; padding: 11px; text-align: center; color: #38bdf8; font-size: 14px; font-weight: 500; border: 1px solid #2b2b33; }
-    
-    .card { width: 100%; max-width: 440px; background: #1c1c21; border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; border: 1px solid #27272f; }
-    .card-header { display: flex; justify-content: space-between; align-items: center; }
-    .card-title { font-size: 16px; font-weight: 700; color: #e4e4e7; }
-    
-    /* Patch Controls */
-    .patch-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .patch-digital { background: #09090b; border: 1px solid #27272a; border-radius: 10px; padding: 8px 18px; font-family: "Courier New", monospace; font-size: 24px; font-weight: 800; color: #38bdf8; letter-spacing: 1px; text-shadow: 0 0 8px rgba(56, 189, 248, 0.35); }
-    .btn-reset { background: #27272a; color: #a1a1aa; border: 1px solid #3f3f46; border-radius: 8px; padding: 6px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-    .btn-reset:active { background: #3f3f46; color: #fff; }
+let midiAccess = null;
+let activeMidiOutput = null;
+const MIDI_CHANNEL = 0; // Channel 1 (0-indexed = 0)
 
-    /* Signal Chain Horizontal Strip */
-    .chain-scroll { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 6px 2px; scrollbar-width: none; }
-    .chain-scroll::-webkit-scrollbar { display: none; }
-    .chain-node { min-width: 58px; padding: 10px 6px; border-radius: 10px; background: #26262e; border: 2px solid #3f3f46; text-align: center; cursor: pointer; transition: all 0.15s ease; user-select: none; }
-    .chain-node.active { background: #1f2937; border-color: #3b82f6; }
-    .chain-node.selected { box-shadow: 0 0 0 2px #facc15; border-color: #facc15; }
-    .node-code { font-size: 13px; font-weight: 800; letter-spacing: 0.5px; }
-    .node-dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px auto 0; background: #52525b; }
-    .chain-node.active .node-dot { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
-    .chain-arrow { color: #71717a; font-size: 12px; font-weight: bold; }
+function sendProgramChange(patchIndex) {
+  if (!activeMidiOutput) return;
+  const program = Math.max(0, Math.min(127, patchIndex));
+  activeMidiOutput.send([0xC0 | MIDI_CHANNEL, program]);
+  updateStatus(`MIDI PC Sent: ${program} (${formatPatchName(patchIndex)})`);
+}
 
-    /* Block Order Controls */
-    .order-controls { display: flex; justify-content: space-between; gap: 10px; }
-    .btn-small { flex: 1; background: #27272a; color: #e4e4e7; border: 1px solid #3f3f46; border-radius: 8px; padding: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .btn-small:active { background: #3f3f46; }
+function sendControlChange(ccNumber, value0to100) {
+  if (!activeMidiOutput) return;
+  const ccVal = Math.max(0, Math.min(127, Math.round((value0to100 / 100) * 127)));
+  activeMidiOutput.send([0xB0 | MIDI_CHANNEL, ccNumber, ccVal]);
+}
 
-    /* Parameter Editor & Digital Controls */
-    .block-header { display: flex; justify-content: space-between; align-items: center; }
-    .toggle-btn { padding: 6px 14px; border-radius: 20px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .toggle-on { background: #22c55e; color: #052e16; }
-    .toggle-off { background: #3f3f46; color: #d4d4d8; }
-    
-    .param-group { display: flex; flex-direction: column; gap: 8px; background: #16161a; padding: 10px 12px; border-radius: 10px; border: 1px solid #26262e; }
-    .param-top { display: flex; justify-content: space-between; align-items: center; }
-    .param-label { font-size: 14px; font-weight: 600; color: #d4d4d8; }
-    
-    .digital-stepper { display: flex; align-items: center; gap: 6px; }
-    .step-btn { width: 30px; height: 28px; background: #27272a; color: #f4f4f6; border: 1px solid #3f3f46; border-radius: 6px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; user-select: none; }
-    .step-btn:active { background: #3b82f6; border-color: #3b82f6; }
-    .digital-readout { min-width: 52px; background: #09090b; border: 1px solid #27272a; border-radius: 6px; padding: 4px 8px; font-family: "Courier New", monospace; font-size: 14px; font-weight: 700; color: #38bdf8; text-align: center; }
-    
-    input[type="range"] { width: 100%; accent-color: #3b82f6; height: 6px; border-radius: 4px; cursor: pointer; }
-  </style>
-</head>
-<body>
+function refreshMidiPorts() {
+  if (!midiAccess) return;
+  const outputs = Array.from(midiAccess.outputs.values());
+  if (outputs.length > 0) {
+    activeMidiOutput = outputs[0];
+    updateStatus(`OTG Connected: ${activeMidiOutput.name}`);
+  } else {
+    activeMidiOutput = null;
+    updateStatus("USB MIDI Not Detected • Check OTG Cable & MG-101");
+  }
+}
 
-  <h1>🎸 NUX MG-101 Controller</h1>
-  <button class="btn-primary" id="connectBtn">Connect via OTG</button>
-  <div class="status-bar" id="statusBar">Ready • Auto-Save Enabled</div>
-
-  <!-- Patch Select -->
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">Patch Select</div>
-      <button class="btn-reset" id="resetPatchBtn">Reset Patch</button>
-    </div>
-    <div class="patch-row">
-      <button class="btn-primary" id="prevPatch">◀ Prev</button>
-      <div class="patch-digital" id="patchDisplay">1A</div>
-      <button class="btn-primary" id="nextPatch">Next ▶</button>
-    </div>
-  </div>
-
-  <!-- Signal Chain -->
-  <div class="card">
-    <div class="card-title">Signal Chain (Tap to Edit)</div>
-    <div class="chain-scroll" id="chainContainer"></div>
-    <div class="order-controls">
-      <button class="btn-small" id="moveLeftBtn">◀ Move Left</button>
-      <button class="btn-small" id="moveRightBtn">Move Right ▶</button>
-    </div>
-  </div>
-
-  <!-- Active Block Parameters -->
-  <div class="card" id="editorCard">
-    <div class="block-header">
-      <span class="card-title" id="blockTitle">AMP • Amplifier</span>
-      <button class="toggle-btn toggle-on" id="blockToggleBtn">ON</button>
-    </div>
-    <div id="paramsContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
-  </div>
-
-  <script>
-    const STORAGE_KEY = "nux_mg101_digital_state_v1";
-    const BANK_LETTERS = ["A", "B", "C", "D"];
-    const TOTAL_PATCHES = 40; // 1A to 10D
-
-    function createDefaultPatchData() {
-      return {
-        chain: ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"],
-        blocks: {
-          NR:  { name: "Noise Gate", enabled: true,  params: { Threshold: 35, Decay: 40 } },
-          EFX: { name: "Overdrive / Comp", enabled: true,  params: { Drive: 55, Tone: 60, Level: 70 } },
-          AMP: { name: "Amplifier",  enabled: true,  params: { Gain: 75, Master: 70, Bass: 55, Middle: 50, Treble: 65 } },
-          IR:  { name: "Cabinet IR", enabled: true,  params: { Level: 80, LowCut: 20, HighCut: 75 } },
-          EQ:  { name: "6-Band EQ",  enabled: false, params: { "100Hz": 50, "220Hz": 50, "500Hz": 52, "1.2kHz": 55, "2.6kHz": 54, "6.4kHz": 50 } },
-          MOD: { name: "Modulation", enabled: false, params: { Rate: 40, Depth: 50, Mix: 45 } },
-          DLY: { name: "Delay",      enabled: true,  params: { Time: 45, Feedback: 35, Mix: 30 } },
-          RVB: { name: "Reverb",     enabled: true,  params: { Decay: 50, Tone: 60, Mix: 35 } }
-        }
-      };
-    }
-
-    function loadState() {
-      try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) return JSON.parse(saved);
-      } catch (e) {}
-      return { currentPatchIndex: 0, selectedBlock: "AMP", patches: {} };
-    }
-
-    let appState = loadState();
-
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-      } catch (e) {}
-    }
-
-    function getCurrentPatch() {
-      const idx = appState.currentPatchIndex;
-      if (!appState.patches[idx]) {
-        appState.patches[idx] = createDefaultPatchData();
-      }
-      return appState.patches[idx];
-    }
-
-    function formatPatchName(index) {
-      const bank = Math.floor(index / 4) + 1;
-      const letter = BANK_LETTERS[index % 4];
-      return `${bank}${letter}`;
-    }
-
-    const statusBar = document.getElementById("statusBar");
-    const patchDisplay = document.getElementById("patchDisplay");
-    const chainContainer = document.getElementById("chainContainer");
-    const blockTitle = document.getElementById("blockTitle");
-    const blockToggleBtn = document.getElementById("blockToggleBtn");
-    const paramsContainer = document.getElementById("paramsContainer");
-
-    function updateStatus(msg) {
-      statusBar.textContent = msg;
-    }
-
-    function renderPatchHeader() {
-      patchDisplay.textContent = formatPatchName(appState.currentPatchIndex);
-    }
-
-    function renderChain() {
-      const patch = getCurrentPatch();
-      chainContainer.innerHTML = "";
-      patch.chain.forEach((code, index) => {
-        const block = patch.blocks[code];
-        const node = document.createElement("div");
-        node.className = "chain-node" + (block.enabled ? " active" : "") + (appState.selectedBlock === code ? " selected" : "");
-        node.innerHTML = `<div class="node-code">${code}</div><div class="node-dot"></div>`;
-        node.onclick = () => {
-          appState.selectedBlock = code;
-          saveState();
-          renderChain();
-          renderEditor();
-        };
-        chainContainer.appendChild(node);
-
-        if (index < patch.chain.length - 1) {
-          const arrow = document.createElement("span");
-          arrow.className = "chain-arrow";
-          arrow.textContent = "→";
-          chainContainer.appendChild(arrow);
-        }
-      });
-    }
-
-    function updateParamValue(blockCode, paramKey, newVal) {
-      const clamped = Math.max(0, Math.min(100, Number(newVal)));
-      const patch = getCurrentPatch();
-      patch.blocks[blockCode].params[paramKey] = clamped;
-      saveState();
-
-      const slider = document.getElementById(`slider_${paramKey}`);
-      const readout = document.getElementById(`readout_${paramKey}`);
-      if (slider) slider.value = clamped;
-      if (readout) readout.textContent = `${clamped}%`;
-      updateStatus(`${blockCode} • ${paramKey}: ${clamped}% (Saved)`);
-    }
-
-    function renderEditor() {
-      const patch = getCurrentPatch();
-      const code = appState.selectedBlock;
-      const block = patch.blocks[code];
-
-      blockTitle.textContent = `${code} • ${block.name}`;
-      blockToggleBtn.textContent = block.enabled ? "ON" : "OFF";
-      blockToggleBtn.className = "toggle-btn " + (block.enabled ? "toggle-on" : "toggle-off");
-
-      paramsContainer.innerHTML = "";
-      Object.entries(block.params).forEach(([key, val]) => {
-        const group = document.createElement("div");
-        group.className = "param-group";
-
-        const top = document.createElement("div");
-        top.className = "param-top";
-
-        const label = document.createElement("span");
-        label.className = "param-label";
-        label.textContent = key;
-
-        const stepper = document.createElement("div");
-        stepper.className = "digital-stepper";
-
-        const minusBtn = document.createElement("button");
-        minusBtn.className = "step-btn";
-        minusBtn.textContent = "−";
-        minusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] - 1);
-
-        const readout = document.createElement("div");
-        readout.className = "digital-readout";
-        readout.id = `readout_${key}`;
-        readout.textContent = `${val}%`;
-
-        const plusBtn = document.createElement("button");
-        plusBtn.className = "step-btn";
-        plusBtn.textContent = "+";
-        plusBtn.onclick = () => updateParamValue(code, key, patch.blocks[code].params[key] + 1);
-
-        stepper.appendChild(minusBtn);
-        stepper.appendChild(readout);
-        stepper.appendChild(plusBtn);
-
-        top.appendChild(label);
-        top.appendChild(stepper);
-
-        const slider = document.createElement("input");
-        slider.type = "range";
-        slider.id = `slider_${key}`;
-        slider.min = 0;
-        slider.max = 100;
-        slider.value = val;
-        slider.oninput = (e) => updateParamValue(code, key, e.target.value);
-
-        group.appendChild(top);
-        group.appendChild(slider);
-        paramsContainer.appendChild(group);
-      });
-    }
-
-    blockToggleBtn.onclick = () => {
-      const patch = getCurrentPatch();
-      const block = patch.blocks[appState.selectedBlock];
-      block.enabled = !block.enabled;
-      saveState();
-      renderChain();
-      renderEditor();
-      updateStatus(`${block.name} turned ${block.enabled ? "ON" : "OFF"} (Saved)`);
-    };
-
-    document.getElementById("moveLeftBtn").onclick = () => {
-      const patch = getCurrentPatch();
-      const idx = patch.chain.indexOf(appState.selectedBlock);
-      if (idx > 0) {
-        [patch.chain[idx - 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx - 1]];
-        saveState();
-        renderChain();
-        updateStatus(`Moved ${appState.selectedBlock} left (Saved)`);
-      }
-    };
-
-    document.getElementById("moveRightBtn").onclick = () => {
-      const patch = getCurrentPatch();
-      const idx = patch.chain.indexOf(appState.selectedBlock);
-      if (idx < patch.chain.length - 1) {
-        [patch.chain[idx + 1], patch.chain[idx]] = [patch.chain[idx], patch.chain[idx + 1]];
-        saveState();
-        renderChain();
-        updateStatus(`Moved ${appState.selectedBlock} right (Saved)`);
-      }
-    };
-
-    document.getElementById("prevPatch").onclick = () => {
-      appState.currentPatchIndex = (appState.currentPatchIndex - 1 + TOTAL_PATCHES) % TOTAL_PATCHES;
-      saveState();
-      renderPatchHeader();
-      renderChain();
-      renderEditor();
-      updateStatus(`Loaded Patch ${formatPatchName(appState.currentPatchIndex)}`);
-    };
-
-    document.getElementById("nextPatch").onclick = () => {
-      appState.currentPatchIndex = (appState.currentPatchIndex + 1) % TOTAL_PATCHES;
-      saveState();
-      renderPatchHeader();
-      renderChain();
-      renderEditor();
-      updateStatus(`Loaded Patch ${formatPatchName(appState.currentPatchIndex)}`);
-    };
-
-    document.getElementById("resetPatchBtn").onclick = () => {
-      appState.patches[appState.currentPatchIndex] = createDefaultPatchData();
-      saveState();
-      renderChain();
-      renderEditor();
-      updateStatus(`Patch ${formatPatchName(appState.currentPatchIndex)} reset to default`);
-    };
-
-    document.getElementById("connectBtn").onclick = async () => {
-      if (navigator.requestMIDIAccess) {
-        try {
-          const midi = await navigator.requestMIDIAccess({ sysex: true });
-          const outputs = Array.from(midi.outputs.values());
-          if (outputs.length > 0) {
-            updateStatus(`Connected: ${outputs[0].name}`);
-          } else {
-            updateStatus("OTG MIDI Ready • Connect NUX MG-101 cable");
-          }
-        } catch (err) {
-          updateStatus("MIDI Permission Denied or Unsupported");
-        }
-      } else {
-        updateStatus("WebMIDI check • Connect NUX MG-101 via OTG");
-      }
-    };
-
-    // Initial render
-    renderPatchHeader();
-    renderChain();
-    renderEditor();
-  </script>
-</body>
-</html>
+document.getElementById("connectBtn").onclick = async () => {
+  if (!navigator.requestMIDIAccess) {
+    updateStatus("WebMIDI unsupported in this WebView");
+    return;
+  }
+  try {
+    updateStatus("Requesting USB MIDI access...");
+    midiAccess = await navigator.requestMIDIAccess({ sysex: true });
+    midiAccess.onstatechange = () => refreshMidiPorts();
+    refreshMidiPorts();
+  } catch (err) {
+    updateStatus(`MIDI Error: ${err.message || "Permission denied"}`);
+  }
+};
