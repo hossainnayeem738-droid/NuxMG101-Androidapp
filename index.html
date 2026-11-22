@@ -26,6 +26,184 @@ function refreshMidiPorts() {
     updateStatus("USB MIDI Not Detected • Check OTG Cable & MG-101");
   }
 }
+<!-- Signal Chain এবং Dynamic Controller UI -->
+<div class="card">
+  <h3>Signal Chain</h3>
+  <div id="signalChainBar" style="display:flex; gap:6px; overflow-x:auto; padding:8px 0;"></div>
+</div>
+
+<div class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h3 id="activeBlockTitle">AMP Controls</h3>
+    <label>
+      <input type="checkbox" id="blockToggle" checked /> Active
+    </label>
+  </div>
+  <div id="blockParamsContainer"></div>
+</div>
+
+<script>
+  // NUX MG-101 ১০টি Signal Chain ব্লক এবং তাদের কন্ট্রোলার ম্যাপিং
+  // দ্রষ্টব্য: আপনার আগের কোডে Amp Gain ও Reverb Level এর জন্য যে CC নম্বর কাজ করেছে,
+  // সেগুলো নিচে বসিয়ে দিন এবং বাকিগুলোর CC নম্বর কাস্টমাইজ করতে পারবেন।
+  const SIGNAL_CHAIN = [
+    {
+      id: "NG", name: "Noise Gate", toggleCC: 20, enabled: true,
+      params: [
+        { label: "Threshold", cc: 21, value: 40 },
+        { label: "Decay", cc: 22, value: 50 }
+      ]
+    },
+    {
+      id: "CMP", name: "Compressor", toggleCC: 23, enabled: false,
+      params: [
+        { label: "Sustain", cc: 24, value: 50 },
+        { label: "Level", cc: 25, value: 60 }
+      ]
+    },
+    {
+      id: "EFX", name: "Drive / Pre-EFX", toggleCC: 26, enabled: true,
+      params: [
+        { label: "Drive / Gain", cc: 27, value: 55 },
+        { label: "Tone", cc: 28, value: 50 },
+        { label: "Level", cc: 29, value: 65 }
+      ]
+    },
+    {
+      id: "AMP", name: "Amplifier", toggleCC: 30, enabled: true,
+      params: [
+        { label: "Amp Gain", cc: 7, value: 86 }, // আপনার আগের Amp Gain এর CC নম্বরটি এখানে দিন
+        { label: "Master", cc: 31, value: 70 },
+        { label: "Bass", cc: 32, value: 50 },
+        { label: "Mid", cc: 33, value: 50 },
+        { label: "Treble", cc: 34, value: 55 },
+        { label: "Presence", cc: 35, value: 50 }
+      ]
+    },
+    {
+      id: "IR", name: "Cabinet / IR", toggleCC: 36, enabled: true,
+      params: [
+        { label: "IR Level", cc: 37, value: 75 },
+        { label: "Low Cut", cc: 38, value: 20 },
+        { label: "High Cut", cc: 39, value: 80 }
+      ]
+    },
+    {
+      id: "EQ", name: "Equalizer", toggleCC: 40, enabled: false,
+      params: [
+        { label: "100 Hz", cc: 41, value: 50 },
+        { label: "220 Hz", cc: 42, value: 50 },
+        { label: "500 Hz", cc: 43, value: 50 },
+        { label: "1.2 kHz", cc: 44, value: 50 },
+        { label: "2.6 kHz", cc: 45, value: 50 },
+        { label: "6.4 kHz", cc: 46, value: 50 }
+      ]
+    },
+    {
+      id: "MOD", name: "Modulation", toggleCC: 47, enabled: false,
+      params: [
+        { label: "Rate / Speed", cc: 48, value: 45 },
+        { label: "Depth", cc: 49, value: 50 },
+        { label: "Mix", cc: 50, value: 50 }
+      ]
+    },
+    {
+      id: "DLY", name: "Delay", toggleCC: 51, enabled: false,
+      params: [
+        { label: "Time", cc: 52, value: 40 },
+        { label: "Feedback", cc: 53, value: 35 },
+        { label: "Delay Mix", cc: 54, value: 30 }
+      ]
+    },
+    {
+      id: "RVB", name: "Reverb", toggleCC: 55, enabled: true,
+      params: [
+        { label: "Reverb Level", cc: 91, value: 30 }, // আপনার আগের Reverb Level এর CC নম্বরটি এখানে দিন
+        { label: "Decay", cc: 56, value: 45 },
+        { label: "Tone", cc: 57, value: 50 }
+      ]
+    },
+    {
+      id: "PL", name: "Pedal / Level", toggleCC: 58, enabled: true,
+      params: [
+        { label: "Expression Pedal", cc: 11, value: 100 },
+        { label: "Patch Level", cc: 59, value: 80 }
+      ]
+    }
+  ];
+
+  let selectedBlockIndex = 3; // ডিফল্টভাবে AMP সিলেক্ট থাকবে
+
+  function renderSignalChain() {
+    const bar = document.getElementById("signalChainBar");
+    bar.innerHTML = "";
+
+    SIGNAL_CHAIN.forEach((block, index) => {
+      const btn = document.createElement("button");
+      btn.textContent = block.id;
+      btn.style.padding = "8px 12px";
+      btn.style.borderRadius = "8px";
+      btn.style.border = index === selectedBlockIndex ? "2px solid #2196F3" : "1px solid #444";
+      btn.style.background = block.enabled ? "#e53935" : "#222";
+      btn.style.color = "#fff";
+      btn.style.fontWeight = "bold";
+
+      btn.onclick = () => {
+        selectedBlockIndex = index;
+        renderSignalChain();
+        renderBlockControls();
+      };
+      bar.appendChild(btn);
+    });
+  }
+
+  function renderBlockControls() {
+    const block = SIGNAL_CHAIN[selectedBlockIndex];
+    document.getElementById("activeBlockTitle").textContent = `${block.id} (${block.name})`;
+
+    const toggle = document.getElementById("blockToggle");
+    toggle.checked = block.enabled;
+    toggle.onchange = () => {
+      block.enabled = toggle.checked;
+      // On হলে 100 (CC 127), Off হলে 0 (CC 0) পাঠানো হচ্ছে
+      sendControlChange(block.toggleCC, block.enabled ? 100 : 0);
+      updateStatus(`${block.id} ${block.enabled ? "ON" : "OFF"} (CC ${block.toggleCC})`);
+      renderSignalChain();
+    };
+
+    const container = document.getElementById("blockParamsContainer");
+    container.innerHTML = "";
+
+    block.params.forEach((param) => {
+      const wrapper = document.createElement("div");
+      wrapper.style.margin = "12px 0";
+
+      const label = document.createElement("div");
+      label.textContent = `${param.label}: ${param.value}%`;
+
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = 0;
+      slider.max = 100;
+      slider.value = param.value;
+      slider.style.width = "100%";
+
+      slider.oninput = () => {
+        param.value = Number(slider.value);
+        label.textContent = `${param.label}: ${param.value}%`;
+        sendControlChange(param.cc, param.value);
+      };
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(slider);
+      container.appendChild(wrapper);
+    });
+  }
+
+  // পেজ লোড হলে Signal Chain রেন্ডার করুন
+  renderSignalChain();
+  renderBlockControls();
+</script>
 
 document.getElementById("connectBtn").onclick = async () => {
   if (!navigator.requestMIDIAccess) {
