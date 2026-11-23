@@ -13,7 +13,7 @@
       --text: #eef2f6;
       --muted: #9aa7b6;
       --accent: #1e88e5;
-      --green-bright: #4caf50;
+      --green: #4caf50;
       --amber: #ffb300;
       --red: #d32f2f;
     }
@@ -21,17 +21,6 @@
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
-    }
-
-    button,
-    .chain-btn,
-    .eb-tile,
-    .mini-btn,
-    .step-btn,
-    .toggle-btn {
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
     }
 
     body {
@@ -42,7 +31,7 @@
       color: var(--text);
     }
 
-    .app-wrap {
+    .app {
       max-width: 760px;
       margin: 0 auto;
       display: flex;
@@ -50,10 +39,14 @@
       gap: 12px;
     }
 
-    .topbar {
+    .topbar, .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
+      padding: 14px;
+    }
+
+    .topbar {
       padding: 12px 14px;
       display: flex;
       justify-content: space-between;
@@ -61,13 +54,12 @@
       gap: 10px;
     }
 
-    .brand-title {
+    .title {
       font-size: 16px;
       font-weight: 800;
-      letter-spacing: 0.4px;
     }
 
-    .brand-sub {
+    .sub {
       font-size: 11px;
       color: var(--muted);
       margin-top: 2px;
@@ -84,23 +76,19 @@
       cursor: pointer;
     }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary {
+    .btn-blue {
       background: var(--accent);
       border-color: var(--accent);
       color: #fff;
     }
 
-    .btn-danger {
+    .btn-red {
       background: var(--red);
       border-color: var(--red);
       color: #fff;
     }
 
-    .status-strip {
+    .status {
       background: #102030;
       border: 1px solid #1f4668;
       border-radius: 12px;
@@ -108,12 +96,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 8px;
       font-size: 12px;
       font-weight: 700;
-      gap: 8px;
     }
 
-    .midi-pill {
+    .pill {
       padding: 3px 8px;
       border-radius: 999px;
       background: #24292e;
@@ -122,42 +110,35 @@
       white-space: nowrap;
     }
 
-    .midi-pill.connected {
+    .pill.ok {
       background: #1b3b22;
       color: #81c784;
     }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-    }
-
-    .card-header {
+    .card-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
       gap: 8px;
+      margin-bottom: 10px;
     }
 
-    .card-title {
-      font-size: 13px;
+    .card-label {
+      font-size: 12px;
       font-weight: 800;
-      letter-spacing: 0.5px;
       color: var(--muted);
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .patch-nav-row {
+    .patch-row {
       display: grid;
       grid-template-columns: 1fr 1.6fr 1fr;
       gap: 8px;
       margin-bottom: 10px;
     }
 
-    .patch-display {
+    .patch-box {
       background: var(--card-2);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -171,13 +152,13 @@
       color: #64b5f6;
     }
 
-    .patch-name-sub {
+    .patch-name {
       font-size: 11px;
       color: var(--muted);
       margin-top: 2px;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
     .name-row {
@@ -211,7 +192,7 @@
       gap: 6px;
     }
 
-    .mini-btn {
+    .mini {
       padding: 8px 4px;
       border-radius: 9px;
       border: 1px solid var(--border);
@@ -222,7 +203,7 @@
       cursor: pointer;
     }
 
-    .mini-btn.active {
+    .mini.active {
       background: var(--accent);
       border-color: #64b5f6;
       color: #fff;
@@ -235,7 +216,7 @@
       margin-bottom: 10px;
     }
 
-    .chain-btn {
+    .chain-item {
       background: #171c22;
       border: 1px solid #2a323c;
       border-radius: 12px;
@@ -248,11 +229,11 @@
       gap: 4px;
     }
 
-    .chain-btn.is-on {
-      border-color: var(--green-bright);
+    .chain-item.on {
+      border-color: var(--green);
     }
 
-    .chain-btn.is-selected {
+    .chain-item.sel {
       outline: 2px solid var(--amber);
       border-color: var(--amber);
     }
@@ -271,7 +252,7 @@
       max-width: 100%;
     }
 
-    .chain-dot {
+    .dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
@@ -279,11 +260,11 @@
       margin-top: 2px;
     }
 
-    .chain-btn.is-on .chain-dot {
-      background: var(--green-bright);
+    .chain-item.on .dot {
+      background: var(--green);
     }
 
-    .chain-move-row {
+    .move-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 8px;
@@ -291,7 +272,6 @@
 
     .model-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
       gap: 10px;
       background: var(--card-2);
@@ -299,12 +279,6 @@
       border-radius: 10px;
       padding: 9px 10px;
       margin-bottom: 12px;
-    }
-
-    .model-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
     }
 
     .model-select {
@@ -315,10 +289,9 @@
       color: #fff;
       border: 1px solid #35414d;
       font-size: 13px;
-      font-weight: 600;
     }
 
-    .param-box {
+    .param-card {
       background: var(--card-2);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -334,24 +307,13 @@
       margin-bottom: 8px;
     }
 
-    .param-name {
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .param-cc {
-      font-size: 11px;
-      color: var(--muted);
-      margin-left: 4px;
-    }
-
-    .stepper-group {
+    .stepper {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .step-btn {
+    .step {
       width: 34px;
       height: 30px;
       border-radius: 8px;
@@ -363,7 +325,7 @@
       cursor: pointer;
     }
 
-    .val-badge {
+    .badge {
       min-width: 44px;
       text-align: center;
       padding: 4px 8px;
@@ -380,7 +342,7 @@
       cursor: pointer;
     }
 
-    .toggle-btn {
+    .power-btn {
       padding: 6px 12px;
       border-radius: 8px;
       border: none;
@@ -389,120 +351,79 @@
       cursor: pointer;
     }
 
-    .toggle-btn.on {
-      background: var(--green-bright);
-      color: #09130a;
+    .power-btn.on {
+      background: var(--green);
+      color: #081209;
     }
 
-    .toggle-btn.off {
+    .power-btn.off {
       background: #2c323a;
       color: #cfd8dc;
     }
 
     .eb-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
 
-    @media (max-width: 520px) {
-      .eb-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .eb-tile {
+    .eb-btn {
       background: #181a19;
       border: 1px solid #2b2f2d;
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 10px 6px;
+      color: #d6dbd8;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      color: #d6dbd8;
+      gap: 4px;
     }
 
-    .eb-tile.is-on {
-      border-color: var(--green-bright);
+    .eb-btn.on {
+      border-color: var(--green);
       background: #1c241e;
     }
 
-    .eb-tile.is-selected {
+    .eb-btn.sel {
       outline: 2px solid var(--amber);
       border-color: var(--amber);
-    }
-
-    .eb-tile.is-off {
-      opacity: 0.65;
-    }
-
-    .eb-label {
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
-    }
-
-    .eb-submodel {
-      font-size: 10px;
-      color: #9fb0c2;
-      max-width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .eb-badge {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      background: #252b31;
-      border: 1px solid #3c454f;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 900;
-      color: #e3ecf5;
     }
   </style>
 </head>
 <body>
-  <div class="app-wrap">
+  <div class="app">
     <div class="topbar">
       <div>
-        <div class="brand-title">NUX MG-101 QUICKTONE STUDIO</div>
-        <div class="brand-sub">OTG / Web MIDI Effect Controller</div>
+        <div class="title">NUX MG-101 QUICKTONE STUDIO</div>
+        <div class="sub">OTG / Web MIDI Effect Controller</div>
       </div>
-      <button id="connectBtn" type="button" class="btn btn-danger">Connect via OTG</button>
+      <button id="connectBtn" type="button" class="btn btn-red">Connect via OTG</button>
     </div>
 
-    <div class="status-strip">
+    <div class="status">
       <span id="statusText">SELECTED: IR (Cabinet IR)</span>
-      <span id="midiStatus" class="midi-pill">MIDI: OFF</span>
+      <span id="midiPill" class="pill">MIDI: OFF</span>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Patch Bank & Slot (1A-10D)</span>
-        <button id="resetPatchBtn" type="button" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
+      <div class="card-head">
+        <span class="card-label">Patch Bank & Slot (1A-10D)</span>
+        <button id="resetBtn" type="button" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
       </div>
 
-      <div class="patch-nav-row">
-        <button id="prevPatchBtn" type="button" class="btn">◀ Prev</button>
-        <div class="patch-display">
-          <div id="patchCodeDisplay" class="patch-code">2A</div>
-          <div id="patchNameDisplay" class="patch-name-sub">Patch 2A</div>
+      <div class="patch-row">
+        <button id="prevBtn" type="button" class="btn">◀ Prev</button>
+        <div class="patch-box">
+          <div id="patchCode" class="patch-code">2A</div>
+          <div id="patchName" class="patch-name">Patch 2A</div>
         </div>
-        <button id="nextPatchBtn" type="button" class="btn">Next ▶</button>
+        <button id="nextBtn" type="button" class="btn">Next ▶</button>
       </div>
 
       <div class="name-row">
-        <input id="patchNameInput" class="name-input" type="text" maxlength="16" placeholder="Patch Name" autocomplete="off" />
-        <button id="setNameBtn" type="button" class="btn btn-primary">Set Name</button>
+        <input id="nameInput" class="name-input" type="text" maxlength="16" placeholder="Patch Name" autocomplete="off" />
+        <button id="setNameBtn" type="button" class="btn btn-blue">Set Name</button>
       </div>
 
       <div id="bankGrid" class="bank-grid"></div>
@@ -510,246 +431,302 @@
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Signal Chain (Tap Block to Edit)</span>
+      <div class="card-head">
+        <span class="card-label">Signal Chain (Tap Block to Edit)</span>
       </div>
-
       <div id="chainGrid" class="chain-grid"></div>
-
-      <div class="chain-move-row">
-        <button id="moveLeftBtn" type="button" class="btn">◀ Move Left</button>
-        <button id="moveRightBtn" type="button" class="btn">Move Right ▶</button>
+      <div class="move-row">
+        <button id="leftBtn" type="button" class="btn">◀ Move Left</button>
+        <button id="rightBtn" type="button" class="btn">Move Right ▶</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <span id="activeBlockTitle" class="card-title">IR - CABINET IR</span>
-        <button id="blockPowerBtn" type="button" class="toggle-btn on">ACTIVE</button>
+      <div class="card-head">
+        <span id="blockTitle" class="card-label">IR - CABINET IR</span>
+        <button id="powerBtn" type="button" class="power-btn on">ACTIVE</button>
       </div>
 
-      <div id="selectedModelRow" class="model-row">
-        <span class="model-label">Effect Model:</span>
+      <div class="model-row">
+        <span class="sub" style="margin:0;font-weight:700;">Effect Model:</span>
         <select id="modelSelect" class="model-select"></select>
       </div>
 
-      <div id="paramsContainer"></div>
+      <div id="paramsWrap"></div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <span class="card-title">Effect blocks</span>
+      <div class="card-head">
+        <span class="card-label">Effect Blocks</span>
       </div>
-      <div id="effectBlocksGrid" class="eb-grid"></div>
+      <div id="ebGrid" class="eb-grid"></div>
     </div>
   </div>
 
   <script>
-    window.addEventListener("error", function (ev) {
-      var st = document.getElementById("statusText");
-      if (st) {
-        st.textContent = "ERR: " + (ev.message || "Script error") + " @L" + (ev.lineno || "?");
-      }
+    window.addEventListener("error", function (e) {
+      var el = document.getElementById("statusText");
+      if (el) el.textContent = "ERR: " + (e.message || "Error") + " @L" + (e.lineno || "?");
     });
 
-    (function () {
-      var STORAGE_KEY = "nux_mg101_studio_state_v6";
+    var STORAGE_KEY = "nux_mg101_simple_v1";
+    var BANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    var SLOTS = ["A", "B", "C", "D"];
+    var CHAIN_ORDER = ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"];
+    var midiOut = null;
 
-      var BLOCK_META = {
-        NR: { full: "Noise Gate", cc: 21, chainCc: 101, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
-        EFX: { full: "Drive / EFX", cc: 22, chainCc: 102, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
-        AMP: { full: "Amplifier", cc: 23, chainCc: 103, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
-        IR: { full: "Cabinet IR", cc: 24, chainCc: 104, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
-        EQ: { full: "Equalizer", cc: 25, chainCc: 105, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
-        MOD: { full: "Modulation", cc: 26, chainCc: 106, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
-        DLY: { full: "Delay", cc: 27, chainCc: 107, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
-        RVB: { full: "Reverb", cc: 28, chainCc: 108, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
-      };
+    var META = {
+      NR:  { full: "Noise Gate", cc: 21, p: [{ n: "Threshold", cc: 31, d: 45 }, { n: "Decay", cc: 32, d: 50 }] },
+      EFX: { full: "Drive / EFX", cc: 22, p: [{ n: "Drive", cc: 35, d: 65 }, { n: "Tone", cc: 36, d: 55 }, { n: "Level", cc: 37, d: 70 }] },
+      AMP: { full: "Amplifier", cc: 23, p: [{ n: "Gain", cc: 45, d: 75 }, { n: "Master", cc: 46, d: 70 }, { n: "Bass", cc: 47, d: 55 }, { n: "Mid", cc: 48, d: 60 }, { n: "Treble", cc: 49, d: 65 }] },
+      IR:  { full: "Cabinet IR", cc: 24, p: [{ n: "Level", cc: 50, d: 80 }, { n: "LowCut", cc: 51, d: 20 }, { n: "HighCut", cc: 52, d: 75 }] },
+      EQ:  { full: "Equalizer", cc: 25, p: [{ n: "120Hz", cc: 55, d: 50 }, { n: "500Hz", cc: 56, d: 52 }, { n: "1.5kHz", cc: 57, d: 54 }, { n: "4kHz", cc: 58, d: 56 }] },
+      MOD: { full: "Modulation", cc: 26, p: [{ n: "Rate", cc: 60, d: 48 }, { n: "Depth", cc: 61, d: 55 }, { n: "Mix", cc: 62, d: 40 }] },
+      DLY: { full: "Delay", cc: 27, p: [{ n: "Time", cc: 65, d: 52 }, { n: "Feedback", cc: 66, d: 45 }, { n: "Mix", cc: 67, d: 38 }] },
+      RVB: { full: "Reverb", cc: 28, p: [{ n: "Decay", cc: 70, d: 55 }, { n: "PreDelay", cc: 71, d: 25 }, { n: "Mix", cc: 72, d: 35 }] }
+    };
 
-      var MODEL_OPTIONS = {
-        NR: ["Soft Gate", "Hard Gate"],
-        EFX: ["Tube OD", "Blues Drive", "Distortion", "Fuzz"],
-        AMP: ["Clean Twin", "Tweed Deluxe", "Brit 800", "Modern HighGain"],
-        IR: ["1x12 Tweed", "2x12 Blues", "4x12 Vintage", "4x12 Modern"],
-        EQ: ["6-Band Guitar", "Studio EQ"],
-        MOD: ["Chorus", "Flanger", "Phaser", "Tremolo"],
-        DLY: ["Digital Delay", "Analog Delay", "Tape Echo"],
-        RVB: ["Room Reverb", "Hall Reverb", "Spring Reverb", "Plate Reverb"]
-      };
+    var MODELS = {
+      NR:  ["Soft Gate", "Hard Gate"],
+      EFX: ["Tube OD", "Blues Drive", "Distortion", "Fuzz"],
+      AMP: ["Clean Twin", "Tweed Deluxe", "Brit 800", "Modern HighGain"],
+      IR:  ["1x12 Tweed", "2x12 Blues", "4x12 Vintage", "4x12 Modern"],
+      EQ:  ["6-Band Guitar", "Studio EQ"],
+      MOD: ["Chorus", "Flanger", "Phaser", "Tremolo"],
+      DLY: ["Digital Delay", "Analog Delay", "Tape Echo"],
+      RVB: ["Room Reverb", "Hall Reverb", "Spring Reverb", "Plate Reverb"]
+    };
 
-      var BANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var SLOTS = ["A", "B", "C", "D"];
-      var DEFAULT_CHAIN = ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"];
-      var midiOutput = null;
+    function createPatch(code) {
+      var blocks = {};
+      for (var i = 0; i < CHAIN_ORDER.length; i++) {
+        var id = CHAIN_ORDER[i];
+        var params = {};
+        for (var j = 0; j < META[id].p.length; j++) {
+          params[META[id].p[j].cc] = META[id].p[j].d;
+        }
+        blocks[id] = {
+          on: id !== "EQ" && id !== "MOD",
+          model: MODELS[id][0],
+          params: params
+        };
+      }
+      return { name: "Patch " + code, chain: CHAIN_ORDER.slice(), blocks: blocks };
+    }
 
-      function makePatch(code) {
-        var blocks = {};
-        for (var i = 0; i < DEFAULT_CHAIN.length; i++) {
-          var id = DEFAULT_CHAIN[i];
-          var meta = BLOCK_META[id];
-          var params = {};
-          for (var j = 0; j < meta.params.length; j++) {
-            params[meta.params[j].cc] = meta.params[j].def;
+    function createDefaultState() {
+      var patches = {};
+      for (var b = 0; b < BANKS.length; b++) {
+        for (var s = 0; s < SLOTS.length; s++) {
+          var c = "" + BANKS[b] + SLOTS[s];
+          patches[c] = createPatch(c);
+        }
+      }
+      return { bank: 2, slot: "A", sel: "IR", patches: patches };
+    }
+
+    function loadState() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          var obj = JSON.parse(raw);
+          if (obj && obj.patches && obj.patches["2A"] && Array.isArray(obj.patches["2A"].chain)) {
+            return obj;
           }
-          var isDefaultOn = (id === "NR" || id === "EFX" || id === "AMP" || id === "IR" || id === "DLY" || id === "RVB");
-          blocks[id] = {
-            on: isDefaultOn,
-            model: (MODEL_OPTIONS[id] && MODEL_OPTIONS[id][0]) || id,
-            params: params
+        }
+      } catch (e) {}
+      return createDefaultState();
+    }
+
+    var state = loadState();
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function patchCode() {
+      return "" + state.bank + state.slot;
+    }
+
+    function currentPatch() {
+      var c = patchCode();
+      if (!state.patches[c]) state.patches[c] = createPatch(c);
+      if (!META[state.sel]) state.sel = "IR";
+      return state.patches[c];
+    }
+
+    function sendCC(cc, val) {
+      if (!midiOut) return;
+      try { midiOut.send([0xb0, cc, Math.max(0, Math.min(127, Math.round(val)))]); } catch (e) {}
+    }
+
+    function sendPC(pc) {
+      if (!midiOut) return;
+      try { midiOut.send([0xc0, Math.max(0, Math.min(127, pc))]); } catch (e) {}
+    }
+
+    function connectMidi() {
+      var pill = document.getElementById("midiPill");
+      if (!navigator.requestMIDIAccess) {
+        if (pill) pill.textContent = "MIDI: UNSUPPORTED";
+        return;
+      }
+      navigator.requestMIDIAccess({ sysex: false }).then(function (acc) {
+        var outs = Array.from(acc.outputs.values());
+        if (outs.length > 0) {
+          midiOut = outs[0];
+          if (pill) {
+            pill.textContent = "MIDI: " + (midiOut.name || "CONNECTED");
+            pill.classList.add("ok");
+          }
+          var btn = document.getElementById("connectBtn");
+          if (btn) {
+            btn.textContent = "OTG Connected";
+            btn.className = "btn btn-blue";
+          }
+        } else if (pill) {
+          pill.textContent = "MIDI: NO DEVICE";
+        }
+      }).catch(function () {
+        if (pill) pill.textContent = "MIDI: BLOCKED";
+      });
+    }
+
+    function renderPatch(syncInput) {
+      var p = currentPatch();
+      var code = patchCode();
+      document.getElementById("patchCode").textContent = code;
+      document.getElementById("patchName").textContent = p.name;
+
+      var inp = document.getElementById("nameInput");
+      if (inp && (syncInput || document.activeElement !== inp)) {
+        inp.value = p.name;
+      }
+
+      var bGrid = document.getElementById("bankGrid");
+      bGrid.innerHTML = "";
+      for (var i = 0; i < BANKS.length; i++) {
+        (function (b) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "mini" + (state.bank === b ? " active" : "");
+          btn.textContent = "B" + b;
+          btn.onclick = function () {
+            state.bank = b;
+            sendPC((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
+            saveState();
+            renderAll(true);
           };
-        }
-        return {
-          code: code,
-          name: "Patch " + code,
-          chain: DEFAULT_CHAIN.slice(),
-          blocks: blocks
-        };
+          bGrid.appendChild(btn);
+        })(BANKS[i]);
       }
 
-      function createInitialState() {
-        var patches = {};
-        for (var bIdx = 0; bIdx < BANKS.length; bIdx++) {
-          for (var sIdx = 0; sIdx < SLOTS.length; sIdx++) {
-            var code = "" + BANKS[bIdx] + SLOTS[sIdx];
-            patches[code] = makePatch(code);
-          }
-        }
-        return {
-          bank: 2,
-          slot: "A",
-          sel: "IR",
-          patches: patches
-        };
+      var sGrid = document.getElementById("slotGrid");
+      sGrid.innerHTML = "";
+      for (var j = 0; j < SLOTS.length; j++) {
+        (function (s) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "mini" + (state.slot === s ? " active" : "");
+          btn.textContent = "" + state.bank + s;
+          btn.onclick = function () {
+            state.slot = s;
+            sendPC((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
+            saveState();
+            renderAll(true);
+          };
+          sGrid.appendChild(btn);
+        })(SLOTS[j]);
       }
+    }
 
-      function isValidState(obj) {
-        if (!obj || typeof obj !== "object") return false;
-        if (!obj.patches || typeof obj.patches !== "object") return false;
-        var sample = obj.patches["2A"];
-        if (!sample || !Array.isArray(sample.chain) || !sample.blocks || !sample.blocks.IR) return false;
-        return true;
-      }
+    function renderChain() {
+      var p = currentPatch();
+      var grid = document.getElementById("chainGrid");
+      grid.innerHTML = "";
 
-      function loadState() {
-        try {
-          var raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            var parsed = JSON.parse(raw);
-            if (isValidState(parsed)) return parsed;
-          }
-        } catch (e) {}
-        return createInitialState();
-      }
-
-      var state = loadState();
-
-      function save() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {}
-      }
-
-      function getPatchCode() {
-        return "" + state.bank + state.slot;
-      }
-
-      function curPatch() {
-        var code = getPatchCode();
-        if (!state.patches[code] || !state.patches[code].blocks) {
-          state.patches[code] = makePatch(code);
-        }
-        if (!Array.isArray(state.patches[code].chain) || state.patches[code].chain.length === 0) {
-          state.patches[code].chain = DEFAULT_CHAIN.slice();
-        }
-        if (!BLOCK_META[state.sel] || !state.patches[code].blocks[state.sel]) {
-          state.sel = state.patches[code].chain[0] || "IR";
-        }
-        return state.patches[code];
-      }
-
-      function sendCC(cc, val) {
-        if (!midiOutput) return;
-        try {
-          var clamped = Math.max(0, Math.min(127, Math.round(val)));
-          midiOutput.send([0xb0, cc, clamped]);
-        } catch (e) {}
-      }
-
-      function sendProgramChange(pc) {
-        if (!midiOutput) return;
-        try {
-          midiOutput.send([0xc0, Math.max(0, Math.min(127, pc))]);
-        } catch (e) {}
-      }
-
-      function syncChainToMIDI(patch) {
-        if (!patch || !Array.isArray(patch.chain)) return;
-        for (var i = 0; i < patch.chain.length; i++) {
-          var blkId = patch.chain[i];
-          var meta = BLOCK_META[blkId];
-          if (meta && typeof meta.chainCc === "number") {
-            sendCC(meta.chainCc, i);
-          }
-        }
-      }
-
-      function connectMIDI() {
-        var midiPill = document.getElementById("midiStatus");
-        if (!navigator.requestMIDIAccess) {
-          if (midiPill) midiPill.textContent = "MIDI: UNSUPPORTED";
-          return;
-        }
-        navigator.requestMIDIAccess({ sysex: false }).then(function (access) {
-          var outputs = Array.from(access.outputs.values());
-          if (outputs.length > 0) {
-            midiOutput = outputs[0];
-            if (midiPill) {
-              midiPill.textContent = "MIDI: " + (midiOutput.name || "CONNECTED");
-              midiPill.classList.add("connected");
+      for (var i = 0; i < p.chain.length; i++) {
+        (function (id) {
+          var blk = p.blocks[id];
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "chain-item" + (blk.on ? " on" : "") + (state.sel === id ? " sel" : "");
+          btn.innerHTML =
+            '<span class="chain-code">' + id + '</span>' +
+            '<span class="chain-sub">' + blk.model + '</span>' +
+            '<span class="dot"></span>';
+          btn.onclick = function () {
+            if (state.sel === id) {
+              blk.on = !blk.on;
+              sendCC(META[id].cc, blk.on ? 100 : 0);
+            } else {
+              state.sel = id;
             }
-            var btn = document.getElementById("connectBtn");
-            if (btn) {
-              btn.textContent = "OTG Connected";
-              btn.classList.remove("btn-danger");
-              btn.classList.add("btn-primary");
-            }
-          } else if (midiPill) {
-            midiPill.textContent = "MIDI: NO DEVICE";
-          }
-        }).catch(function () {
-          if (midiPill) midiPill.textContent = "MIDI: BLOCKED";
-        });
+            saveState();
+            renderAll(false);
+          };
+          grid.appendChild(btn);
+        })(p.chain[i]);
       }
+    }
 
-      function applyPatchName(forceSyncInput) {
-        var input = document.getElementById("patchNameInput");
-        if (!input) return;
-        var raw = String(input.value || "").trim();
-        var patch = curPatch();
-        if (raw.length > 0) {
-          patch.name = raw.slice(0, 16);
-          save();
-          renderPatchSection(forceSyncInput);
-        } else {
-          input.value = patch.name;
-        }
+    function renderEditor() {
+      var p = currentPatch();
+      var id = state.sel;
+      var m = META[id];
+      var blk = p.blocks[id];
+
+      document.getElementById("statusText").textContent = "SELECTED: " + id + " (" + m.full + ") - " + blk.model;
+      document.getElementById("blockTitle").textContent = id + " - " + m.full.toUpperCase();
+
+      var pBtn = document.getElementById("powerBtn");
+      pBtn.textContent = blk.on ? "ACTIVE" : "BYPASS";
+      pBtn.className = "power-btn " + (blk.on ? "on" : "off");
+      pBtn.onclick = function () {
+        blk.on = !blk.on;
+        sendCC(m.cc, blk.on ? 100 : 0);
+        saveState();
+        renderAll(false);
+      };
+
+      var sel = document.getElementById("modelSelect");
+      sel.innerHTML = "";
+      var list = MODELS[id];
+      for (var i = 0; i < list.length; i++) {
+        var opt = document.createElement("option");
+        opt.value = list[i];
+        opt.textContent = list[i];
+        if (blk.model === list[i]) opt.selected = true;
+        sel.appendChild(opt);
       }
+      sel.onchange = function () {
+        blk.model = sel.value;
+        sendCC(34, Math.round((list.indexOf(blk.model) / Math.max(1, list.length - 1)) * 100));
+        saveState();
+        renderChain();
+        renderEffectBlocks();
+        document.getElementById("statusText").textContent = "SELECTED: " + id + " (" + m.full + ") - " + blk.model;
+      };
 
-      function renderPatchSection(syncInput) {
-        var patch = curPatch();
-        var code = getPatchCode();
-        var codeEl = document.getElementById("patchCodeDisplay");
-        var nameEl = document.getElementById("patchNameDisplay");
-        var input = document.getElementById("patchNameInput");
+      var wrap = document.getElementById("paramsWrap");
+      wrap.innerHTML = "";
 
-        if (codeEl) codeEl.textContent = code;
-        if (nameEl) nameEl.textContent = patch.name;
-        if (input && (syncInput || document.activeElement !== input)) {
-          input.value = patch.name;
-        }
+      for (var k = 0; k < m.p.length; k++) {
+        (function (param) {
+          var val = typeof blk.params[param.cc] === "number" ? blk.params[param.cc] : param.d;
+          blk.params[param.cc] = val;
 
-        var bankGrid = document.getElementById("bankGrid");
-        if (bankGrid) {
-          bankGrid.innerHTML = "";
-          for (var i = 0; i < BANKS.length; i++) {
-          
+          var box = document.createElement("div");
+          box.className = "param-card";
+          box.innerHTML =
+            '<div class="param-top">' +
+              '<div><strong>' + param.n + '</strong> <span class="sub">CC' + param.cc + '</span></div>' +
+              '<div class="stepper">' +
+                '<button type="button" class="step minus">-</button>' +
+                '<span class="badge">' + val + '</span>' +
+                '<button type="button" class="step plus">+</button>' +
+              '</div>' +
+            '</div>' +
+            '<input type="range" min="0" max="100" value="' + val + '" />';
+
+          var badge = box.querySelector(".bad
