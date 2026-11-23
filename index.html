@@ -13,7 +13,6 @@
       --text: #eef2f6;
       --muted: #9aa7b6;
       --accent: #1e88e5;
-      --green: #2e7d32;
       --green-bright: #4caf50;
       --amber: #ffb300;
       --red: #d32f2f;
@@ -214,72 +213,59 @@
       color: #fff;
     }
 
-    .eb-grid {
+    .chain-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
       margin-bottom: 10px;
     }
 
-    @media (max-width: 520px) {
-      .eb-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .eb-tile {
-      background: #181a19;
-      border: 1px solid #2b2f2d;
-      border-radius: 14px;
+    .chain-btn {
+      background: #171c22;
+      border: 1px solid #2a323c;
+      border-radius: 12px;
       padding: 10px 6px;
+      color: #d6dde5;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
-      cursor: pointer;
-      color: #d6dbd8;
-      transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+      gap: 4px;
     }
 
-    .eb-tile:active {
-      transform: scale(0.97);
-    }
-
-    .eb-tile.is-on {
+    .chain-btn.is-on {
       border-color: var(--green-bright);
-      background: #1c241e;
     }
 
-    .eb-tile.is-selected {
+    .chain-btn.is-selected {
       outline: 2px solid var(--amber);
       border-color: var(--amber);
     }
 
-    .eb-tile.is-off {
-      opacity: 0.65;
-    }
-
-    .eb-label {
-      font-size: 12px;
+    .chain-code {
+      font-size: 14px;
       font-weight: 800;
-      letter-spacing: 0.4px;
-      text-transform: uppercase;
     }
 
-    .eb-submodel {
+    .chain-sub {
       font-size: 10px;
       color: #9fb0c2;
-      max-width: 100%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      max-width: 100%;
     }
 
-    .eb-icon {
-      width: 36px;
-      height: 36px;
-      image-rendering: pixelated;
+    .chain-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555e68;
+      margin-top: 2px;
+    }
+
+    .chain-btn.is-on .chain-dot {
+      background: var(--green-bright);
     }
 
     .chain-move-row {
@@ -397,6 +383,73 @@
       background: #2c323a;
       color: #cfd8dc;
     }
+
+    .eb-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 520px) {
+      .eb-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .eb-tile {
+      background: #181a19;
+      border: 1px solid #2b2f2d;
+      border-radius: 14px;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      color: #d6dbd8;
+      transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .eb-tile:active {
+      transform: scale(0.97);
+    }
+
+    .eb-tile.is-on {
+      border-color: var(--green-bright);
+      background: #1c241e;
+    }
+
+    .eb-tile.is-selected {
+      outline: 2px solid var(--amber);
+      border-color: var(--amber);
+    }
+
+    .eb-tile.is-off {
+      opacity: 0.65;
+    }
+
+    .eb-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .eb-submodel {
+      font-size: 10px;
+      color: #9fb0c2;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .eb-icon {
+      width: 36px;
+      height: 36px;
+      image-rendering: pixelated;
+    }
   </style>
 </head>
 <body>
@@ -423,8 +476,8 @@
       <div class="patch-nav-row">
         <button id="prevPatchBtn" class="btn">◀ Prev</button>
         <div class="patch-display">
-          <div id="patchCodeDisplay" class="patch-code">1B</div>
-          <div id="patchNameDisplay" class="patch-name-sub">Patch 1B</div>
+          <div id="patchCodeDisplay" class="patch-code">2A</div>
+          <div id="patchNameDisplay" class="patch-name-sub">Patch 2A</div>
         </div>
         <button id="nextPatchBtn" class="btn">Next ▶</button>
       </div>
@@ -440,10 +493,10 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Signal Chain / Effect Blocks (Tap Block to Edit)</span>
+        <span class="card-title">Signal Chain (Tap Block to Edit)</span>
       </div>
 
-      <div id="effectBlocksGrid" class="eb-grid"></div>
+      <div id="chainGrid" class="chain-grid"></div>
 
       <div class="chain-move-row">
         <button id="moveLeftBtn" class="btn">◀ Move Left</button>
@@ -453,7 +506,7 @@
 
     <div class="card">
       <div class="card-header">
-        <span id="activeBlockTitle" class="card-title">AMP • AMPLIFIER</span>
+        <span id="activeBlockTitle" class="card-title">IR • CABINET IR</span>
         <button id="blockPowerBtn" class="toggle-btn on">ACTIVE</button>
       </div>
 
@@ -464,17 +517,212 @@
 
       <div id="paramsContainer"></div>
     </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Effect blocks</span>
+      </div>
+      <div id="effectBlocksGrid" class="eb-grid"></div>
+    </div>
   </div>
 
   <script>
-    const STORAGE_KEY = "nux_mg101_studio_state_v1";
+    const STORAGE_KEY = "nux_mg101_studio_state_v2";
 
-    const BLOCK_CC = {
-      NR: 21,
-      CMP: 22,
-      EFX: 23,
-      AMP: 24,
-      IR: 25,
-      EQ: 26,
-      MOD: 27,
-      DLY: 28,
+    const BLOCK_META = {
+      NR: { full: "Noise Gate", cc: 21, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
+      EFX: { full: "Drive / EFX", cc: 22, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
+      AMP: { full: "Amplifier", cc: 23, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
+      IR: { full: "Cabinet IR", cc: 24, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
+      EQ: { full: "Equalizer", cc: 25, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
+      MOD: { full: "Modulation", cc: 26, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
+      DLY: { full: "Delay", cc: 27, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
+      RVB: { full: "Reverb", cc: 28, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
+    };
+
+    const MODEL_OPTIONS = {
+      NR: ["Soft Gate", "Hard Gate"],
+      EFX: ["Tube OD", "Blues Drive", "Distortion", "Fuzz"],
+      AMP: ["Clean Twin", "Tweed Deluxe", "Brit 800", "Modern HighGain"],
+      IR: ["1x12 Tweed", "2x12 Blues", "4x12 Vintage", "4x12 Modern"],
+      EQ: ["6-Band Guitar", "Studio EQ"],
+      MOD: ["Chorus", "Flanger", "Phaser", "Tremolo"],
+      DLY: ["Digital Delay", "Analog Delay", "Tape Echo"],
+      RVB: ["Room Reverb", "Hall Reverb", "Spring Reverb", "Plate Reverb"]
+    };
+
+    const EFFECT_ICONS = {
+      WAH: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="4" y="2" width="8" height="12" fill="#4f5659" stroke="#222" stroke-width="1"/>
+          <rect x="5" y="4" width="6" height="1" fill="#2c3032"/>
+          <rect x="5" y="6" width="6" height="1" fill="#2c3032"/>
+          <rect x="5" y="8" width="6" height="1" fill="#2c3032"/>
+          <rect x="5" y="10" width="6" height="1" fill="#2c3032"/>
+        </svg>`,
+      PEDAL: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="4" y="2" width="8" height="12" rx="1" fill="#6b7378" stroke="#222" stroke-width="1"/>
+          <rect x="6" y="4" width="1" height="2" fill="#222"/>
+          <rect x="8" y="4" width="1" height="2" fill="#222"/>
+          <rect x="10" y="4" width="1" height="2" fill="#222"/>
+          <rect x="7" y="10" width="2" height="2" fill="#cfd6da"/>
+        </svg>`,
+      AMP: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
+          <rect x="3" y="5" width="10" height="2" fill="#222"/>
+          <circle cx="5" cy="6" r="0.6" fill="#e53935"/>
+          <circle cx="7" cy="6" r="0.6" fill="#cfd6da"/>
+          <circle cx="9" cy="6" r="0.6" fill="#cfd6da"/>
+          <circle cx="11" cy="6" r="0.6" fill="#cfd6da"/>
+          <rect x="3" y="8" width="10" height="3" fill="#2f3437"/>
+        </svg>`,
+      EQ: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="2" y="4" width="12" height="8" fill="#4f5659" stroke="#222" stroke-width="1"/>
+          <rect x="4" y="5" width="1" height="6" fill="#222"/>
+          <rect x="7" y="5" width="1" height="6" fill="#222"/>
+          <rect x="10" y="5" width="1" height="6" fill="#222"/>
+          <rect x="12" y="5" width="1" height="6" fill="#222"/>
+          <rect x="3.5" y="7" width="2" height="1" fill="#e0e6e9"/>
+          <rect x="6.5" y="9" width="2" height="1" fill="#e0e6e9"/>
+          <rect x="9.5" y="6" width="2" height="1" fill="#e0e6e9"/>
+          <rect x="11.5" y="8" width="2" height="1" fill="#e0e6e9"/>
+        </svg>`,
+      CAB: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="3" y="3" width="10" height="10" fill="#464c50" stroke="#202325" stroke-width="1"/>
+          <rect x="4" y="4" width="8" height="8" fill="#2c3032"/>
+          <circle cx="6" cy="6" r="1.5" fill="#5b6266"/>
+          <circle cx="10" cy="6" r="1.5" fill="#5b6266"/>
+          <circle cx="6" cy="10" r="1.5" fill="#5b6266"/>
+          <circle cx="10" cy="10" r="1.5" fill="#5b6266"/>
+        </svg>`,
+      SR: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="2" y="5" width="12" height="6" fill="#4f5659" stroke="#222" stroke-width="1"/>
+          <circle cx="5" cy="8" r="1.5" fill="#cfd6da"/>
+          <circle cx="11" cy="8" r="1.5" fill="#cfd6da"/>
+          <rect x="7" y="7.5" width="2" height="1" fill="#cfd6da"/>
+        </svg>`,
+      VOL: `
+        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
+          <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
+          <rect x="3" y="9" width="1.5" height="2" fill="#81c784"/>
+          <rect x="5" y="8" width="1.5" height="3" fill="#81c784"/>
+          <rect x="7" y="7" width="1.5" height="4" fill="#aed581"/>
+          <rect x="9" y="6" width="1.5" height="5" fill="#ffd54f"/>
+          <rect x="11" y="5" width="1.5" height="6" fill="#e57373"/>
+        </svg>`
+    };
+
+    const BANKS = Array.from({ length: 10 }, (_, i) => i + 1);
+    const SLOTS = ["A", "B", "C", "D"];
+    const DEFAULT_CHAIN = ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"];
+
+    function makePatch(code) {
+      const blocks = {};
+      DEFAULT_CHAIN.forEach((id) => {
+        const meta = BLOCK_META[id];
+        const params = {};
+        meta.params.forEach((p) => {
+          params[p.cc] = p.def;
+        });
+        blocks[id] = {
+          on: ["NR", "EFX", "AMP", "IR", "DLY", "RVB"].includes(id),
+          model: (MODEL_OPTIONS[id] && MODEL_OPTIONS[id][0]) || id,
+          params
+        };
+      });
+      return {
+        code,
+        name: `Patch ${code}`,
+        chain: [...DEFAULT_CHAIN],
+        blocks
+      };
+    }
+
+    function createInitialState() {
+      const patches = {};
+      BANKS.forEach((b) => {
+        SLOTS.forEach((s) => {
+          const code = `${b}${s}`;
+          patches[code] = makePatch(code);
+        });
+      });
+      return {
+        bank: 2,
+        slot: "A",
+        sel: "IR",
+        patches
+      };
+    }
+
+    let state = loadState();
+    let midiAccess = null;
+    let midiOutput = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.patches) return parsed;
+        }
+      } catch (_) {}
+      return createInitialState();
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (_) {}
+    }
+
+    function getPatchCode() {
+      return `${state.bank}${state.slot}`;
+    }
+
+    function curPatch() {
+      const code = getPatchCode();
+      if (!state.patches[code]) state.patches[code] = makePatch(code);
+      return state.patches[code];
+    }
+
+    function sendCC(cc, val) {
+      const clamped = Math.max(0, Math.min(127, Math.round(val)));
+      if (midiOutput) {
+        try {
+          midiOutput.send([0xb0, cc, clamped]);
+        } catch (_) {}
+      }
+    }
+
+    function sendProgramChange(pc) {
+      if (midiOutput) {
+        try {
+          midiOutput.send([0xc0, Math.max(0, Math.min(127, pc))]);
+        } catch (_) {}
+      }
+    }
+
+    async function connectMIDI() {
+      if (!navigator.requestMIDIAccess) {
+        document.getElementById("midiStatus").textContent = "MIDI: UNSUPPORTED";
+        return;
+      }
+      try {
+        midiAccess = await navigator.requestMIDIAccess({ sysex: false });
+        const outputs = Array.from(midiAccess.outputs.values());
+        if (outputs.length > 0) {
+          midiOutput = outputs[0];
+          const pill = document.getElementById("midiStatus");
+          pill.textContent = `MIDI: ${midiOutput.name || "CONNECTED"}`;
+          pill.classList.add("connected");
+          const btn = document.getElementById("connectBtn");
+          btn.textContent = "OTG Connected";
+          btn.classList.remove("btn-danger");
+          btn.classList.add("btn-primary");
+        } else {
+       
