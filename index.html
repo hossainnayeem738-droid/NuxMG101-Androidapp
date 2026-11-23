@@ -20,8 +20,18 @@
 
     * {
       box-sizing: border-box;
-      user-select: none;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    button,
+    .chain-btn,
+    .eb-tile,
+    .mini-btn,
+    .step-btn,
+    .toggle-btn {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
     }
 
     body {
@@ -74,6 +84,10 @@
       cursor: pointer;
     }
 
+    .btn:active {
+      transform: scale(0.98);
+    }
+
     .btn-primary {
       background: var(--accent);
       border-color: var(--accent);
@@ -105,6 +119,7 @@
       background: #24292e;
       color: #cfd8dc;
       font-size: 11px;
+      white-space: nowrap;
     }
 
     .midi-pill.connected {
@@ -160,6 +175,9 @@
       font-size: 11px;
       color: var(--muted);
       margin-top: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .name-row {
@@ -170,6 +188,7 @@
 
     .name-input {
       flex: 1;
+      min-width: 0;
       background: #0f1317;
       border: 1px solid var(--amber);
       border-radius: 10px;
@@ -458,7 +477,7 @@
         <div class="brand-title">NUX MG-101 QUICKTONE STUDIO</div>
         <div class="brand-sub">OTG / Web MIDI Effect Controller</div>
       </div>
-      <button id="connectBtn" class="btn btn-danger">Connect via OTG</button>
+      <button id="connectBtn" type="button" class="btn btn-danger">Connect via OTG</button>
     </div>
 
     <div class="status-strip">
@@ -469,21 +488,21 @@
     <div class="card">
       <div class="card-header">
         <span class="card-title">Patch Bank & Slot (1A-10D)</span>
-        <button id="resetPatchBtn" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
+        <button id="resetPatchBtn" type="button" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
       </div>
 
       <div class="patch-nav-row">
-        <button id="prevPatchBtn" class="btn">Prev</button>
+        <button id="prevPatchBtn" type="button" class="btn">◀ Prev</button>
         <div class="patch-display">
           <div id="patchCodeDisplay" class="patch-code">2A</div>
           <div id="patchNameDisplay" class="patch-name-sub">Patch 2A</div>
         </div>
-        <button id="nextPatchBtn" class="btn">Next</button>
+        <button id="nextPatchBtn" type="button" class="btn">Next ▶</button>
       </div>
 
       <div class="name-row">
-        <input id="patchNameInput" class="name-input" type="text" maxlength="16" placeholder="Patch Name" />
-        <button id="setNameBtn" class="btn btn-primary">Set Name</button>
+        <input id="patchNameInput" class="name-input" type="text" maxlength="16" placeholder="Patch Name" autocomplete="off" />
+        <button id="setNameBtn" type="button" class="btn btn-primary">Set Name</button>
       </div>
 
       <div id="bankGrid" class="bank-grid"></div>
@@ -498,15 +517,15 @@
       <div id="chainGrid" class="chain-grid"></div>
 
       <div class="chain-move-row">
-        <button id="moveLeftBtn" class="btn">Move Left</button>
-        <button id="moveRightBtn" class="btn">Move Right</button>
+        <button id="moveLeftBtn" type="button" class="btn">◀ Move Left</button>
+        <button id="moveRightBtn" type="button" class="btn">Move Right ▶</button>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
         <span id="activeBlockTitle" class="card-title">IR - CABINET IR</span>
-        <button id="blockPowerBtn" class="toggle-btn on">ACTIVE</button>
+        <button id="blockPowerBtn" type="button" class="toggle-btn on">ACTIVE</button>
       </div>
 
       <div id="selectedModelRow" class="model-row">
@@ -534,17 +553,17 @@
     });
 
     (function () {
-      var STORAGE_KEY = "nux_mg101_studio_state_v5";
+      var STORAGE_KEY = "nux_mg101_studio_state_v6";
 
       var BLOCK_META = {
-        NR: { full: "Noise Gate", cc: 21, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
-        EFX: { full: "Drive / EFX", cc: 22, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
-        AMP: { full: "Amplifier", cc: 23, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
-        IR: { full: "Cabinet IR", cc: 24, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
-        EQ: { full: "Equalizer", cc: 25, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
-        MOD: { full: "Modulation", cc: 26, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
-        DLY: { full: "Delay", cc: 27, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
-        RVB: { full: "Reverb", cc: 28, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
+        NR: { full: "Noise Gate", cc: 21, chainCc: 101, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
+        EFX: { full: "Drive / EFX", cc: 22, chainCc: 102, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
+        AMP: { full: "Amplifier", cc: 23, chainCc: 103, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
+        IR: { full: "Cabinet IR", cc: 24, chainCc: 104, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
+        EQ: { full: "Equalizer", cc: 25, chainCc: 105, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
+        MOD: { full: "Modulation", cc: 26, chainCc: 106, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
+        DLY: { full: "Delay", cc: 27, chainCc: 107, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
+        RVB: { full: "Reverb", cc: 28, chainCc: 108, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
       };
 
       var MODEL_OPTIONS = {
@@ -639,8 +658,11 @@
         if (!state.patches[code] || !state.patches[code].blocks) {
           state.patches[code] = makePatch(code);
         }
+        if (!Array.isArray(state.patches[code].chain) || state.patches[code].chain.length === 0) {
+          state.patches[code].chain = DEFAULT_CHAIN.slice();
+        }
         if (!BLOCK_META[state.sel] || !state.patches[code].blocks[state.sel]) {
-          state.sel = "IR";
+          state.sel = state.patches[code].chain[0] || "IR";
         }
         return state.patches[code];
       }
@@ -658,6 +680,17 @@
         try {
           midiOutput.send([0xc0, Math.max(0, Math.min(127, pc))]);
         } catch (e) {}
+      }
+
+      function syncChainToMIDI(patch) {
+        if (!patch || !Array.isArray(patch.chain)) return;
+        for (var i = 0; i < patch.chain.length; i++) {
+          var blkId = patch.chain[i];
+          var meta = BLOCK_META[blkId];
+          if (meta && typeof meta.chainCc === "number") {
+            sendCC(meta.chainCc, i);
+          }
+        }
       }
 
       function connectMIDI() {
@@ -688,7 +721,21 @@
         });
       }
 
-      function renderPatchSection() {
+      function applyPatchName(forceSyncInput) {
+        var input = document.getElementById("patchNameInput");
+        if (!input) return;
+        var raw = String(input.value || "").trim();
+        var patch = curPatch();
+        if (raw.length > 0) {
+          patch.name = raw.slice(0, 16);
+          save();
+          renderPatchSection(forceSyncInput);
+        } else {
+          input.value = patch.name;
+        }
+      }
+
+      function renderPatchSection(syncInput) {
         var patch = curPatch();
         var code = getPatchCode();
         var codeEl = document.getElementById("patchCodeDisplay");
@@ -697,7 +744,7 @@
 
         if (codeEl) codeEl.textContent = code;
         if (nameEl) nameEl.textContent = patch.name;
-        if (input && document.activeElement !== input) {
+        if (input && (syncInput || document.activeElement !== input)) {
           input.value = patch.name;
         }
 
@@ -705,93 +752,4 @@
         if (bankGrid) {
           bankGrid.innerHTML = "";
           for (var i = 0; i < BANKS.length; i++) {
-            (function (b) {
-              var btn = document.createElement("button");
-              btn.className = "mini-btn" + (state.bank === b ? " active" : "");
-              btn.textContent = "B" + b;
-              btn.onclick = function () {
-                state.bank = b;
-                sendProgramChange((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
-                save();
-                renderAll();
-              };
-              bankGrid.appendChild(btn);
-            })(BANKS[i]);
-          }
-        }
-
-        var slotGrid = document.getElementById("slotGrid");
-        if (slotGrid) {
-          slotGrid.innerHTML = "";
-          for (var j = 0; j < SLOTS.length; j++) {
-            (function (s) {
-              var btn = document.createElement("button");
-              btn.className = "mini-btn" + (state.slot === s ? " active" : "");
-              btn.textContent = "" + state.bank + s;
-              btn.onclick = function () {
-                state.slot = s;
-                sendProgramChange((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
-                save();
-                renderAll();
-              };
-              slotGrid.appendChild(btn);
-            })(SLOTS[j]);
-          }
-        }
-      }
-
-      function renderChainGrid() {
-        var patch = curPatch();
-        var grid = document.getElementById("chainGrid");
-        if (!grid) return;
-        grid.innerHTML = "";
-
-        for (var i = 0; i < patch.chain.length; i++) {
-          (function (blkId) {
-            var blk = patch.blocks[blkId];
-            if (!blk) return;
-
-            var btn = document.createElement("button");
-            btn.className = "chain-btn";
-            if (blk.on) btn.classList.add("is-on");
-            if (state.sel === blkId) btn.classList.add("is-selected");
-
-            var codeSpan = document.createElement("span");
-            codeSpan.className = "chain-code";
-            codeSpan.textContent = blkId;
-
-            var subSpan = document.createElement("span");
-            subSpan.className = "chain-sub";
-            subSpan.textContent = blk.model || "";
-
-            var dotSpan = document.createElement("span");
-            dotSpan.className = "chain-dot";
-
-            btn.appendChild(codeSpan);
-            btn.appendChild(subSpan);
-            btn.appendChild(dotSpan);
-
-            btn.onclick = function () {
-              state.sel = blkId;
-              save();
-              renderAll();
-            };
-
-            grid.appendChild(btn);
-          })(patch.chain[i]);
-        }
-      }
-
-      function renderModelSelector(blockId, curBlk) {
-        var select = document.getElementById("modelSelect");
-        if (!select || !curBlk) return;
-
-        var models = MODEL_OPTIONS[blockId] || [blockId];
-        if (!curBlk.model || models.indexOf(curBlk.model) === -1) {
-          curBlk.model = models[0];
-        }
-
-        select.innerHTML = "";
-        for (var i = 0; i < models.length; i++) {
-          var modelName = models[i];
-          var opt = document.createElement("option");
+          
