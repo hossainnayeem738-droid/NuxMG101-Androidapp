@@ -74,10 +74,6 @@
       cursor: pointer;
     }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
     .btn-primary {
       background: var(--accent);
       border-color: var(--accent);
@@ -408,11 +404,6 @@
       gap: 6px;
       cursor: pointer;
       color: #d6dbd8;
-      transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
-    }
-
-    .eb-tile:active {
-      transform: scale(0.97);
     }
 
     .eb-tile.is-on {
@@ -445,10 +436,18 @@
       text-overflow: ellipsis;
     }
 
-    .eb-icon {
-      width: 36px;
-      height: 36px;
-      image-rendering: pixelated;
+    .eb-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #252b31;
+      border: 1px solid #3c454f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 900;
+      color: #e3ecf5;
     }
   </style>
 </head>
@@ -527,204 +526,227 @@
   </div>
 
   <script>
-    const STORAGE_KEY = "nux_mg101_studio_state_v3";
+    (function () {
+      var STORAGE_KEY = "nux_mg101_studio_state_v4";
 
-    const BLOCK_META = {
-      NR: { full: "Noise Gate", cc: 21, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
-      EFX: { full: "Drive / EFX", cc: 22, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
-      AMP: { full: "Amplifier", cc: 23, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
-      IR: { full: "Cabinet IR", cc: 24, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
-      EQ: { full: "Equalizer", cc: 25, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
-      MOD: { full: "Modulation", cc: 26, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
-      DLY: { full: "Delay", cc: 27, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
-      RVB: { full: "Reverb", cc: 28, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
-    };
-
-    const MODEL_OPTIONS = {
-      NR: ["Soft Gate", "Hard Gate"],
-      EFX: ["Tube OD", "Blues Drive", "Distortion", "Fuzz"],
-      AMP: ["Clean Twin", "Tweed Deluxe", "Brit 800", "Modern HighGain"],
-      IR: ["1x12 Tweed", "2x12 Blues", "4x12 Vintage", "4x12 Modern"],
-      EQ: ["6-Band Guitar", "Studio EQ"],
-      MOD: ["Chorus", "Flanger", "Phaser", "Tremolo"],
-      DLY: ["Digital Delay", "Analog Delay", "Tape Echo"],
-      RVB: ["Room Reverb", "Hall Reverb", "Spring Reverb", "Plate Reverb"]
-    };
-
-    const EFFECT_ICONS = {
-      WAH: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="4" y="2" width="8" height="12" fill="#4f5659" stroke="#222" stroke-width="1"/>
-          <rect x="5" y="4" width="6" height="1" fill="#2c3032"/>
-          <rect x="5" y="6" width="6" height="1" fill="#2c3032"/>
-          <rect x="5" y="8" width="6" height="1" fill="#2c3032"/>
-          <rect x="5" y="10" width="6" height="1" fill="#2c3032"/>
-        </svg>`,
-      PEDAL: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="4" y="2" width="8" height="12" rx="1" fill="#6b7378" stroke="#222" stroke-width="1"/>
-          <rect x="6" y="4" width="1" height="2" fill="#222"/>
-          <rect x="8" y="4" width="1" height="2" fill="#222"/>
-          <rect x="10" y="4" width="1" height="2" fill="#222"/>
-          <rect x="7" y="10" width="2" height="2" fill="#cfd6da"/>
-        </svg>`,
-      AMP: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
-          <rect x="3" y="5" width="10" height="2" fill="#222"/>
-          <circle cx="5" cy="6" r="0.6" fill="#e53935"/>
-          <circle cx="7" cy="6" r="0.6" fill="#cfd6da"/>
-          <circle cx="9" cy="6" r="0.6" fill="#cfd6da"/>
-          <circle cx="11" cy="6" r="0.6" fill="#cfd6da"/>
-          <rect x="3" y="8" width="10" height="3" fill="#2f3437"/>
-        </svg>`,
-      EQ: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="2" y="4" width="12" height="8" fill="#4f5659" stroke="#222" stroke-width="1"/>
-          <rect x="4" y="5" width="1" height="6" fill="#222"/>
-          <rect x="7" y="5" width="1" height="6" fill="#222"/>
-          <rect x="10" y="5" width="1" height="6" fill="#222"/>
-          <rect x="12" y="5" width="1" height="6" fill="#222"/>
-          <rect x="3.5" y="7" width="2" height="1" fill="#e0e6e9"/>
-          <rect x="6.5" y="9" width="2" height="1" fill="#e0e6e9"/>
-          <rect x="9.5" y="6" width="2" height="1" fill="#e0e6e9"/>
-          <rect x="11.5" y="8" width="2" height="1" fill="#e0e6e9"/>
-        </svg>`,
-      CAB: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="3" y="3" width="10" height="10" fill="#464c50" stroke="#202325" stroke-width="1"/>
-          <rect x="4" y="4" width="8" height="8" fill="#2c3032"/>
-          <circle cx="6" cy="6" r="1.5" fill="#5b6266"/>
-          <circle cx="10" cy="6" r="1.5" fill="#5b6266"/>
-          <circle cx="6" cy="10" r="1.5" fill="#5b6266"/>
-          <circle cx="10" cy="10" r="1.5" fill="#5b6266"/>
-        </svg>`,
-      SR: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="2" y="5" width="12" height="6" fill="#4f5659" stroke="#222" stroke-width="1"/>
-          <circle cx="5" cy="8" r="1.5" fill="#cfd6da"/>
-          <circle cx="11" cy="8" r="1.5" fill="#cfd6da"/>
-          <rect x="7" y="7.5" width="2" height="1" fill="#cfd6da"/>
-        </svg>`,
-      VOL: `
-        <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-          <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
-          <rect x="3" y="9" width="1.5" height="2" fill="#81c784"/>
-          <rect x="5" y="8" width="1.5" height="3" fill="#81c784"/>
-          <rect x="7" y="7" width="1.5" height="4" fill="#aed581"/>
-          <rect x="9" y="6" width="1.5" height="5" fill="#ffd54f"/>
-          <rect x="11" y="5" width="1.5" height="6" fill="#e57373"/>
-        </svg>`
-    };
-
-    const BANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const SLOTS = ["A", "B", "C", "D"];
-    const DEFAULT_CHAIN = ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"];
-
-    function makePatch(code) {
-      const blocks = {};
-      DEFAULT_CHAIN.forEach((id) => {
-        const meta = BLOCK_META[id];
-        const params = {};
-        meta.params.forEach((p) => {
-          params[p.cc] = p.def;
-        });
-        blocks[id] = {
-          on: ["NR", "EFX", "AMP", "IR", "DLY", "RVB"].includes(id),
-          model: (MODEL_OPTIONS[id] && MODEL_OPTIONS[id][0]) || id,
-          params
-        };
-      });
-      return {
-        code,
-        name: "Patch " + code,
-        chain: DEFAULT_CHAIN.slice(),
-        blocks
+      var BLOCK_META = {
+        NR: { full: "Noise Gate", cc: 21, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
+        EFX: { full: "Drive / EFX", cc: 22, params: [{ name: "Drive", cc: 35, def: 65 }, { name: "Tone", cc: 36, def: 55 }, { name: "Level", cc: 37, def: 70 }] },
+        AMP: { full: "Amplifier", cc: 23, params: [{ name: "Gain", cc: 45, def: 75 }, { name: "Master", cc: 46, def: 70 }, { name: "Bass", cc: 47, def: 55 }, { name: "Mid", cc: 48, def: 60 }, { name: "Treble", cc: 49, def: 65 }] },
+        IR: { full: "Cabinet IR", cc: 24, params: [{ name: "Level", cc: 50, def: 80 }, { name: "LowCut", cc: 51, def: 20 }, { name: "HighCut", cc: 52, def: 75 }] },
+        EQ: { full: "Equalizer", cc: 25, params: [{ name: "120Hz", cc: 55, def: 50 }, { name: "500Hz", cc: 56, def: 52 }, { name: "1.5kHz", cc: 57, def: 54 }, { name: "4kHz", cc: 58, def: 56 }] },
+        MOD: { full: "Modulation", cc: 26, params: [{ name: "Rate", cc: 60, def: 48 }, { name: "Depth", cc: 61, def: 55 }, { name: "Mix", cc: 62, def: 40 }] },
+        DLY: { full: "Delay", cc: 27, params: [{ name: "Time", cc: 65, def: 52 }, { name: "Feedback", cc: 66, def: 45 }, { name: "Mix", cc: 67, def: 38 }] },
+        RVB: { full: "Reverb", cc: 28, params: [{ name: "Decay", cc: 70, def: 55 }, { name: "PreDelay", cc: 71, def: 25 }, { name: "Mix", cc: 72, def: 35 }] }
       };
-    }
 
-    function createInitialState() {
-      const patches = {};
-      BANKS.forEach((b) => {
-        SLOTS.forEach((s) => {
-          const code = "" + b + s;
-          patches[code] = makePatch(code);
-        });
-      });
-      return {
-        bank: 2,
-        slot: "A",
-        sel: "IR",
-        patches
+      var MODEL_OPTIONS = {
+        NR: ["Soft Gate", "Hard Gate"],
+        EFX: ["Tube OD", "Blues Drive", "Distortion", "Fuzz"],
+        AMP: ["Clean Twin", "Tweed Deluxe", "Brit 800", "Modern HighGain"],
+        IR: ["1x12 Tweed", "2x12 Blues", "4x12 Vintage", "4x12 Modern"],
+        EQ: ["6-Band Guitar", "Studio EQ"],
+        MOD: ["Chorus", "Flanger", "Phaser", "Tremolo"],
+        DLY: ["Digital Delay", "Analog Delay", "Tape Echo"],
+        RVB: ["Room Reverb", "Hall Reverb", "Spring Reverb", "Plate Reverb"]
       };
-    }
 
-    function isValidState(obj) {
-      if (!obj || typeof obj !== "object") return false;
-      if (!obj.patches || typeof obj.patches !== "object") return false;
-      const sample = obj.patches["2A"];
-      if (!sample || !Array.isArray(sample.chain) || !sample.blocks || !sample.blocks.IR) {
-        return false;
-      }
-      return true;
-    }
+      var BANKS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      var SLOTS = ["A", "B", "C", "D"];
+      var DEFAULT_CHAIN = ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"];
+      var midiOutput = null;
 
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (isValidState(parsed)) return parsed;
+      function makePatch(code) {
+        var blocks = {};
+        for (var i = 0; i < DEFAULT_CHAIN.length; i++) {
+          var id = DEFAULT_CHAIN[i];
+          var meta = BLOCK_META[id];
+          var params = {};
+          for (var j = 0; j < meta.params.length; j++) {
+            params[meta.params[j].cc] = meta.params[j].def;
+          }
+          var isDefaultOn = (id === "NR" || id === "EFX" || id === "AMP" || id === "IR" || id === "DLY" || id === "RVB");
+          blocks[id] = {
+            on: isDefaultOn,
+            model: (MODEL_OPTIONS[id] && MODEL_OPTIONS[id][0]) || id,
+            params: params
+          };
         }
-      } catch (_) {}
-      return createInitialState();
-    }
-
-    let state = loadState();
-    let midiOutput = null;
-
-    function save() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch (_) {}
-    }
-
-    function getPatchCode() {
-      return "" + state.bank + state.slot;
-    }
-
-    function curPatch() {
-      const code = getPatchCode();
-      if (!state.patches[code] || !state.patches[code].blocks) {
-        state.patches[code] = makePatch(code);
+        return {
+          code: code,
+          name: "Patch " + code,
+          chain: DEFAULT_CHAIN.slice(),
+          blocks: blocks
+        };
       }
-      if (!BLOCK_META[state.sel] || !state.patches[code].blocks[state.sel]) {
-        state.sel = "IR";
+
+      function createInitialState() {
+        var patches = {};
+        for (var bIdx = 0; bIdx < BANKS.length; bIdx++) {
+          for (var sIdx = 0; sIdx < SLOTS.length; sIdx++) {
+            var code = "" + BANKS[bIdx] + SLOTS[sIdx];
+            patches[code] = makePatch(code);
+          }
+        }
+        return {
+          bank: 2,
+          slot: "A",
+          sel: "IR",
+          patches: patches
+        };
       }
-      return state.patches[code];
-    }
 
-    function sendCC(cc, val) {
-      if (!midiOutput) return;
-      try {
-        const clamped = Math.max(0, Math.min(127, Math.round(val)));
-        midiOutput.send([0xb0, cc, clamped]);
-      } catch (_) {}
-    }
-
-    function sendProgramChange(pc) {
-      if (!midiOutput) return;
-      try {
-        midiOutput.send([0xc0, Math.max(0, Math.min(127, pc))]);
-      } catch (_) {}
-    }
-
-    async function connectMIDI() {
-      const midiPill = document.getElementById("midiStatus");
-      if (!navigator.requestMIDIAccess) {
-        if (midiPill) midiPill.textContent = "MIDI: UNSUPPORTED";
-        return;
+      function isValidState(obj) {
+        if (!obj || typeof obj !== "object") return false;
+        if (!obj.patches || typeof obj.patches !== "object") return false;
+        var sample = obj.patches["2A"];
+        if (!sample || !Array.isArray(sample.chain) || !sample.blocks || !sample.blocks.IR) return false;
+        return true;
       }
-      try {
-        const access = await navigator.requestMIDIAccess({ sysex: false });
-        const outputs 
+
+      function loadState() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (isValidState(parsed)) return parsed;
+          }
+        } catch (e) {}
+        return createInitialState();
+      }
+
+      var state = loadState();
+
+      function save() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      function getPatchCode() {
+        return "" + state.bank + state.slot;
+      }
+
+      function curPatch() {
+        var code = getPatchCode();
+        if (!state.patches[code] || !state.patches[code].blocks) {
+          state.patches[code] = makePatch(code);
+        }
+        if (!BLOCK_META[state.sel] || !state.patches[code].blocks[state.sel]) {
+          state.sel = "IR";
+        }
+        return state.patches[code];
+      }
+
+      function sendCC(cc, val) {
+        if (!midiOutput) return;
+        try {
+          var clamped = Math.max(0, Math.min(127, Math.round(val)));
+          midiOutput.send([0xb0, cc, clamped]);
+        } catch (e) {}
+      }
+
+      function sendProgramChange(pc) {
+        if (!midiOutput) return;
+        try {
+          midiOutput.send([0xc0, Math.max(0, Math.min(127, pc))]);
+        } catch (e) {}
+      }
+
+      function connectMIDI() {
+        var midiPill = document.getElementById("midiStatus");
+        if (!navigator.requestMIDIAccess) {
+          if (midiPill) midiPill.textContent = "MIDI: UNSUPPORTED";
+          return;
+        }
+        navigator.requestMIDIAccess({ sysex: false }).then(function (access) {
+          var outputs = Array.from(access.outputs.values());
+          if (outputs.length > 0) {
+            midiOutput = outputs[0];
+            if (midiPill) {
+              midiPill.textContent = "MIDI: " + (midiOutput.name || "CONNECTED");
+              midiPill.classList.add("connected");
+            }
+            var btn = document.getElementById("connectBtn");
+            if (btn) {
+              btn.textContent = "OTG Connected";
+              btn.classList.remove("btn-danger");
+              btn.classList.add("btn-primary");
+            }
+          } else if (midiPill) {
+            midiPill.textContent = "MIDI: NO DEVICE";
+          }
+        }).catch(function () {
+          if (midiPill) midiPill.textContent = "MIDI: BLOCKED";
+        });
+      }
+
+      function renderPatchSection() {
+        var patch = curPatch();
+        var code = getPatchCode();
+        var codeEl = document.getElementById("patchCodeDisplay");
+        var nameEl = document.getElementById("patchNameDisplay");
+        var input = document.getElementById("patchNameInput");
+
+        if (codeEl) codeEl.textContent = code;
+        if (nameEl) nameEl.textContent = patch.name;
+        if (input && document.activeElement !== input) {
+          input.value = patch.name;
+        }
+
+        var bankGrid = document.getElementById("bankGrid");
+        if (bankGrid) {
+          bankGrid.innerHTML = "";
+          for (var i = 0; i < BANKS.length; i++) {
+            (function (b) {
+              var btn = document.createElement("button");
+              btn.className = "mini-btn" + (state.bank === b ? " active" : "");
+              btn.textContent = "B" + b;
+              btn.onclick = function () {
+                state.bank = b;
+                sendProgramChange((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
+                save();
+                renderAll();
+              };
+              bankGrid.appendChild(btn);
+            })(BANKS[i]);
+          }
+        }
+
+        var slotGrid = document.getElementById("slotGrid");
+        if (slotGrid) {
+          slotGrid.innerHTML = "";
+          for (var j = 0; j < SLOTS.length; j++) {
+            (function (s) {
+              var btn = document.createElement("button");
+              btn.className = "mini-btn" + (state.slot === s ? " active" : "");
+              btn.textContent = "" + state.bank + s;
+              btn.onclick = function () {
+                state.slot = s;
+                sendProgramChange((state.bank - 1) * 4 + SLOTS.indexOf(state.slot));
+                save();
+                renderAll();
+              };
+              slotGrid.appendChild(btn);
+            })(SLOTS[j]);
+          }
+        }
+      }
+
+      function renderChainGrid() {
+        var patch = curPatch();
+        var grid = document.getElementById("chainGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        for (var i = 0; i < patch.chain.length; i++) {
+          (function (blkId) {
+            var blk = patch.blocks[blkId];
+            if (!blk) return;
+
+            var btn = document.createElement("button");
+            btn.className = "chain-btn";
+            if (blk.on) btn.classList.add("is-on");
+            if (state.sel === blkId) btn.classList.add("is-selected");
+
+            var codeSpan = document.createElemen
