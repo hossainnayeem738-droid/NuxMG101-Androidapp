@@ -83,7 +83,7 @@
 </div>
 
 <script>
-var KEY="nux_mg101_full_v1";
+var KEY="nux_mg101_full_v2";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","VOL"];
 
@@ -121,7 +121,8 @@ var MODS={
   EQ:["6-Band EQ","10-Band EQ","Studio EQ","Acoustic EQ"],
   MOD:["CE-1 Chorus","Analog Chorus","Script Phase","MX Phase","Jet Flanger","Classic Flanger","Opto Trem","Bias Trem","Rotary","Vibrato","U-Vibe","Ring Mod"],
   DLY:["Digital Delay","Analog Delay","Tape Echo","Mod Delay","Reverse Delay","Ping Pong"],
-  RVB:["Room Reverb","Hall Reverb","Spring Reverb","Plate Reverb","Shimmer Reverb","Mod Reverb"]
+  RVB:["Room Reverb","Hall Reverb","Spring Reverb","Plate Reverb","Shimmer Reverb","Mod Reverb"],
+  VOL:["Volume Pedal"]
 };
 
 var midiOut=null;
@@ -131,7 +132,8 @@ function newPatch(code){
   for(var i=0;i<ORDER.length;i++){
     var id=ORDER[i], pr={};
     for(var j=0;j<META[id].p.length;j++) pr[META[id].p[j][1]]=META[id].p[j][2];
-    b[id]={on:(id!=="EQ"&&id!=="MOD"),model:MODS[id][0],p:pr};
+    var list=MODS[id]||["Default"];
+    b[id]={on:(id!=="EQ"&&id!=="MOD"),model:list[0],p:pr};
   }
   return {name:"Patch "+code,chain:ORDER.slice(),b:b};
 }
@@ -143,7 +145,7 @@ function initState(){
 }
 
 var st=(function(){
-  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b.AMP) return o; } }catch(e){}
+  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b.VOL) return o; } }catch(e){}
   return initState();
 })();
 
