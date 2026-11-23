@@ -704,3 +704,23 @@
     });
   }
 </script>
+tile.onclick = () => {
+  if (state.sel === blkId) {
+    // ইতিমধ্যে সিলেক্ট করা ব্লকে আবার ট্যাপ করলে On/Off টগল হবে
+    blk.on = !blk.on;
+    if (typeof sendCC === "function" && typeof BLOCK_CC !== "undefined") {
+      sendCC(BLOCK_CC[blkId] || 21, blk.on ? 100 : 0);
+    }
+    if (typeof save === "function") save();
+  } else {
+    // অন্য ব্লকে ট্যাপ করলে সেটি সিলেক্ট হয়ে নিচের প্যারামিটার ও মডেল এডিটরে খুলবে
+    state.sel = blkId;
+    if (typeof save === "function") save();
+  }
+
+  if (typeof renderAll === "function") {
+    renderAll();
+  } else {
+    renderEffectBlocksGrid();
+  }
+};
