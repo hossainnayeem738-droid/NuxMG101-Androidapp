@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NUX MG-101 Studio</title>
+  <title>NUX MG-101 QuickTone Studio</title>
   <style>
     body{margin:0;padding:12px;font-family:system-ui,sans-serif;background:#0c0f12;color:#eef2f6;}
     .app{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
@@ -28,7 +28,7 @@
   <div class="card row">
     <div>
       <div style="font-size:15px;font-weight:800;">NUX MG-101 QUICKTONE STUDIO</div>
-      <div style="font-size:11px;color:#9aa7b6;">OTG / Web MIDI Controller</div>
+      <div style="font-size:11px;color:#9aa7b6;">OTG / Web MIDI Full Amp &amp; FX Controller</div>
     </div>
     <button id="midiBtn" class="red">Connect OTG</button>
   </div>
@@ -56,8 +56,8 @@
   </div>
 
   <div class="card">
-    <div style="font-size:12px;font-weight:800;color:#9aa7b6;">SIGNAL CHAIN</div>
-    <div id="chain" class="grid4"></div>
+    <div style="font-size:12px;font-weight:800;color:#9aa7b6;">SIGNAL CHAIN (10 BLOCKS)</div>
+    <div id="chain" class="grid5"></div>
     <div class="grid2">
       <button id="mLeft">◀ Move Left</button>
       <button id="mRight">Move Right ▶</button>
@@ -66,7 +66,7 @@
 
   <div class="card">
     <div class="row">
-      <span id="edTitle" style="font-size:12px;font-weight:800;color:#9aa7b6;">IR</span>
+      <span id="edTitle" style="font-size:12px;font-weight:800;color:#9aa7b6;">AMP</span>
       <button id="pwrBtn">ACTIVE</button>
     </div>
     <div class="row" style="margin-top:8px;">
@@ -78,29 +78,52 @@
 
   <div class="card">
     <div style="font-size:12px;font-weight:800;color:#9aa7b6;">EFFECT BLOCKS</div>
-    <div id="blocks" class="grid4"></div>
+    <div id="blocks" class="grid5"></div>
   </div>
 </div>
 
 <script>
-var KEY="nux_mg101_v2";
-var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"], ORDER=["NR","EFX","AMP","IR","EQ","MOD","DLY","RVB"];
+var KEY="nux_mg101_full_v1";
+var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
+var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","VOL"];
+
 var META={
-  NR:{n:"Noise Gate",cc:21,cCc:101,p:[["Threshold",31,45],["Decay",32,50]]},
-  EFX:{n:"Drive / EFX",cc:22,cCc:102,p:[["Drive",35,65],["Tone",36,55],["Level",37,70]]},
-  AMP:{n:"Amplifier",cc:23,cCc:103,p:[["Gain",45,75],["Master",46,70],["Bass",47,55],["Mid",48,60],["Treble",49,65]]},
-  IR:{n:"Cabinet IR",cc:24,cCc:104,p:[["Level",50,80],["LowCut",51,20],["HighCut",52,75]]},
-  EQ:{n:"Equalizer",cc:25,cCc:105,p:[["120Hz",55,50],["500Hz",56,52],["1.5kHz",57,54],["4kHz",58,56]]},
-  MOD:{n:"Modulation",cc:26,cCc:106,p:[["Rate",60,48],["Depth",61,55],["Mix",62,40]]},
-  DLY:{n:"Delay",cc:27,cCc:107,p:[["Time",65,52],["Feedback",66,45],["Mix",67,38]]},
-  RVB:{n:"Reverb",cc:28,cCc:108,p:[["Decay",70,55],["PreDelay",71,25],["Mix",72,35]]}
+  GATE:{n:"Noise Gate",cc:21,cCc:101,p:[["Threshold",31,45],["Decay",32,50],["Damp",33,30]]},
+  CMP:{n:"Compressor",cc:22,cCc:102,p:[["Sustain",34,55],["Output",35,65],["Tone",36,50]]},
+  EFX:{n:"Drive / EFX",cc:23,cCc:103,p:[["Drive",37,65],["Tone",38,55],["Level",39,70]]},
+  AMP:{n:"Amplifier",cc:24,cCc:104,p:[["Gain",45,75],["Master",46,70],["Bass",47,55],["Mid",48,60],["Treble",49,65]]},
+  IR:{n:"Cabinet / IR",cc:25,cCc:105,p:[["Level",50,80],["LowCut",51,20],["HighCut",52,75]]},
+  EQ:{n:"Equalizer",cc:26,cCc:106,p:[["120Hz",55,50],["500Hz",56,52],["1.5kHz",57,54],["4kHz",58,56]]},
+  MOD:{n:"Modulation",cc:27,cCc:107,p:[["Rate",60,48],["Depth",61,55],["Mix",62,40]]},
+  DLY:{n:"Delay",cc:28,cCc:108,p:[["Time",65,52],["Feedback",66,45],["Mix",67,38]]},
+  RVB:{n:"Reverb",cc:29,cCc:109,p:[["Decay",70,55],["PreDelay",71,25],["Mix",72,35]]},
+  VOL:{n:"Master / Vol",cc:30,cCc:110,p:[["Volume",7,80],["Pan",10,50]]}
 };
+
 var MODS={
-  NR:["Soft Gate","Hard Gate"],EFX:["Tube OD","Blues Drive","Distortion","Fuzz"],
-  AMP:["Clean Twin","Tweed Deluxe","Brit 800","Modern HighGain"],IR:["1x12 Tweed","2x12 Blues","4x12 Vintage","4x12 Modern"],
-  EQ:["6-Band Guitar","Studio EQ"],MOD:["Chorus","Flanger","Phaser","Tremolo"],
-  DLY:["Digital Delay","Analog Delay","Tape Echo"],RVB:["Room Reverb","Hall Reverb","Spring Reverb","Plate Reverb"]
+  GATE:["Soft Gate","Hard Gate","Smart Gate"],
+  CMP:["Ross Comp","Dyn Comp","Optical Comp","Studio Comp"],
+  EFX:["Tube OD","Blues Drive","TS Screamer","Klon OD","Crunch OD","Distortion+","DS-1 Dist","Rat Dist","Metal Zone","Big Fuzz","Octave Fuzz","Treble Boost"],
+  AMP:[
+    "Clean Twin","Jazz 212","Black 112","Tweed 112","Tweed 410","Super 212",
+    "Cali 112","Brit 212","Blue 112","Blue 212","Plexi 45","1987 X 50",
+    "Plexi 100","Brit 800","Brit 2000","MK2 50","Fireman HBE","SLO 100",
+    "Dual Rect","Die VH4","Uber HighGain"
+  ],
+  IR:[
+    "TWEED 410","BRIT 212","CALI 112","BLUE 112","BLUE 212","SUPER 212",
+    "TWEED 112","BLACK 112","JAZZ 212","DIE VH4","DUAL RECT","FIREMAN HBE",
+    "HMWRE","1987 X 50","MK2 50","BRIT 800","BRIT 2000","PLEXI 45",
+    "PLEXI 100","SLO 100","UBER",
+    "User IR 01","User IR 02","User IR 03","User IR 04","User IR 05","User IR 06",
+    "User IR 07","User IR 08","User IR 09","User IR 10","User IR 11","User IR 12"
+  ],
+  EQ:["6-Band EQ","10-Band EQ","Studio EQ","Acoustic EQ"],
+  MOD:["CE-1 Chorus","Analog Chorus","Script Phase","MX Phase","Jet Flanger","Classic Flanger","Opto Trem","Bias Trem","Rotary","Vibrato","U-Vibe","Ring Mod"],
+  DLY:["Digital Delay","Analog Delay","Tape Echo","Mod Delay","Reverse Delay","Ping Pong"],
+  RVB:["Room Reverb","Hall Reverb","Spring Reverb","Plate Reverb","Shimmer Reverb","Mod Reverb"]
 };
+
 var midiOut=null;
 
 function newPatch(code){
@@ -116,17 +139,22 @@ function newPatch(code){
 function initState(){
   var patches={};
   for(var i=0;i<BANKS.length;i++) for(var j=0;j<SLOTS.length;j++){ var c=""+BANKS[i]+SLOTS[j]; patches[c]=newPatch(c); }
-  return {bank:2,slot:"A",sel:"IR",patches:patches};
+  return {bank:2,slot:"A",sel:"AMP",patches:patches};
 }
 
 var st=(function(){
-  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]) return o; } }catch(e){}
+  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b.AMP) return o; } }catch(e){}
   return initState();
 })();
 
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
 function code(){ return ""+st.bank+st.slot; }
-function patch(){ var c=code(); if(!st.patches[c]) st.patches[c]=newPatch(c); return st.patches[c]; }
+function patch(){
+  var c=code();
+  if(!st.patches[c]) st.patches[c]=newPatch(c);
+  if(!META[st.sel]) st.sel="AMP";
+  return st.patches[c];
+}
 
 function sendCC(cc,v){ if(!midiOut) return; try{ midiOut.send([0xb0,cc,Math.max(0,Math.min(127,Math.round(v)))]); }catch(e){} }
 function sendPC(pc){ if(!midiOut) return; try{ midiOut.send([0xc0,Math.max(0,Math.min(127,pc))]); }catch(e){} }
@@ -139,7 +167,10 @@ function sendName(n){
   }catch(e){}
 }
 function sendChain(p){
-  for(var i=0;i<p.chain.length;i++) sendCC(META[p.chain[i]].cCc,i);
+  for(var i=0;i<p.chain.length;i++){
+    var m=META[p.chain[i]];
+    if(m) sendCC(m.cCc,i);
+  }
 }
 
 function connectMidi(){
@@ -187,6 +218,7 @@ function draw(syncInp){
   cg.innerHTML=""; ebg.innerHTML="";
   p.chain.forEach(function(bid){
     var item=p.b[bid];
+    if(!item||!META[bid]) return;
     var cls="blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
     [cg,ebg].forEach(function(host){
       var btn=document.createElement("button");
@@ -207,14 +239,17 @@ function draw(syncInp){
   pb.onclick=function(){ blk.on=!blk.on; sendCC(m.cc,blk.on?100:0); save(); draw(false); };
 
   var msel=document.getElementById("modSel"); msel.innerHTML="";
-  MODS[id].forEach(function(mod){
+  var list=MODS[id]||[];
+  list.forEach(function(mod){
     var opt=document.createElement("option"); opt.value=mod; opt.textContent=mod;
     if(blk.model===mod) opt.selected=true;
     msel.appendChild(opt);
   });
   msel.onchange=function(){
     blk.model=msel.value;
-    sendCC(34,Math.round((MODS[id].indexOf(blk.model)/Math.max(1,MODS[id].length-1))*100));
+    var idx=list.indexOf(blk.model);
+    var ccVal=list.length>1?Math.round((idx/(list.length-1))*127):0;
+    sendCC(m.cc+40,ccVal);
     save(); draw(false);
   };
 
