@@ -468,17 +468,17 @@
 
     <div class="card">
       <div class="card-header">
-        <span class="card-title">Patch Bank & Slot (1A–10D)</span>
+        <span class="card-title">Patch Bank & Slot (1A-10D)</span>
         <button id="resetPatchBtn" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
       </div>
 
       <div class="patch-nav-row">
-        <button id="prevPatchBtn" class="btn">◀ Prev</button>
+        <button id="prevPatchBtn" class="btn">Prev</button>
         <div class="patch-display">
           <div id="patchCodeDisplay" class="patch-code">2A</div>
           <div id="patchNameDisplay" class="patch-name-sub">Patch 2A</div>
         </div>
-        <button id="nextPatchBtn" class="btn">Next ▶</button>
+        <button id="nextPatchBtn" class="btn">Next</button>
       </div>
 
       <div class="name-row">
@@ -498,14 +498,14 @@
       <div id="chainGrid" class="chain-grid"></div>
 
       <div class="chain-move-row">
-        <button id="moveLeftBtn" class="btn">◀ Move Left</button>
-        <button id="moveRightBtn" class="btn">Move Right ▶</button>
+        <button id="moveLeftBtn" class="btn">Move Left</button>
+        <button id="moveRightBtn" class="btn">Move Right</button>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">
-        <span id="activeBlockTitle" class="card-title">IR • CABINET IR</span>
+        <span id="activeBlockTitle" class="card-title">IR - CABINET IR</span>
         <button id="blockPowerBtn" class="toggle-btn on">ACTIVE</button>
       </div>
 
@@ -526,8 +526,15 @@
   </div>
 
   <script>
+    window.addEventListener("error", function (ev) {
+      var st = document.getElementById("statusText");
+      if (st) {
+        st.textContent = "ERR: " + (ev.message || "Script error") + " @L" + (ev.lineno || "?");
+      }
+    });
+
     (function () {
-      var STORAGE_KEY = "nux_mg101_studio_state_v4";
+      var STORAGE_KEY = "nux_mg101_studio_state_v5";
 
       var BLOCK_META = {
         NR: { full: "Noise Gate", cc: 21, params: [{ name: "Threshold", cc: 31, def: 45 }, { name: "Decay", cc: 32, def: 50 }] },
@@ -749,4 +756,42 @@
             if (blk.on) btn.classList.add("is-on");
             if (state.sel === blkId) btn.classList.add("is-selected");
 
-            var codeSpan = document.createElemen
+            var codeSpan = document.createElement("span");
+            codeSpan.className = "chain-code";
+            codeSpan.textContent = blkId;
+
+            var subSpan = document.createElement("span");
+            subSpan.className = "chain-sub";
+            subSpan.textContent = blk.model || "";
+
+            var dotSpan = document.createElement("span");
+            dotSpan.className = "chain-dot";
+
+            btn.appendChild(codeSpan);
+            btn.appendChild(subSpan);
+            btn.appendChild(dotSpan);
+
+            btn.onclick = function () {
+              state.sel = blkId;
+              save();
+              renderAll();
+            };
+
+            grid.appendChild(btn);
+          })(patch.chain[i]);
+        }
+      }
+
+      function renderModelSelector(blockId, curBlk) {
+        var select = document.getElementById("modelSelect");
+        if (!select || !curBlk) return;
+
+        var models = MODEL_OPTIONS[blockId] || [blockId];
+        if (!curBlk.model || models.indexOf(curBlk.model) === -1) {
+          curBlk.model = models[0];
+        }
+
+        select.innerHTML = "";
+        for (var i = 0; i < models.length; i++) {
+          var modelName = models[i];
+          var opt = document.createElement("option");
