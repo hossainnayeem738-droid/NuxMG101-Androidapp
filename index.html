@@ -2,707 +2,479 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>NUX MG-101 QuickTone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NUX MG-101 QuickTone Digital Studio</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    :root {
+      --bg: #0c0f12;
+      --card: #15191e;
+      --card-2: #1b2026;
+      --border: #2a313a;
+      --text: #eef2f6;
+      --muted: #9aa7b6;
+      --accent: #1e88e5;
+      --green: #2e7d32;
+      --green-bright: #4caf50;
+      --amber: #ffb300;
+      --red: #d32f2f;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     body {
-      background: #0b0d12;
-      color: #f1f5f9;
+      margin: 0;
+      padding: 12px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app-wrap {
+      max-width: 760px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 14px;
       gap: 12px;
-      min-height: 100vh;
     }
-    .top-bar {
-      width: 100%;
-      max-width: 450px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      background: #121722;
-      border: 1px solid #242d3d;
+
+    .topbar {
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 12px 14px;
-    }
-    .brand-title { font-size: 17px; font-weight: 800; color: #f8fafc; }
-    .brand-sub { font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #38bdf8; }
-    .btn-otg {
-      background: #dc2626;
-      color: #fff;
-      border: 1px solid #f87171;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .status-bar {
-      width: 100%;
-      max-width: 450px;
-      background: #0d1118;
-      border: 1px solid #1e293b;
-      border-left: 4px solid #38bdf8;
-      border-radius: 10px;
-      padding: 9px 12px;
-      font-family: monospace;
-      font-size: 12px;
-      font-weight: 700;
-      color: #7dd3fc;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .status-strip {
+      background: #102030;
+      border: 1px solid #1f4668;
+      border-radius: 12px;
+      padding: 9px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
       gap: 8px;
     }
+
+    .midi-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #24292e;
+      color: #cfd8dc;
+      font-size: 11px;
+    }
+
+    .midi-pill.connected {
+      background: #1b3b22;
+      color: #81c784;
+    }
+
     .card {
-      width: 100%;
-      max-width: 450px;
-      background: #121722;
-      border: 1px solid #222b3a;
+      background: var(--card);
+      border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .patch-nav-row {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .patch-display {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .patch-code {
+      font-size: 20px;
+      font-weight: 900;
+      color: #64b5f6;
+    }
+
+    .patch-name-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .name-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .name-input {
+      flex: 1;
+      background: #0f1317;
+      border: 1px solid var(--amber);
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .bank-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .slot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .mini-btn {
+      padding: 8px 4px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .mini-btn.active {
+      background: var(--accent);
+      border-color: #64b5f6;
+      color: #fff;
+    }
+
+    .eb-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 520px) {
+      .eb-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .eb-tile {
+      background: #181a19;
+      border: 1px solid #2b2f2d;
+      border-radius: 14px;
+      padding: 10px 6px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-    }
-    .card-header { display: flex; justify-content: space-between; align-items: center; }
-    .card-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #cbd5e1; }
-    .btn-reset {
-      background: #1b2232;
-      color: #94a3b8;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 5px 10px;
-      font-size: 11px;
-      font-weight: 700;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       cursor: pointer;
+      color: #d6dbd8;
+      transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
     }
-    .patch-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .btn-nav {
-      background: #1a2232;
-      color: #f1f5f9;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .patch-lcd {
-      flex: 1;
-      background: #06080c;
-      border: 1px solid #1e3a5f;
-      border-radius: 10px;
-      padding: 6px 8px;
-      text-align: center;
-      font-family: monospace;
-      color: #38bdf8;
-    }
-    .patch-code { font-size: 24px; font-weight: 900; letter-spacing: 2px; line-height: 1.1; }
-    .patch-preset-label { font-size: 11px; font-weight: 700; color: #94a3b8; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .preset-row { display: flex; gap: 8px; align-items: center; }
-    .preset-input {
+    .eb-tile:active {
+      transform: scale(0.97);
+    }
+
+    .eb-tile.is-on {
+      border-color: var(--green-bright);
+      background: #1c241e;
+    }
+
+    .eb-tile.is-selected {
+      outline: 2px solid var(--amber);
+      border-color: var(--amber);
+    }
+
+    .eb-tile.is-off {
+      opacity: 0.65;
+    }
+
+    .eb-label {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .eb-submodel {
+      font-size: 10px;
+      color: #9fb0c2;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .eb-icon {
+      width: 36px;
+      height: 36px;
+      image-rendering: pixelated;
+    }
+
+    .chain-move-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .model-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 10px;
+      margin-bottom: 12px;
+    }
+
+    .model-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .model-select {
       flex: 1;
-      background: #06080c;
-      border: 1px solid #2b364b;
+      padding: 7px 10px;
       border-radius: 8px;
-      padding: 8px 10px;
-      color: #f8fafc;
+      background: #101418;
+      color: #fff;
+      border: 1px solid #35414d;
       font-size: 13px;
       font-weight: 600;
     }
-    .btn-save-name {
-      background: #0284c7;
-      color: #fff;
-      border: 1px solid #7dd3fc;
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
 
-    .bank-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .slot-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 6px; }
-    .q-btn {
-      background: #171e2c;
-      color: #cbd5e1;
-      border: 1px solid #2b364b;
-      border-radius: 8px;
-      padding: 7px 4px;
-      font-family: monospace;
-      font-size: 12px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    .q-btn.active { background: #0284c7; color: #fff; border-color: #7dd3fc; }
-
-    .chain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; padding: 4px 0; }
-    .chain-node {
-      padding: 9px 4px;
-      border-radius: 10px;
-      background: #171e2c;
-      border: 1.5px solid #2b364b;
-      text-align: center;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-    .chain-node.active { background: #122436; border-color: #22c55e; }
-    .chain-node.selected { border-color: #facc15; box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.45); }
-    .node-code { font-size: 12px; font-weight: 900; color: #f8fafc; }
-    .node-dot { width: 8px; height: 8px; border-radius: 50%; margin: 6px auto 0; background: #475569; }
-    .chain-node.active .node-dot { background: #22c55e; }
-
-    .order-controls { display: flex; gap: 8px; }
-    .btn-small {
-      flex: 1;
-      background: #171e2c;
-      color: #e2e8f0;
-      border: 1px solid #2b364b;
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-small:active { background: #2563eb; border-color: #60a5fa; }
-
-    .block-header { display: flex; justify-content: space-between; align-items: center; }
-    .toggle-btn { padding: 6px 14px; border-radius: 20px; border: none; font-size: 12px; font-weight: 800; cursor: pointer; }
-    .toggle-on { background: #22c55e; color: #052e16; }
-    .toggle-off { background: #273042; color: #94a3b8; }
-
-    .param-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      background: #0d1118;
+    .param-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #1e2736;
+      margin-bottom: 10px;
     }
-    .param-top { display: flex; justify-content: space-between; align-items: center; }
-    .param-label { font-size: 13px; font-weight: 700; color: #e2e8f0; }
-    .param-cc-tag { font-family: monospace; font-size: 10px; color: #64748b; margin-left: 6px; }
-    .digital-stepper { display: flex; align-items: center; gap: 5px; }
+
+    .param-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .param-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .param-cc {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    .stepper-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .step-btn {
-      width: 28px;
-      height: 28px;
-      background: #1b2333;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      border-radius: 7px;
-      font-size: 15px;
+      width: 34px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #12161a;
+      color: #fff;
+      font-size: 16px;
       font-weight: 800;
       cursor: pointer;
     }
-    .digital-input {
-      width: 54px;
-      height: 28px;
-      background: #06080c;
-      border: 1px solid #25446b;
-      border-radius: 7px;
-      font-family: monospace;
-      font-size: 13px;
-      font-weight: 800;
-      color: #38bdf8;
+
+    .val-badge {
+      min-width: 44px;
       text-align: center;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: #0d47a1;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
     }
-    input[type="range"] { width: 100%; accent-color: #38bdf8; height: 6px; }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #2196f3;
+      cursor: pointer;
+    }
+
+    .toggle-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .toggle-btn.on {
+      background: var(--green-bright);
+      color: #09130a;
+    }
+
+    .toggle-btn.off {
+      background: #2c323a;
+      color: #cfd8dc;
+    }
   </style>
 </head>
 <body>
-  <div class="top-bar">
-    <div>
-      <div class="brand-title">NUX MG-101</div>
-      <div class="brand-sub">QUICKTONE DIGITAL STUDIO</div>
-    </div>
-    <button class="btn-otg" id="connectBtn">Connect via OTG</button>
-  </div>
-
-  <div class="status-bar" id="statusBar">
-    <span>READY • AUTO-SAVE ON</span>
-    <span>MIDI: OFF</span>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title">Patch Bank & Slot (1A–10D)</div>
-      <button class="btn-reset" id="resetPatchBtn">Reset Patch</button>
-    </div>
-    <div class="patch-row">
-      <button class="btn-nav" id="prevPatch">◀ Prev</button>
-      <div class="patch-lcd">
-        <div class="patch-code" id="patchDisplay">1A</div>
-        <div class="patch-preset-label" id="presetNameDisplay">Clean Studio</div>
+  <div class="app-wrap">
+    <div class="topbar">
+      <div>
+        <div class="brand-title">NUX MG-101 QUICKTONE STUDIO</div>
+        <div class="brand-sub">OTG / Web MIDI Effect Controller</div>
       </div>
-      <button class="btn-nav" id="nextPatch">Next ▶</button>
+      <button id="connectBtn" class="btn btn-danger">Connect via OTG</button>
     </div>
-    <div class="preset-row">
-      <input type="text" maxlength="24" class="preset-input" id="presetNameInput" placeholder="Set Preset Name (e.g. Lead Boost)" />
-      <button type="button" class="btn-save-name" id="savePresetNameBtn">Set Name</button>
-    </div>
-    <div>
-      <div class="bank-grid" id="bankGrid"></div>
-      <div class="slot-grid" id="slotGrid"></div>
-    </div>
-  </div>
 
-  <div class="card">
-    <div class="card-title">Signal Chain (Tap Block to Edit)</div>
-    <div class="chain-grid" id="chainContainer"></div>
-    <div class="order-controls">
-      <button class="btn-small" id="moveLeftBtn">◀ Move Left</button>
-      <button class="btn-small" id="moveRightBtn">Move Right ▶</button>
+    <div class="status-strip">
+      <span id="statusText">SELECTED: AMP (Amplifier)</span>
+      <span id="midiStatus" class="midi-pill">MIDI: OFF</span>
     </div>
-  </div>
 
-  <div class="card">
-    <div class="block-header">
-      <span class="card-title" id="blockTitle">AMP • Amplifier</span>
-      <button class="toggle-btn toggle-on" id="blockToggleBtn">ACTIVE</button>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Patch Bank & Slot (1A–10D)</span>
+        <button id="resetPatchBtn" class="btn" style="padding:5px 10px;font-size:11px;">Reset Patch</button>
+      </div>
+
+      <div class="patch-nav-row">
+        <button id="prevPatchBtn" class="btn">◀ Prev</button>
+        <div class="patch-display">
+          <div id="patchCodeDisplay" class="patch-code">1B</div>
+          <div id="patchNameDisplay" class="patch-name-sub">Patch 1B</div>
+        </div>
+        <button id="nextPatchBtn" class="btn">Next ▶</button>
+      </div>
+
+      <div class="name-row">
+        <input id="patchNameInput" class="name-input" type="text" maxlength="16" placeholder="Patch Name" />
+        <button id="setNameBtn" class="btn btn-primary">Set Name</button>
+      </div>
+
+      <div id="bankGrid" class="bank-grid"></div>
+      <div id="slotGrid" class="slot-grid"></div>
     </div>
-    <div id="paramsContainer" style="display:flex; flex-direction:column; gap:9px;"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Signal Chain / Effect Blocks (Tap Block to Edit)</span>
+      </div>
+
+      <div id="effectBlocksGrid" class="eb-grid"></div>
+
+      <div class="chain-move-row">
+        <button id="moveLeftBtn" class="btn">◀ Move Left</button>
+        <button id="moveRightBtn" class="btn">Move Right ▶</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span id="activeBlockTitle" class="card-title">AMP • AMPLIFIER</span>
+        <button id="blockPowerBtn" class="toggle-btn on">ACTIVE</button>
+      </div>
+
+      <div id="selectedModelRow" class="model-row">
+        <span class="model-label">Effect Model:</span>
+        <select id="modelSelect" class="model-select"></select>
+      </div>
+
+      <div id="paramsContainer"></div>
+    </div>
   </div>
 
   <script>
-    const KEY = "nux_qt_preset_knobs_v1";
-    const LETTERS = ["A", "B", "C", "D"];
-    const BLOCK_CC = { NR: 21, EFX: 22, AMP: 23, IR: 24, EQ: 25, MOD: 26, DLY: 27, RVB: 28 };
-    const PARAM_CC = {
-      NR:  { Threshold: 40, Decay: 41 },
-      EFX: { Drive: 42, Tone: 43, Level: 44 },
-      AMP: { Gain: 45, Master: 46, Bass: 47, Middle: 48, Treble: 49 },
-      IR:  { Level: 50, LowCut: 51, HighCut: 52 },
-      EQ:  { "100Hz": 53, "220Hz": 54, "500Hz": 55, "1.2kHz": 56, "2.6kHz": 57, "6.4kHz": 58 },
-      MOD: { Rate: 59, Depth: 60, Mix: 61 },
-      DLY: { Time: 62, Feedback: 63, Mix: 64 },
-      RVB: { Decay: 65, Tone: 66, Mix: 67 }
-    };
-    let midiAccess = null, midiOut = null;
+    const STORAGE_KEY = "nux_mg101_studio_state_v1";
 
-    function defaultPatch(idx = 0) {
-      return {
-        presetName: "Patch " + patchName(idx),
-        chain: ["NR", "EFX", "AMP", "IR", "EQ", "MOD", "DLY", "RVB"],
-        blocks: {
-          NR:  { name: "Noise Gate", on: true,  p: { Threshold: 35, Decay: 40 } },
-          EFX: { name: "Overdrive",  on: true,  p: { Drive: 55, Tone: 60, Level: 70 } },
-          AMP: { name: "Amplifier",  on: true,  p: { Gain: 75, Master: 70, Bass: 55, Middle: 50, Treble: 65 } },
-          IR:  { name: "Cabinet IR", on: true,  p: { Level: 80, LowCut: 20, HighCut: 75 } },
-          EQ:  { name: "6-Band EQ",  on: false, p: { "100Hz": 50, "220Hz": 50, "500Hz": 52, "1.2kHz": 55, "2.6kHz": 54, "6.4kHz": 50 } },
-          MOD: { name: "Modulation", on: false, p: { Rate: 40, Depth: 50, Mix: 45 } },
-          DLY: { name: "Delay",      on: true,  p: { Time: 45, Feedback: 35, Mix: 30 } },
-          RVB: { name: "Reverb",     on: true,  p: { Decay: 50, Tone: 60, Mix: 35 } }
-        }
-      };
-    }
-
-    let state = { idx: 0, sel: "AMP", patches: {} };
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && typeof parsed.idx === "number" && parsed.patches) state = parsed;
-      }
-    } catch (e) {}
-
-    function save() {
-      try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
-    }
-
-    function curPatch() {
-      if (!state.patches[state.idx] || !state.patches[state.idx].blocks) {
-        state.patches[state.idx] = defaultPatch(state.idx);
-      }
-      if (!state.patches[state.idx].presetName) {
-        state.patches[state.idx].presetName = "Patch " + patchName(state.idx);
-      }
-      return state.patches[state.idx];
-    }
-
-    function patchName(i) {
-      return (Math.floor(i / 4) + 1) + LETTERS[i % 4];
-    }
-
-    function getParamCC(code, k) {
-      return (PARAM_CC[code] && PARAM_CC[code][k]) || 20;
-    }
-
-    function setStatus(txt) {
-      const m = midiOut ? "MIDI: " + midiOut.name : "MIDI: OFF";
-      document.getElementById("statusBar").innerHTML = "<span>" + txt + "</span><span>" + m + "</span>";
-    }
-
-    function sendPC(i) {
-      if (midiOut) midiOut.send([0xC0, Math.max(0, Math.min(127, i))]);
-    }
-
-    function sendCC(cc, v) {
-      if (midiOut) midiOut.send([0xB0, cc, Math.max(0, Math.min(127, Math.round((v / 100) * 127)))]);
-    }
-
-    function selectPatch(newIdx) {
-      state.idx = (newIdx + 40) % 40;
-      const p = curPatch();
-      save();
-      sendPC(state.idx);
-      renderAll();
-      setStatus("PATCH " + patchName(state.idx) + " • " + p.presetName);
-    }
-
-    function applyPresetName() {
-      const inp = document.getElementById("presetNameInput");
-      const name = (inp.value || "").trim() || ("Patch " + patchName(state.idx));
-      const p = curPatch();
-      p.presetName = name;
-      save();
-      renderAll();
-      setStatus("PRESET SET: " + name);
-    }
-
-    function setParam(code, k, v) {
-      const n = parseInt(v, 10);
-      const p = curPatch();
-      const val = isNaN(n) ? p.blocks[code].p[k] : Math.max(0, Math.min(100, n));
-      p.blocks[code].p[k] = val;
-      save();
-      const cc = getParamCC(code, k);
-      sendCC(cc, val);
-      const sl = document.getElementById("sl_" + k);
-      const inp = document.getElementById("in_" + k);
-      if (sl) sl.value = val;
-      if (inp) inp.value = val;
-      setStatus(code + " " + k + " [CC" + cc + "]: " + val + "%");
-    }
-
-    function renderAll() {
-      const p = curPatch();
-      if (!p.blocks[state.sel]) state.sel = p.chain[0] || "AMP";
-      document.getElementById("patchDisplay").textContent = patchName(state.idx);
-      document.getElementById("presetNameDisplay").textContent = p.presetName;
-      const presetInp = document.getElementById("presetNameInput");
-      if (document.activeElement !== presetInp) {
-        presetInp.value = p.presetName;
-      }
-
-      const bGrid = document.getElementById("bankGrid");
-      const sGrid = document.getElementById("slotGrid");
-      const activeB = Math.floor(state.idx / 4);
-      const activeS = state.idx % 4;
-      bGrid.innerHTML = "";
-      for (let b = 0; b < 10; b++) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "q-btn" + (b === activeB ? " active" : "");
-        btn.textContent = "B" + (b + 1);
-        btn.onclick = () => selectPatch(b * 4 + activeS);
-        bGrid.appendChild(btn);
-      }
-      sGrid.innerHTML = "";
-      LETTERS.forEach((lt, s) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "q-btn" + (s === activeS ? " active" : "");
-        btn.textContent = (activeB + 1) + lt;
-        btn.onclick = () => selectPatch(activeB * 4 + s);
-        sGrid.appendChild(btn);
-      });
-
-      const chainEl = document.getElementById("chainContainer");
-      chainEl.innerHTML = "";
-      p.chain.forEach((code) => {
-        const blk = p.blocks[code];
-        const node = document.createElement("button");
-        node.type = "button";
-        node.className = "chain-node" + (blk.on ? " active" : "") + (state.sel === code ? " selected" : "");
-        node.innerHTML = '<div class="node-code">' + code + '</div><div class="node-dot"></div>';
-        node.onclick = () => {
-          state.sel = code;
-          save();
-          renderAll();
-          setStatus("SELECTED: " + code + " (" + blk.name + ")");
-        };
-        chainEl.appendChild(node);
-      });
-
-      const curBlk = p.blocks[state.sel];
-      document.getElementById("blockTitle").textContent = state.sel + " • " + curBlk.name;
-      const tBtn = document.getElementById("blockToggleBtn");
-      tBtn.textContent = curBlk.on ? "ACTIVE" : "BYPASS";
-      tBtn.className = "toggle-btn " + (curBlk.on ? "toggle-on" : "toggle-off");
-
-      const paramsEl = document.getElementById("paramsContainer");
-      paramsEl.innerHTML = "";
-      Object.entries(curBlk.p).forEach(([k, val]) => {
-        const ccNum = getParamCC(state.sel, k);
-        const grp = document.createElement("div");
-        grp.className = "param-group";
-        grp.innerHTML =
-          '<div class="param-top">' +
-            '<div><span class="param-label">' + k + '</span><span class="param-cc-tag">CC' + ccNum + '</span></div>' +
-            '<div class="digital-stepper">' +
-              '<button type="button" class="step-btn" id="m_' + k + '">−</button>' +
-              '<input type="number" min="0" max="100" class="digital-input" id="in_' + k + '" value="' + val + '" />' +
-              '<button type="button" class="step-btn" id="p_' + k + '">+</button>' +
-            '</div>' +
-          '</div>' +
-          '<input type="range" min="0" max="100" id="sl_' + k + '" value="' + val + '" />';
-        paramsEl.appendChild(grp);
-
-        document.getElementById("m_" + k).onclick = () => setParam(state.sel, k, curBlk.p[k] - 1);
-        document.getElementById("p_" + k).onclick = () => setParam(state.sel, k, curBlk.p[k] + 1);
-        document.getElementById("in_" + k).onchange = (e) => setParam(state.sel, k, e.target.value);
-        document.getElementById("sl_" + k).oninput = (e) => setParam(state.sel, k, e.target.value);
-      });
-    }
-
-    document.getElementById("savePresetNameBtn").onclick = applyPresetName;
-    document.getElementById("presetNameInput").onkeydown = (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        applyPresetName();
-      }
-    };
-
-    document.getElementById("blockToggleBtn").onclick = () => {
-      const b = curPatch().blocks[state.sel];
-      if (!b) return;
-      b.on = !b.on;
-      sendCC(BLOCK_CC[state.sel] || 21, b.on ? 100 : 0);
-      save();
-      renderAll();
-      setStatus(state.sel + (b.on ? " ACTIVE" : " BYPASS"));
-    };
-
-    document.getElementById("moveLeftBtn").onclick = () => {
-      const c = curPatch().chain;
-      const i = c.indexOf(state.sel);
-      if (i > 0) {
-        [c[i - 1], c[i]] = [c[i], c[i - 1]];
-        sendCC(30, Math.round((i / Math.max(1, c.length - 1)) * 100));
-        save();
-        renderAll();
-        setStatus("MOVED " + state.sel + " LEFT");
-      }
-    };
-
-    document.getElementById("moveRightBtn").onclick = () => {
-      const c = curPatch().chain;
-      const i = c.indexOf(state.sel);
-      if (i >= 0 && i < c.length - 1) {
-        [c[i + 1], c[i]] = [c[i], c[i + 1]];
-        sendCC(30, Math.round(((i + 1) / Math.max(1, c.length - 1)) * 100));
-        save();
-        renderAll();
-        setStatus("MOVED " + state.sel + " RIGHT");
-      }
-    };
-
-    document.getElementById("prevPatch").onclick = () => selectPatch(state.idx - 1);
-    document.getElementById("nextPatch").onclick = () => selectPatch(state.idx + 1);
-    document.getElementById("resetPatchBtn").onclick = () => {
-      const oldName = curPatch().presetName;
-      state.patches[state.idx] = defaultPatch(state.idx);
-      state.patches[state.idx].presetName = oldName;
-      save();
-      renderAll();
-      setStatus("PATCH " + patchName(state.idx) + " RESET");
-    };
-
-    document.getElementById("connectBtn").onclick = async () => {
-      if (!navigator.requestMIDIAccess) { setStatus("WEB-MIDI UNSUPPORTED"); return; }
-      try {
-        setStatus("REQUESTING USB MIDI...");
-        midiAccess = await navigator.requestMIDIAccess({ sysex: true });
-        const outs = Array.from(midiAccess.outputs.values());
-        midiOut = outs.length > 0 ? outs[0] : null;
-        setStatus(midiOut ? "OTG CONNECTED" : "NO USB MIDI FOUND");
-      } catch (e) {
-        setStatus("MIDI ERR: " + (e.message || "DENIED"));
-      }
-    };
-
-    renderAll();
-  </script>
-</body>
-                                </html>
-<!-- Effect blocks Card (আপনার Signal Chain কার্ডের জায়গায় বা ভেতরে বসান) -->
-<div class="card">
-  <h3>Effect blocks</h3>
-  <div id="effectBlocksGrid" class="eb-grid"></div>
-</div>
-
-<style>
-  .eb-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 8px;
-  }
-  @media (max-width: 520px) {
-    .eb-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  .eb-tile {
-    background: #181a19;
-    border: 1px solid #2b2f2d;
-    border-radius: 14px;
-    padding: 10px 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    color: #d6dbd8;
-    transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
-  }
-  .eb-tile:active {
-    transform: scale(0.97);
-  }
-  .eb-tile.is-on {
-    border-color: #4caf50;
-    background: #1c241e;
-  }
-  .eb-tile.is-selected {
-    outline: 2px solid #ffb300;
-    border-color: #ffb300;
-  }
-  .eb-tile.is-off {
-    opacity: 0.65;
-  }
-  .eb-label {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .eb-icon {
-    width: 38px;
-    height: 38px;
-    image-rendering: pixelated;
-  }
-</style>
-
-<script>
-  const EFFECT_ICONS = {
-    WAH: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="4" y="2" width="8" height="12" fill="#4f5659" stroke="#222" stroke-width="1"/>
-        <rect x="5" y="4" width="6" height="1" fill="#2c3032"/>
-        <rect x="5" y="6" width="6" height="1" fill="#2c3032"/>
-        <rect x="5" y="8" width="6" height="1" fill="#2c3032"/>
-        <rect x="5" y="10" width="6" height="1" fill="#2c3032"/>
-      </svg>`,
-    PEDAL: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="4" y="2" width="8" height="12" rx="1" fill="#6b7378" stroke="#222" stroke-width="1"/>
-        <rect x="6" y="4" width="1" height="2" fill="#222"/>
-        <rect x="8" y="4" width="1" height="2" fill="#222"/>
-        <rect x="10" y="4" width="1" height="2" fill="#222"/>
-        <rect x="7" y="10" width="2" height="2" fill="#cfd6da"/>
-      </svg>`,
-    AMP: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
-        <rect x="3" y="5" width="10" height="2" fill="#222"/>
-        <circle cx="5" cy="6" r="0.6" fill="#e53935"/>
-        <circle cx="7" cy="6" r="0.6" fill="#cfd6da"/>
-        <circle cx="9" cy="6" r="0.6" fill="#cfd6da"/>
-        <circle cx="11" cy="6" r="0.6" fill="#cfd6da"/>
-        <rect x="3" y="8" width="10" height="3" fill="#2f3437"/>
-      </svg>`,
-    EQ: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="2" y="4" width="12" height="8" fill="#4f5659" stroke="#222" stroke-width="1"/>
-        <rect x="4" y="5" width="1" height="6" fill="#222"/>
-        <rect x="7" y="5" width="1" height="6" fill="#222"/>
-        <rect x="10" y="5" width="1" height="6" fill="#222"/>
-        <rect x="12" y="5" width="1" height="6" fill="#222"/>
-        <rect x="3.5" y="7" width="2" height="1" fill="#e0e6e9"/>
-        <rect x="6.5" y="9" width="2" height="1" fill="#e0e6e9"/>
-        <rect x="9.5" y="6" width="2" height="1" fill="#e0e6e9"/>
-        <rect x="11.5" y="8" width="2" height="1" fill="#e0e6e9"/>
-      </svg>`,
-    CAB: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="3" y="3" width="10" height="10" fill="#464c50" stroke="#202325" stroke-width="1"/>
-        <rect x="4" y="4" width="8" height="8" fill="#2c3032"/>
-        <circle cx="6" cy="6" r="1.5" fill="#5b6266"/>
-        <circle cx="10" cy="6" r="1.5" fill="#5b6266"/>
-        <circle cx="6" cy="10" r="1.5" fill="#5b6266"/>
-        <circle cx="10" cy="10" r="1.5" fill="#5b6266"/>
-      </svg>`,
-    SR: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="2" y="5" width="12" height="6" fill="#4f5659" stroke="#222" stroke-width="1"/>
-        <circle cx="5" cy="8" r="1.5" fill="#cfd6da"/>
-        <circle cx="11" cy="8" r="1.5" fill="#cfd6da"/>
-        <rect x="7" y="7.5" width="2" height="1" fill="#cfd6da"/>
-      </svg>`,
-    VOL: `
-      <svg class="eb-icon" viewBox="0 0 16 16" shape-rendering="crispEdges">
-        <rect x="2" y="4" width="12" height="8" fill="#464c50" stroke="#202325" stroke-width="1"/>
-        <rect x="3" y="9" width="1.5" height="2" fill="#81c784"/>
-        <rect x="5" y="8" width="1.5" height="3" fill="#81c784"/>
-        <rect x="7" y="7" width="1.5" height="4" fill="#aed581"/>
-        <rect x="9" y="6" width="1.5" height="5" fill="#ffd54f"/>
-        <rect x="11" y="5" width="1.5" height="6" fill="#e57373"/>
-      </svg>`
-  };
-
-  function getBlockIcon(id) {
-    if (id === "WAH") return EFFECT_ICONS.WAH;
-    if (id === "AMP") return EFFECT_ICONS.AMP;
-    if (id === "EQ") return EFFECT_ICONS.EQ;
-    if (id === "IR") return EFFECT_ICONS.CAB;
-    if (id === "S/R") return EFFECT_ICONS.SR;
-    if (id === "VOL") return EFFECT_ICONS.VOL;
-    return EFFECT_ICONS.PEDAL;
-  }
-
-  function renderEffectBlocksGrid() {
-    const grid = document.getElementById("effectBlocksGrid");
-    if (!grid || typeof curPatch !== "function") return;
-    grid.innerHTML = "";
-
-    const patch = curPatch();
-    patch.chain.forEach((blkId) => {
-      const blk = patch.blocks[blkId];
-      if (!blk) return;
-
-      const tile = document.createElement("div");
-      tile.className = "eb-tile";
-      if (blk.on) tile.classList.add("is-on");
-      else tile.classList.add("is-off");
-      if (state.sel === blkId) tile.classList.add("is-selected");
-
-      tile.innerHTML = `${getBlockIcon(blkId)}<span class="eb-label">${blkId}</span>`;
-
-      tile.onclick = () => {
-        if (state.sel === blkId) {
-          // ইতিমধ্যে সিলেক্ট করা ব্লকে আবার ট্যাপ করলে On/Off টগল হবে
-          blk.on = !blk.on;
-          if (typeof sendCC === "function" && typeof BLOCK_CC !== "undefined") {
-            sendCC(BLOCK_CC[blkId] || 21, blk.on ? 100 : 0);
-          }
-          if (typeof save === "function") save();
-        } else {
-          // অন্য ব্লকে ট্যাপ করলে সেটি সিলেক্ট হয়ে নিচের প্যারামিটার এডিটরে খুলবে
-          state.sel = blkId;
-          if (typeof save === "function") save();
-        }
-        if (typeof renderAll === "function") renderAll();
-        else renderEffectBlocksGrid();
-      };
-
-      grid.appendChild(tile);
-    });
-  }
-  </script>
-</body>
-</html>
+    const BLOCK_CC = {
+      NR: 21,
+      CMP: 22,
+      EFX: 23,
+      AMP: 24,
+      IR: 25,
+      EQ: 26,
+      MOD: 27,
+      DLY: 28,
