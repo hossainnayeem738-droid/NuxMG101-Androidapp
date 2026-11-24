@@ -10,16 +10,16 @@
       --text:#eef2f6;--muted:#97a3b4;--blue:#1e88e5;--amber:#ffb300;--green:#4caf50;--red:#d32f2f;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-    body{margin:0;padding:12px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);}
+    body{margin:0;padding:12px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
     .app{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;overflow-x:hidden;}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
-    .grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px;}
-    .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
-    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px;}
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
-    button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer;}
-    input{flex:1;min-width:0;background:#0f1318;border-color:var(--amber);font-weight:400;cursor:text;}
+    .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px;}
+    .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px;}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px;}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;}
+    button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 8px;font-weight:700;cursor:pointer;min-width:0;}
+    input{flex:1;background:#0f1318;border-color:var(--amber);font-weight:400;cursor:text;}
     .blue{background:var(--blue);border-color:var(--blue);color:#fff;}
     .red{background:var(--red);border-color:var(--red);color:#fff;}
     .on{border-color:var(--green);}
@@ -27,12 +27,12 @@
     .st{background:#0f2133;border:1px solid #1f486e;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;gap:8px;}
     .sec-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
     .grp-label{font-size:11px;font-weight:800;color:#7fb3ff;margin:10px 0 4px 0;}
-    .blk{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;font-size:11px;}
+    .blk{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;font-size:11px;min-width:0;}
     .sub{font-size:9px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-    .gear-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+    .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
     .gear-card{
       background:#181d25;border:1px solid #2e3746;border-radius:10px;padding:7px 4px;
-      display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;
+      display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;min-width:0;
     }
     .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#202733;}
     .gear-art{
@@ -42,10 +42,10 @@
     }
     .amp-art{background:linear-gradient(180deg,#2b2620 0%,#15171a 42%,#3a352f 43%,#1c1e22 100%);color:#f3d299;}
     .cab-art{background:linear-gradient(180deg,#25282e 0%,#14161a 100%);color:#cfd8dc;border-color:#455a64;}
-    .pedal-art{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.7);}
+    .pedal-art{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.75);}
     .knobs{display:flex;gap:3px;margin-bottom:2px;}
-    .knobs span{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.75);}
-    .gear-name{font-size:10px;font-weight:800;line-height:1.15;color:#eef2f6;}
+    .knobs span{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.8);}
+    .gear-name{font-size:10px;font-weight:800;line-height:1.15;color:#eef2f6;word-break:break-word;}
     .mic-card{padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;}
     .mic-icon{width:14px;height:24px;border-radius:7px 7px 3px 3px;background:linear-gradient(90deg,#90a4ae,#eceff1,#607d8b);border:1px solid #37474f;}
   </style>
@@ -100,15 +100,10 @@
     <div id="irExtras"></div>
     <div id="params" style="margin-top:10px;"></div>
   </div>
-
-  <div class="card">
-    <div class="sec-title">Effect Blocks</div>
-    <div id="blocks" class="grid5"></div>
-  </div>
 </div>
 
 <script>
-var KEY="nux_mg101_visual_rig_v1";
+var KEY="nux_mg101_chain_only_v1";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
@@ -315,23 +310,19 @@ function draw(syncInp){
     sg.appendChild(btn);
   });
 
-  var cg=document.getElementById("chain"), ebg=document.getElementById("blocks");
-  cg.innerHTML=""; ebg.innerHTML="";
+  var cg=document.getElementById("chain"); cg.innerHTML="";
   p.chain.forEach(function(bid){
     var item=p.b[bid];
     if(!item||!META[bid]) return;
-    var cls="blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
-    [cg,ebg].forEach(function(host){
-      var btn=document.createElement("button");
-      btn.className=cls;
-      btn.innerHTML="<span>"+bid+"</span><span class='sub'>"+item.model+"</span>";
-      btn.onclick=function(){
-        if(st.sel===bid){ item.on=!item.on; sendCC(META[bid].cc,item.on?100:0); }
-        else st.sel=bid;
-        save(); draw(false);
-      };
-      host.appendChild(btn);
-    });
+    var btn=document.createElement("button");
+    btn.className="blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
+    btn.innerHTML="<span>"+bid+"</span><span class='sub'>"+item.model+"</span>";
+    btn.onclick=function(){
+      if(st.sel===bid){ item.on=!item.on; sendCC(META[bid].cc,item.on?100:0); }
+      else st.sel=bid;
+      save(); draw(false);
+    };
+    cg.appendChild(btn);
   });
 
   var pb=document.getElementById("pwrBtn");
@@ -457,4 +448,4 @@ document.getElementById("mRight").onclick=function(){ moveBlock(1); };
 draw(true);
 </script>
 </body>
-        </html>
+      </html>
