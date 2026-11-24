@@ -31,23 +31,28 @@
     .sub{font-size:9px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
     .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
     .gear-card{
-      background:#181d25;border:1px solid #2e3746;border-radius:10px;padding:7px 4px;
+      background:#171c24;border:1px solid #2d3645;border-radius:10px;padding:6px 4px;
       display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;min-width:0;
     }
     .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#202733;}
-    .gear-art{
-      width:100%;height:34px;border-radius:6px;display:flex;flex-direction:column;
-      align-items:center;justify-content:center;font-size:9px;font-weight:900;letter-spacing:0.4px;
-      border:1px solid rgba(255,255,255,0.16);position:relative;overflow:hidden;
+    .digital-box{
+      width:100%;height:42px;border-radius:7px;padding:3px 4px;
+      display:flex;flex-direction:column;justify-content:space-between;
+      border:1px solid rgba(255,255,255,0.18);overflow:hidden;
     }
-    .amp-art{background:linear-gradient(180deg,#2b2620 0%,#15171a 42%,#3a352f 43%,#1c1e22 100%);color:#f3d299;}
-    .cab-art{background:linear-gradient(180deg,#25282e 0%,#14161a 100%);color:#cfd8dc;border-color:#455a64;}
-    .pedal-art{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.75);}
-    .knobs{display:flex;gap:3px;margin-bottom:2px;}
-    .knobs span{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.8);}
+    .amp-combo{background:linear-gradient(180deg,#1d1f24 0%,#1d1f24 38%,#4e4334 38%,#2b241b 100%);}
+    .amp-stack{background:linear-gradient(180deg,#15171c 0%,#15171c 42%,#242830 42%,#101216 100%);}
+    .cab-box{background:repeating-linear-gradient(90deg,#1b1f26 0px,#1b1f26 4px,#262c36 4px,#262c36 6px);}
+    .fx-box{box-shadow:inset 0 1px 0 rgba(255,255,255,0.25);}
+    .top-bar{display:flex;justify-content:space-between;align-items:center;font-size:7px;font-weight:900;letter-spacing:0.3px;opacity:0.92;}
+    .knobs{display:flex;gap:2px;}
+    .knobs span{width:4px;height:4px;border-radius:50%;background:#fff;opacity:0.85;}
+    .mid-tag{font-size:8px;font-weight:900;letter-spacing:0.5px;text-align:center;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.85);}
+    .bot-line{height:3px;width:70%;margin:0 auto;border-radius:2px;background:rgba(255,255,255,0.35);}
     .gear-name{font-size:10px;font-weight:800;line-height:1.15;color:#eef2f6;word-break:break-word;}
     .mic-card{padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-    .mic-icon{width:14px;height:24px;border-radius:7px 7px 3px 3px;background:linear-gradient(90deg,#90a4ae,#eceff1,#607d8b);border:1px solid #37474f;}
+    .mic-capsule{width:16px;height:24px;border-radius:8px 8px 3px 3px;background:linear-gradient(90deg,#78909c,#f5f7fa,#546e7a);border:1px solid #37474f;}
+    .mic-panel{background:#181d26;border:1px solid #2e3848;border-radius:12px;padding:10px;margin-top:10px;}
   </style>
 </head>
 <body>
@@ -103,7 +108,7 @@
 </div>
 
 <script>
-var KEY="nux_mg101_chain_only_v1";
+var KEY="nux_mg101_digital_v2";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
@@ -123,99 +128,66 @@ var META={
 };
 
 var GEAR={
-  GATE:[{g:"Noise Reduction",items:[
-    {n:"NOISE GATE",c:"#37474f"}
-  ]}],
-  CMP:[{g:"Compression Pedals",items:[
-    {n:"ROSE COMPRESSOR",c:"#ad1457"},
-    {n:"4 COMP",c:"#546e7a"}
-  ]}],
+  GATE:[{g:"Noise Reduction",items:[{n:"NOISE GATE",c:"#37474f",tag:"GATE"}]}],
+  CMP:[{g:"Compression Pedals",items:[{n:"ROSE COMPRESSOR",c:"#ad1457",tag:"COMP"},{n:"4 COMP",c:"#546e7a",tag:"4-COMP"}]}],
   EFX:[{g:"Drive & Distortion (EFX)",items:[
-    {n:"DISTORTION+",c:"#fbc02d"},
-    {n:"RE BOOST",c:"#eceff1"},
-    {n:"AC BOOST",c:"#fdd835"},
-    {n:"DIST 803",c:"#ef6c00"},
-    {n:"T SCREAM",c:"#2e7d32"},
-    {n:"BLUES DRV",c:"#1565c0"},
-    {n:"MORNING DRV",c:"#c0ca33"},
-    {n:"RAT DIST",c:"#212121"},
-    {n:"RED DIRT",c:"#c62828"},
-    {n:"CRUNCH",c:"#8e24aa"},
-    {n:"MUFF FUZZ",c:"#424242"},
-    {n:"KATANA",c:"#90a4ae"},
-    {n:"ST SINGER",c:"#607d8b"}
+    {n:"DISTORTION+",c:"#fbc02d",tag:"DIST+"},{n:"RE BOOST",c:"#eceff1",tag:"BOOST"},{n:"AC BOOST",c:"#fdd835",tag:"AC-BST"},
+    {n:"DIST 803",c:"#ef6c00",tag:"OD-803"},{n:"T SCREAM",c:"#2e7d32",tag:"TS-OD"},{n:"BLUES DRV",c:"#1565c0",tag:"BLUES"},
+    {n:"MORNING DRV",c:"#c0ca33",tag:"MORN"},{n:"RAT DIST",c:"#212121",tag:"RAT"},{n:"RED DIRT",c:"#c62828",tag:"DIRT"},
+    {n:"CRUNCH",c:"#8e24aa",tag:"CRNCH"},{n:"MUFF FUZZ",c:"#424242",tag:"FUZZ"},{n:"KATANA",c:"#90a4ae",tag:"CLEAN"},
+    {n:"ST SINGER",c:"#607d8b",tag:"SINGER"}
   ]}],
   AMP:[
     {g:"Combo Amps & Open-Back Cabinets",items:[
-      {n:"TWEED 410"},{n:"BRIT 212"},{n:"EVL 112"},{n:"CALI 112"},
-      {n:"BLUE 112"},{n:"BLUE 212"},{n:"DC 212"},{n:"SUPER 212"},
-      {n:"TWEED 112"},{n:"TWIN 212"},{n:"BLACK 112"},{n:"VIB 212"},{n:"JAZZ 212"}
+      {n:"TWEED 410",kind:"combo",tag:"4x10"},{n:"BRIT 212",kind:"combo",tag:"2x12"},{n:"EVL 112",kind:"combo",tag:"1x12"},
+      {n:"CALI 112",kind:"combo",tag:"1x12"},{n:"BLUE 112",kind:"combo",tag:"1x12"},{n:"BLUE 212",kind:"combo",tag:"2x12"},
+      {n:"DC 212",kind:"combo",tag:"2x12"},{n:"SUPER 212",kind:"combo",tag:"2x12"},{n:"TWEED 112",kind:"combo",tag:"1x12"},
+      {n:"TWIN 212",kind:"combo",tag:"2x12"},{n:"BLACK 112",kind:"combo",tag:"1x12"},{n:"VIB 212",kind:"combo",tag:"2x12"},
+      {n:"JAZZ 212",kind:"combo",tag:"2x12"}
     ]},
     {g:"Amplifier Heads & 4x12 Cabinets (Stack Rig)",items:[
-      {n:"DIE VH4"},{n:"DUAL RECT"},{n:"FIREMAN HBE"},{n:"HIWIRE"},
-      {n:"1987 X 50"},{n:"MR.Z 38"},{n:"BRIT 800"},{n:"BRIT 2000"},
-      {n:"PLEXI 45"},{n:"PLEXI 100"},{n:"SLO 100"},{n:"UBER"}
+      {n:"DIE VH4",kind:"stack",tag:"STACK"},{n:"DUAL RECT",kind:"stack",tag:"RECT"},{n:"FIREMAN HBE",kind:"stack",tag:"HBE"},
+      {n:"HIWIRE",kind:"stack",tag:"HIWRE"},{n:"1987 X 50",kind:"stack",tag:"50W"},{n:"MR.Z 38",kind:"stack",tag:"38W"},
+      {n:"BRIT 800",kind:"stack",tag:"800"},{n:"BRIT 2000",kind:"stack",tag:"2000"},{n:"PLEXI 45",kind:"stack",tag:"45W"},
+      {n:"PLEXI 100",kind:"stack",tag:"100W"},{n:"SLO 100",kind:"stack",tag:"SLO"},{n:"UBER",kind:"stack",tag:"UBER"}
     ]}
   ],
   IR:[
     {g:"4x12 / 2x12 Extension Cabs",items:[
-      {n:"BOTM 412"},{n:"RECT 412"},{n:"HBE 412"},{n:"CUSTOM 412"},
-      {n:"V30 412"},{n:"BUTQ 212"},{n:"T75 412"},{n:"G12M 412"},
-      {n:"G12L 412"},{n:"GREEN 412"},{n:"SLO 412"},{n:"UBER 412"}
+      {n:"BOTM 412",tag:"4x12"},{n:"RECT 412",tag:"4x12"},{n:"HBE 412",tag:"4x12"},{n:"CUSTOM 412",tag:"4x12"},
+      {n:"V30 412",tag:"V30"},{n:"BUTQ 212",tag:"2x12"},{n:"T75 412",tag:"T75"},{n:"G12M 412",tag:"G12M"},
+      {n:"G12L 412",tag:"G12L"},{n:"GREEN 412",tag:"GRN"},{n:"SLO 412",tag:"4x12"},{n:"UBER 412",tag:"4x12"}
     ]},
     {g:"User IR Slots (01 - 12)",items:[
-      {n:"User IR 01"},{n:"User IR 02"},{n:"User IR 03"},{n:"User IR 04"},
-      {n:"User IR 05"},{n:"User IR 06"},{n:"User IR 07"},{n:"User IR 08"},
-      {n:"User IR 09"},{n:"User IR 10"},{n:"User IR 11"},{n:"User IR 12"}
+      {n:"User IR 01",tag:"IR-01"},{n:"User IR 02",tag:"IR-02"},{n:"User IR 03",tag:"IR-03"},{n:"User IR 04",tag:"IR-04"},
+      {n:"User IR 05",tag:"IR-05"},{n:"User IR 06",tag:"IR-06"},{n:"User IR 07",tag:"IR-07"},{n:"User IR 08",tag:"IR-08"},
+      {n:"User IR 09",tag:"IR-09"},{n:"User IR 10",tag:"IR-10"},{n:"User IR 11",tag:"IR-11"},{n:"User IR 12",tag:"IR-12"}
     ]}
   ],
-  EQ:[{g:"Equalizer (EQ)",items:[
-    {n:"6-BAND EQ",c:"#5d4037"},
-    {n:"ALIEN EQ",c:"#b71c1c"},
-    {n:"10-BAND EQ",c:"#263238"}
-  ]}],
+  EQ:[{g:"Equalizer (EQ)",items:[{n:"6-BAND EQ",c:"#5d4037",tag:"6-EQ"},{n:"ALIEN EQ",c:"#b71c1c",tag:"ALIEN"},{n:"10-BAND EQ",c:"#263238",tag:"10-EQ"}]}],
   MOD:[{g:"Modulation (MOD)",items:[
-    {n:"CE-1",c:"#455a64"},
-    {n:"CE-2",c:"#00838f"},
-    {n:"ST. CHORUS",c:"#f9a825"},
-    {n:"VIBRATOR",c:"#0277bd"},
-    {n:"DETUNE",c:"#546e7a"},
-    {n:"FLANGER",c:"#6a1b9a"},
-    {n:"PHASE 90",c:"#ef6c00"},
-    {n:"PHASE 90 ORANGE",c:"#f57c00"},
-    {n:"SCF",c:"#00695c"},
-    {n:"ROTARY SPEAKER",c:"#6d4c41"},
-    {n:"STEREO CHORUS",c:"#1565c0"}
+    {n:"CE-1",c:"#455a64",tag:"CHOR"},{n:"CE-2",c:"#00838f",tag:"CHOR"},{n:"ST. CHORUS",c:"#f9a825",tag:"ST-CH"},
+    {n:"VIBRATOR",c:"#0277bd",tag:"VIB"},{n:"DETUNE",c:"#546e7a",tag:"DETN"},{n:"FLANGER",c:"#6a1b9a",tag:"FLNG"},
+    {n:"PHASE 90",c:"#ef6c00",tag:"PH90"},{n:"PHASE 90 ORANGE",c:"#f57c00",tag:"PH90O"},{n:"SCF",c:"#00695c",tag:"SCF"},
+    {n:"ROTARY SPEAKER",c:"#6d4c41",tag:"ROTR"},{n:"STEREO CHORUS",c:"#1565c0",tag:"ST-CH"}
   ]}],
   DLY:[{g:"Delay (DLY)",items:[
-    {n:"ANALOG DELAY",c:"#ad1457"},
-    {n:"DIGITAL DELAY",c:"#78909c"},
-    {n:"MODULATION",c:"#00838f"},
-    {n:"TAPE ECHO",c:"#2e7d32"},
-    {n:"PAN DELAY",c:"#0277bd"}
+    {n:"ANALOG DELAY",c:"#ad1457",tag:"ANLG"},{n:"DIGITAL DELAY",c:"#78909c",tag:"DIGI"},{n:"MODULATION",c:"#00838f",tag:"MOD"},
+    {n:"TAPE ECHO",c:"#2e7d32",tag:"TAPE"},{n:"PAN DELAY",c:"#0277bd",tag:"PAN"}
   ]}],
   RVB:[{g:"Reverb (RVB)",items:[
-    {n:"ROOM",c:"#37474f"},
-    {n:"HALL",c:"#8d6e63"},
-    {n:"PLATE",c:"#90a4ae"},
-    {n:"SPRING",c:"#fbc02d"},
-    {n:"SHIMMER",c:"#212121"}
+    {n:"ROOM",c:"#37474f",tag:"ROOM"},{n:"HALL",c:"#8d6e63",tag:"HALL"},{n:"PLATE",c:"#90a4ae",tag:"PLAT"},
+    {n:"SPRING",c:"#fbc02d",tag:"SPRG"},{n:"SHIMMER",c:"#212121",tag:"SHMR"}
   ]}],
-  "P.L":[{g:"Output Level",items:[
-    {n:"PATCH LEVEL",c:"#1e88e5"}
-  ]}]
+  "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#1e88e5",tag:"LEVEL"}]}]
 };
 
 var midiOut=null;
-
 function flatModels(id){
   var out=[], groups=GEAR[id]||[];
-  for(var i=0;i<groups.length;i++){
-    for(var j=0;j<groups[i].items.length;j++) out.push(groups[i].items[j].n);
-  }
+  for(var i=0;i<groups.length;i++) for(var j=0;j<groups[i].items.length;j++) out.push(groups[i].items[j].n);
   return out.length?out:["Default"];
 }
-
 function newPatch(code){
   var b={};
   for(var i=0;i<ORDER.length;i++){
@@ -223,22 +195,19 @@ function newPatch(code){
     for(var j=0;j<META[id].p.length;j++) pr[META[id].p[j][1]]=META[id].p[j][2];
     var list=flatModels(id);
     b[id]={on:(id!=="EQ"&&id!=="MOD"),model:list[0],p:pr};
-    if(id==="IR"){ b[id].mic=IR_MICS[1]; b[id].pos=IR_POS[2]; }
+    if(id==="IR"){ b[id].micOn=true; b[id].mic=IR_MICS[1]; b[id].pos=IR_POS[2]; b[id].micLvl=75; }
   }
   return {name:"Patch "+code,chain:ORDER.slice(),b:b};
 }
-
 function initState(){
   var patches={};
   for(var i=0;i<BANKS.length;i++) for(var j=0;j<SLOTS.length;j++){ var c=""+BANKS[i]+SLOTS[j]; patches[c]=newPatch(c); }
   return {bank:2,slot:"A",sel:"AMP",patches:patches};
 }
-
 var st=(function(){
   try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b["P.L"]) return o; } }catch(e){}
   return initState();
 })();
-
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
 function code(){ return ""+st.bank+st.slot; }
 function patch(){
@@ -246,12 +215,13 @@ function patch(){
   if(!st.patches[c]) st.patches[c]=newPatch(c);
   if(!META[st.sel]) st.sel="AMP";
   if(st.patches[c].b && st.patches[c].b.IR){
+    if(typeof st.patches[c].b.IR.micOn!=="boolean") st.patches[c].b.IR.micOn=true;
     if(!st.patches[c].b.IR.mic) st.patches[c].b.IR.mic=IR_MICS[1];
     if(!st.patches[c].b.IR.pos) st.patches[c].b.IR.pos=IR_POS[2];
+    if(typeof st.patches[c].b.IR.micLvl!=="number") st.patches[c].b.IR.micLvl=75;
   }
   return st.patches[c];
 }
-
 function sendCC(cc,v){ if(!midiOut) return; try{ midiOut.send([0xb0,cc,Math.max(0,Math.min(127,Math.round(v)))]); }catch(e){} }
 function sendPC(pc){ if(!midiOut) return; try{ midiOut.send([0xc0,Math.max(0,Math.min(127,pc))]); }catch(e){} }
 function sendName(n){
@@ -263,33 +233,28 @@ function sendName(n){
   }catch(e){}
 }
 function sendChain(p){
-  for(var i=0;i<p.chain.length;i++){
-    var m=META[p.chain[i]];
-    if(m) sendCC(m.cCc,i);
-  }
+  for(var i=0;i<p.chain.length;i++){ var m=META[p.chain[i]]; if(m) sendCC(m.cCc,i); }
 }
-
 function connectMidi(){
   var ms=document.getElementById("midiState");
   if(!navigator.requestMIDIAccess){ ms.textContent="MIDI: UNSUPPORTED"; return; }
   navigator.requestMIDIAccess({sysex:true}).then(function(acc){
     var outs=Array.from(acc.outputs.values());
     if(outs.length){
-      midiOut=outs[0];
-      ms.textContent="MIDI: "+(midiOut.name||"OK");
+      midiOut=outs[0]; ms.textContent="MIDI: "+(midiOut.name||"OK");
       var b=document.getElementById("midiBtn"); b.textContent="OTG Connected"; b.className="blue";
       sendChain(patch());
     }else ms.textContent="MIDI: NO DEVICE";
   }).catch(function(){ ms.textContent="MIDI: BLOCKED"; });
 }
-
-function draw(syncInp){
+  function draw(syncInp){
   var p=patch(), c=code(), id=st.sel, m=META[id], blk=p.b[id];
   document.getElementById("pCode").textContent=c;
   document.getElementById("pName").textContent=p.name;
   var inp=document.getElementById("nameInp");
   if(syncInp||document.activeElement!==inp) inp.value=p.name;
-  document.getElementById("status").textContent="SELECTED: "+id+" ("+m.n+") - "+blk.model+(id==="IR"?" ["+blk.mic+" / "+blk.pos+"]":"");
+  var micInfo=id==="IR"?(" ["+(blk.micOn?(blk.mic+" / "+blk.pos+" / Mic "+blk.micLvl):"MIC OFF")+"]"):"";
+  document.getElementById("status").textContent="SELECTED: "+id+" ("+m.n+") - "+blk.model+micInfo;
   document.getElementById("edTitle").textContent=id+" - "+m.n.toUpperCase();
 
   var bg=document.getElementById("banks"); bg.innerHTML="";
@@ -333,31 +298,25 @@ function draw(syncInp){
   var vg=document.getElementById("visualGear"); vg.innerHTML="";
   var allNames=flatModels(id);
   (GEAR[id]||[]).forEach(function(grp){
-    var lbl=document.createElement("div");
-    lbl.className="grp-label";
-    lbl.textContent=grp.g;
-    vg.appendChild(lbl);
-
-    var grid=document.createElement("div");
-    grid.className="gear-grid";
+    var lbl=document.createElement("div"); lbl.className="grp-label"; lbl.textContent=grp.g; vg.appendChild(lbl);
+    var grid=document.createElement("div"); grid.className="gear-grid";
     grp.items.forEach(function(it){
-      var card=document.createElement("button");
-      card.type="button";
+      var card=document.createElement("button"); card.type="button";
       card.className="gear-card"+(blk.model===it.n?" active":"");
-      var artCls=id==="AMP"?"amp-art":(id==="IR"?"cab-art":"pedal-art");
-      var bgStyle=it.c?(" style='background:"+it.c+";'"):"";
+      var boxCls="digital-box "+(id==="AMP"?(it.kind==="stack"?"amp-stack":"amp-combo"):(id==="IR"?"cab-box":"fx-box"));
+      var stAttr=it.c?(" style='background:"+it.c+";'"):"";
       card.innerHTML=
-        "<div class='gear-art "+artCls+"'"+bgStyle+">"+
-          "<div class='knobs'><span></span><span></span><span></span></div>"+
-          "<div>"+(id==="AMP"?"AMP":(id==="IR"?"CAB":"FX"))+"</div>"+
+        "<div class='"+boxCls+"'"+stAttr+">"+
+          "<div class='top-bar'><span>"+(it.tag||id)+"</span><span class='knobs'><span></span><span></span><span></span></span></div>"+
+          "<div class='mid-tag'>"+(id==="AMP"?"AMP":(id==="IR"?"CAB":"FX"))+"</div>"+
+          "<div class='bot-line'></div>"+
         "</div>"+
         "<div class='gear-name'>"+it.n+"</div>";
       card.onclick=function(){
         blk.model=it.n;
         var idx=allNames.indexOf(blk.model);
         var ccVal=allNames.length>1?Math.round((idx/(allNames.length-1))*127):0;
-        sendCC(m.cc+40,ccVal);
-        save(); draw(false);
+        sendCC(m.cc+40,ccVal); save(); draw(false);
       };
       grid.appendChild(card);
     });
@@ -366,50 +325,53 @@ function draw(syncInp){
 
   var irBox=document.getElementById("irExtras"); irBox.innerHTML="";
   if(id==="IR"){
-    var micLbl=document.createElement("div");
-    micLbl.className="grp-label";
-    micLbl.textContent="4 Microphones";
-    irBox.appendChild(micLbl);
+    var micPanel=document.createElement("div"); micPanel.className="mic-panel";
+    var headRow=document.createElement("div"); headRow.className="row";
+    headRow.innerHTML="<span style='font-size:11px;font-weight:800;color:#7fb3ff;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
+    var micToggle=document.createElement("button"); micToggle.type="button";
+    micToggle.textContent=blk.micOn?"MIC ON":"MIC OFF"; micToggle.className=blk.micOn?"blue":"";
+    micToggle.onclick=function(){ blk.micOn=!blk.micOn; sendCC(55,blk.micOn?100:0); save(); draw(false); };
+    headRow.appendChild(micToggle); micPanel.appendChild(headRow);
 
     var micGrid=document.createElement("div"); micGrid.className="grid4";
     IR_MICS.forEach(function(micName,idx){
-      var b=document.createElement("button");
+      var b=document.createElement("button"); b.type="button";
       b.className="mic-card"+(blk.mic===micName?" active":"");
-      b.innerHTML="<div class='mic-icon'></div><div class='gear-name'>"+micName+"</div>";
-      b.onclick=function(){
-        blk.mic=micName;
-        sendCC(53,Math.round((idx/3)*127));
-        save(); draw(false);
-      };
+      b.innerHTML="<div class='mic-capsule'></div><div class='gear-name'>"+micName+"</div>";
+      b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*127)); save(); draw(false); };
       micGrid.appendChild(b);
     });
-    irBox.appendChild(micGrid);
+    micPanel.appendChild(micGrid);
 
-    var posLbl=document.createElement("div");
-    posLbl.className="grp-label";
-    posLbl.textContent="3 Mic Positions";
-    irBox.appendChild(posLbl);
-
+    var posLbl=document.createElement("div"); posLbl.className="grp-label"; posLbl.textContent="3 Mic Positions"; micPanel.appendChild(posLbl);
     var posGrid=document.createElement("div"); posGrid.className="grid3";
     IR_POS.forEach(function(posName,idx){
-      var b=document.createElement("button");
-      b.textContent=posName;
+      var b=document.createElement("button"); b.type="button"; b.textContent=posName;
       if(blk.pos===posName) b.className="blue";
-      b.onclick=function(){
-        blk.pos=posName;
-        sendCC(54,Math.round((idx/2)*127));
-        save(); draw(false);
-      };
+      b.onclick=function(){ blk.pos=posName; sendCC(54,Math.round((idx/2)*127)); save(); draw(false); };
       posGrid.appendChild(b);
     });
-    irBox.appendChild(posGrid);
+    micPanel.appendChild(posGrid);
+
+    var lvlBox=document.createElement("div"); lvlBox.style.marginTop="8px";
+    lvlBox.innerHTML="<div class='row'><span style='font-size:12px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='mminus'>-</button><span class='mval' style='min-width:34px;text-align:center;'>"+blk.micLvl+"</span><button type='button' class='mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:6px;accent-color:#2196f3;'>";
+    var mvEl=lvlBox.querySelector(".mval"), mrEl=lvlBox.querySelector("input[type=range]");
+    function setMicLvl(nv){
+      nv=Math.max(0,Math.min(100,Number(nv)));
+      blk.micLvl=nv; mvEl.textContent=nv; mrEl.value=nv; sendCC(56,nv); save();
+    }
+    mrEl.oninput=function(){ setMicLvl(mrEl.value); };
+    lvlBox.querySelector(".mminus").onclick=function(){ setMicLvl(blk.micLvl-1); };
+    lvlBox.querySelector(".mplus").onclick=function(){ setMicLvl(blk.micLvl+1); };
+    micPanel.appendChild(lvlBox);
+    irBox.appendChild(micPanel);
   }
 
   var pw=document.getElementById("params"); pw.innerHTML="";
   m.p.forEach(function(pr){
     var cc=pr[1], val=(typeof blk.p[cc]==="number")?blk.p[cc]:pr[2]; blk.p[cc]=val;
     var box=document.createElement("div"); box.className="card"; box.style.padding="8px 10px"; box.style.marginTop="6px";
-    box.innerHTML="<div class='row'><span style='font-size:13px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button class='minus'>-</button><span class='val' style='min-width:34px;text-align:center;'>"+val+"</span><button class='plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:6px;accent-color:#2196f3;'>";
+    box.innerHTML="<div class='row'><span style='font-size:13px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button type='button' class='minus'>-</button><span class='val' style='min-width:34px;text-align:center;'>"+val+"</span><button type='button' class='plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:6px;accent-color:#2196f3;'>";
     var vEl=box.querySelector(".val"), rEl=box.querySelector("input[type=range]");
     function setV(nv){
       nv=Math.max(0,Math.min(100,Number(nv)));
@@ -428,7 +390,6 @@ function stepPatch(d){
   st.bank=parseInt(nxt,10); st.slot=nxt.slice(-1);
   sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true);
 }
-
 function moveBlock(d){
   var p=patch(), i=p.chain.indexOf(st.sel), t=i+d;
   if(i<0||t<0||t>=p.chain.length) return;
@@ -448,4 +409,4 @@ document.getElementById("mRight").onclick=function(){ moveBlock(1); };
 draw(true);
 </script>
 </body>
-      </html>
+</html>
