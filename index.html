@@ -6,77 +6,51 @@
   <title>NUX MG-101 Digital Rig & Studio Gear</title>
   <style>
     :root{
-      --bg:#0b0e12;--card:#14181f;--card2:#1b2029;--border:#2b3340;
-      --text:#eef2f6;--muted:#97a3b4;--blue:#1e88e5;--amber:#ffb300;--green:#4caf50;--red:#d32f2f;
+      --bg:#090c10;--card:#13171f;--card2:#1a202b;--border:#2a3342;
+      --text:#f1f5f9;--muted:#94a3b8;--blue:#1e88e5;--amber:#ffb300;--green:#4caf50;--red:#d32f2f;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     body{margin:0;padding:12px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
     .app{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;overflow-x:hidden;}
+    .card{background:linear-gradient(180deg,#161b24 0%,#10141b 100%);border:1px solid var(--border);border-radius:14px;padding:12px;overflow-x:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.4);}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
     .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:8px;}
     .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px;}
     .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px;}
     .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;}
     button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px 8px;font-weight:700;cursor:pointer;min-width:0;}
-    input{flex:1;background:#0f1318;border-color:var(--amber);font-weight:400;cursor:text;}
-    .blue{background:var(--blue);border-color:var(--blue);color:#fff;}
-    .red{background:var(--red);border-color:var(--red);color:#fff;}
-    .st{background:#0f2133;border:1px solid #1f486e;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;gap:8px;}
-    .sec-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
-    .grp-label{font-size:11px;font-weight:800;color:#7fb3ff;margin:12px 0 6px 0;border-left:3px solid var(--blue);padding-left:6px;}
-
-    /* Digital Signal Chain Blocks */
-    .chain-blk{
-      background:linear-gradient(180deg,#1c222d 0%,#12161d 100%);
-      border:1px solid #2d3748;border-radius:11px;padding:6px 4px;
-      display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;
-    }
-    .chain-blk.on{border-color:var(--green);box-shadow:0 0 8px rgba(76,175,80,0.15);}
-    .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#252d3b 0%,#151a24 100%);}
-    .led-strip{width:60%;height:3px;border-radius:999px;background:#3a424e;}
-    .chain-blk.on .led-strip{background:#4caf50;box-shadow:0 0 6px #4caf50;}
-    .blk-screen{
-      width:100%;background:#090d12;border:1px solid rgba(255,255,255,0.08);
-      border-radius:6px;padding:3px 2px;text-align:center;
-    }
-    .blk-code{display:block;font-size:10px;font-weight:900;letter-spacing:0.4px;color:#fff;}
-    .blk-model{display:block;font-size:8px;color:#9fb1c7;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
-
-    /* Digital Gear Cards */
-    .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
-    .gear-card{
-      background:#161a22;border:1px solid #28303d;border-radius:10px;padding:6px 4px;
-      display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;
-    }
-    .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#1e2531;box-shadow:0 0 10px rgba(255,179,0,0.2);}
-    .gear-art{
-      width:100%;height:52px;border-radius:6px;overflow:hidden;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .gear-name{font-size:10px;font-weight:800;line-height:1.15;color:#eef2f6;word-break:break-word;margin-top:2px;}
-
-    /* Mic & Position Controls */
-    .mic-panel{background:#181d26;border:1px solid #2e3848;border-radius:12px;padding:10px;margin-top:10px;}
-    .mic-card{
-      background:#13171e;border:1px solid #2b3444;border-radius:10px;
-      padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;
-    }
-    .mic-card.active{
-      border-color:var(--amber);outline:2px solid var(--amber);
-      background:#222a38;box-shadow:0 0 10px rgba(255,179,0,0.25);
-    }
-    .mic-art{width:36px;height:36px;display:flex;align-items:center;justify-content:center;}
+    input{flex:1;background:#0b0e13;border-color:var(--amber);font-weight:400;cursor:text;}
+    .blue{background:linear-gradient(180deg,#2998ff 0%,#1565c0 100%);border-color:#2998ff;color:#fff;}
+    .red{background:linear-gradient(180deg,#e53935 0%,#b71c1c 100%);border-color:#e53935;color:#fff;}
+    .st{background:linear-gradient(90deg,#0d2238 0%,#112b45 100%);border:1px solid #1f4b75;border-radius:12px;padding:10px 12px;font-size:12px;font-weight:700;display:flex;justify-content:space-between;gap:8px;}
+    .sec-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px;}
+    .grp-label{font-size:11px;font-weight:800;color:#82b8ff;margin:12px 0 6px 0;border-left:3px solid var(--blue);padding-left:7px;}
+    .chain-blk{background:linear-gradient(180deg,#232a38 0%,#121720 100%);border:1px solid #303b4f;border-radius:11px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
+    .chain-blk.on{border-color:#4caf50;box-shadow:inset 0 0 10px rgba(76,175,80,0.16);}
+    .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#2c3547 0%,#171d29 100%);}
+    .led-strip{width:56%;height:3px;border-radius:999px;background:#3a4352;}
+    .chain-blk.on .led-strip{background:#66bb6a;box-shadow:0 0 8px #4caf50;}
+    .blk-screen{width:100%;background:#070a0e;border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:3px 2px;text-align:center;}
+    .blk-code{display:block;font-size:10px;font-weight:900;color:#fff;}
+    .blk-model{display:block;font-size:8px;color:#a5b6cc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px;}
+    .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;}
+    .gear-card{background:linear-gradient(180deg,#1c222d 0%,#12161e 100%);border:1px solid #2b3444;border-radius:11px;padding:5px 4px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+    .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:linear-gradient(180deg,#263040 0%,#181e2a 100%);box-shadow:0 0 14px rgba(255,179,0,0.32);}
+    .gear-canvas{width:100%;height:64px;border-radius:7px;display:block;background:#090c10;}
+    .gear-name{font-size:10px;font-weight:800;line-height:1.15;color:#f1f5f9;word-break:break-word;margin-top:1px;}
+    .mic-panel{background:linear-gradient(180deg,#1a202a 0%,#131820 100%);border:1px solid #2f3a4d;border-radius:12px;padding:10px;margin-top:10px;}
+    .mic-card{background:linear-gradient(180deg,#171c25 0%,#10141b 100%);border:1px solid #2b3444;border-radius:10px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0;}
+    .mic-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#232c3b;box-shadow:0 0 12px rgba(255,179,0,0.28);}
+    .mic-canvas{width:46px;height:46px;display:block;}
     .pos-btn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;}
-    .pos-art{width:38px;height:18px;}
   </style>
 </head>
 <body>
 <div class="app">
-  <div class="card row">
+ <div class="card row">
     <div>
-      <div style="font-size:15px;font-weight:900;">NUX MG-101 DIGITAL RIG STUDIO</div>
-      <div style="font-size:11px;color:var(--muted);">Guitar Rig &amp; Studio Gear Collection Controller</div>
+      <div style="font-size:15px;font-weight:900;letter-spacing:0.3px;">NUX MG-101 DIGITAL RIG STUDIO</div>
+      <div style="font-size:11px;color:var(--muted);">Realistic Hardware &amp; Studio Gear Controller</div>
     </div>
     <button id="midiBtn" class="red">Connect OTG</button>
   </div>
@@ -124,7 +98,7 @@
 </div>
 
 <script>
-var KEY="nux_mg101_digital_pro_v1";
+var KEY="nux_mg101_real_hw_v1";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
@@ -143,82 +117,193 @@ var META={
   "P.L":{n:"Patch Level",cc:30,cCc:110,p:[["Level",7,80],["Pan",10,50]]}
 };
 
-// SVG Icons for realistic gear illustration
-var SVG_AMPS={
-  combo:`<svg viewBox="0 0 80 52" width="100%" height="100%"><rect x="2" y="2" width="76" height="48" rx="5" fill="#3a2f25" stroke="#1d1711" stroke-width="2"/><rect x="6" y="6" width="68" height="10" fill="#cbb28b" rx="1"/><circle cx="12" cy="11" r="2" fill="#333"/><circle cx="20" cy="11" r="2" fill="#333"/><circle cx="28" cy="11" r="2" fill="#333"/><circle cx="36" cy="11" r="2" fill="#333"/><rect x="6" y="18" width="68" height="30" fill="#241e17"/><rect x="10" y="21" width="60" height="24" fill="#1b1712" rx="2" stroke="#4a3e30" stroke-width="1"/><line x1="10" y1="21" x2="70" y2="21" stroke="#ffb300" stroke-width="1"/><circle cx="25" cy="33" r="8" fill="#120e0a" stroke="#33281d" stroke-width="1"/><circle cx="55" cy="33" r="8" fill="#120e0a" stroke="#33281d" stroke-width="1"/></svg>`,
-  stack:`<svg viewBox="0 0 80 52" width="100%" height="100%"><rect x="4" y="2" width="72" height="16" rx="2" fill="#1e2229" stroke="#0a0c0e" stroke-width="1.5"/><rect x="8" y="5" width="64" height="10" fill="#2a303b"/><circle cx="16" cy="10" r="1.5" fill="#ff5252"/><circle cx="26" cy="10" r="1.5" fill="#ffb300"/><circle cx="36" cy="10" r="1.5" fill="#4caf50"/><circle cx="46" cy="10" r="1.5" fill="#fff"/><circle cx="56" cy="10" r="1.5" fill="#fff"/><rect x="2" y="20" width="76" height="30" rx="3" fill="#14171c" stroke="#0a0c0e" stroke-width="1.5"/><rect x="6" y="23" width="68" height="24" fill="#0d0f12" rx="1"/><circle cx="22" cy="35" r="7" fill="#090b0d" stroke="#252a33" stroke-width="1.5"/><circle cx="58" cy="35" r="7" fill="#090b0d" stroke="#252a33" stroke-width="1.5"/><line x1="6" y1="35" x2="74" y2="35" stroke="#1c1f24" stroke-width="1"/></svg>`
-};
-var SVG_CABS={
-  cab:`<svg viewBox="0 0 80 52" width="100%" height="100%"><rect x="2" y="2" width="76" height="48" rx="4" fill="#181c22" stroke="#0d1014" stroke-width="2"/><rect x="6" y="6" width="68" height="40" fill="#0e1115" rx="2" stroke="#222831" stroke-width="1.5"/><circle cx="22" cy="18" r="7" fill="#080a0d" stroke="#1d232c" stroke-width="1.5"/><circle cx="58" cy="18" r="7" fill="#080a0d" stroke="#1d232c" stroke-width="1.5"/><circle cx="22" cy="38" r="7" fill="#080a0d" stroke="#1d232c" stroke-width="1.5"/><circle cx="58" cy="38" r="7" fill="#080a0d" stroke="#1d232c" stroke-width="1.5"/></svg>`,
-  user:`<svg viewBox="0 0 80 52" width="100%" height="100%"><rect x="2" y="2" width="76" height="48" rx="4" fill="#141a22" stroke="#2196f3" stroke-width="1"/><rect x="6" y="6" width="68" height="40" fill="#0b0e14" rx="2"/><rect x="12" y="12" width="56" height="12" fill="#101620" rx="2" stroke="#2196f3" stroke-width="0.5"/><text x="40" y="21" font-family="monospace" font-size="7" fill="#2196f3" text-anchor="middle">USER IR</text><circle cx="22" cy="36" r="5" fill="#07090d" stroke="#172230"/><circle cx="58" cy="36" r="5" fill="#07090d" stroke="#172230"/></svg>`
-};
-var SVG_MICS={
-  E906:`<svg viewBox="0 0 36 36"><rect x="12" y="6" width="12" height="14" rx="2" fill="#2b313d" stroke="#90a4ae" stroke-width="1.5"/><line x1="14" y1="9" x2="22" y2="9" stroke="#fff" stroke-width="1"/><line x1="14" y1="12" x2="22" y2="12" stroke="#fff" stroke-width="1"/><line x1="14" y1="15" x2="22" y2="15" stroke="#fff" stroke-width="1"/><rect x="15" y="20" width="6" height="12" rx="1" fill="#181c24" stroke="#455a64" stroke-width="1"/></svg>`,
-  SM57:`<svg viewBox="0 0 36 36"><rect x="15" y="4" width="6" height="7" rx="1" fill="#78909c" stroke="#37474f" stroke-width="1"/><path d="M14 11 L22 11 L19 32 L17 32 Z" fill="#263238" stroke="#1c242b" stroke-width="1"/><rect x="15" y="11" width="6" height="3" fill="#101419"/></svg>`,
-  U87:`<svg viewBox="0 0 36 36"><rect x="12" y="4" width="12" height="11" rx="4" fill="#cfd8dc" stroke="#546e7a" stroke-width="1"/><line x1="14" y1="7" x2="22" y2="7" stroke="#37474f" stroke-width="1"/><line x1="14" y1="10" x2="22" y2="10" stroke="#37474f" stroke-width="1"/><path d="M12 15 L24 15 L21 32 L15 32 Z" fill="#b0bec5" stroke="#455a64" stroke-width="1"/></svg>`,
-  C414:`<svg viewBox="0 0 36 36"><rect x="11" y="4" width="14" height="14" rx="2" fill="#263238" stroke="#cfd8dc" stroke-width="1.5"/><rect x="13" y="6" width="10" height="7" fill="#eceff1" rx="1" opacity="0.8"/><rect x="15" y="18" width="6" height="14" rx="1" fill="#1c242b"/></svg>`
-};
-
-function getPedalSVG(name,color,tag){
-  return `<svg viewBox="0 0 80 52" width="100%" height="100%"><rect x="12" y="2" width="56" height="48" rx="6" fill="${color}" stroke="#0a0c0e" stroke-width="1.5"/><circle cx="22" cy="8" r="2.5" fill="#333"/><circle cx="34" cy="8" r="2.5" fill="#333"/><circle cx="46" cy="8" r="2.5" fill="#333"/><circle cx="58" cy="8" r="2.5" fill="#333"/><circle cx="40" cy="16" r="2" fill="#ff1744" stroke="#fff" stroke-width="0.5"/><rect x="16" y="22" width="48" height="12" fill="#0d0f12" rx="2"/><text x="40" y="30" font-family="sans-serif" font-weight="900" font-size="6.5" fill="#fff" text-anchor="middle">${tag}</text><circle cx="40" cy="42" r="4" fill="#cfd8dc" stroke="#546e7a" stroke-width="1.5"/></svg>`;
-}
-
 var GEAR={
-  GATE:[{g:"Noise Reduction",items:[{n:"NOISE GATE",c:"#37474f",tag:"GATE"}]}],
-  CMP:[{g:"Compression Pedals",items:[{n:"ROSE COMPRESSOR",c:"#ad1457",tag:"COMP"},{n:"4 COMP",c:"#455a64",tag:"4-COMP"}]}],
+  GATE:[{g:"Noise Reduction",items:[{n:"NOISE GATE",c:"#37474f",style:"mxr",tag:"GATE"}]}],
+  CMP:[{g:"Compression Pedals",items:[{n:"ROSE COMPRESSOR",c:"#ad1457",style:"mxr",tag:"COMP"},{n:"4 COMP",c:"#546e7a",style:"boss",tag:"COMP"}]}],
   EFX:[{g:"Drive & Distortion (EFX)",items:[
-    {n:"DISTORTION+",c:"#ffb300",tag:"DIST+"},{n:"RE BOOST",c:"#78909c",tag:"BOOST"},{n:"AC BOOST",c:"#fbc02d",tag:"AC-BST"},
-    {n:"DIST 803",c:"#e65100",tag:"OD-803"},{n:"T SCREAM",c:"#2e7d32",tag:"TS-OD"},{n:"BLUES DRV",c:"#1565c0",tag:"BLUES"},
-    {n:"MORNING DRV",c:"#c0ca33",tag:"MORN"},{n:"RAT DIST",c:"#212121",tag:"RAT"},{n:"RED DIRT",c:"#c62828",tag:"DIRT"},
-    {n:"CRUNCH",c:"#8e24aa",tag:"CRNCH"},{n:"MUFF FUZZ",c:"#4e342e",tag:"FUZZ"},{n:"KATANA",c:"#546e7a",tag:"CLEAN"},
-    {n:"ST SINGER",c:"#00838f",tag:"SINGER"}
+    {n:"DISTORTION+",c:"#f9a825",style:"mxr",tag:"DIST+"},{n:"RE BOOST",c:"#cfd8dc",style:"mxr",tag:"BOOST"},{n:"AC BOOST",c:"#fbc02d",style:"mxr",tag:"AC+"},
+    {n:"DIST 803",c:"#ef6c00",style:"boss",tag:"OD-1"},{n:"T SCREAM",c:"#2e7d32",style:"ts",tag:"TS9"},{n:"BLUES DRV",c:"#1565c0",style:"boss",tag:"BD-2"},
+    {n:"MORNING DRV",c:"#c0ca33",style:"mxr",tag:"MORN"},{n:"RAT DIST",c:"#212121",style:"rat",tag:"RAT"},{n:"RED DIRT",c:"#c62828",style:"ts",tag:"DIRT"},
+    {n:"CRUNCH",c:"#8e24aa",style:"mxr",tag:"CRNCH"},{n:"MUFF FUZZ",c:"#424242",style:"muff",tag:"MUFF"},{n:"KATANA",c:"#90a4ae",style:"mxr",tag:"KATNA"},
+    {n:"ST SINGER",c:"#00838f",style:"ts",tag:"SINGR"}
   ]}],
   AMP:[
     {g:"Combo Amps & Open-Back Cabinets",items:[
-      {n:"TWEED 410",kind:"combo",tag:"4x10"},{n:"BRIT 212",kind:"combo",tag:"2x12"},{n:"EVL 112",kind:"combo",tag:"1x12"},
-      {n:"CALI 112",kind:"combo",tag:"1x12"},{n:"BLUE 112",kind:"combo",tag:"1x12"},{n:"BLUE 212",kind:"combo",tag:"2x12"},
-      {n:"DC 212",kind:"combo",tag:"2x12"},{n:"SUPER 212",kind:"combo",tag:"2x12"},{n:"TWEED 112",kind:"combo",tag:"1x12"},
-      {n:"TWIN 212",kind:"combo",tag:"2x12"},{n:"BLACK 112",kind:"combo",tag:"1x12"},{n:"VIB 212",kind:"combo",tag:"2x12"},
-      {n:"JAZZ 212",kind:"combo",tag:"2x12"}
+      {n:"TWEED 410",kind:"combo",skin:"tweed",spk:4},{n:"BRIT 212",kind:"combo",skin:"brit",spk:2},{n:"EVL 112",kind:"combo",skin:"dark",spk:1},
+      {n:"CALI 112",kind:"combo",skin:"cream",spk:1},{n:"BLUE 112",kind:"combo",skin:"vox",spk:1},{n:"BLUE 212",kind:"combo",skin:"vox",spk:2},
+      {n:"DC 212",kind:"combo",skin:"dark",spk:2},{n:"SUPER 212",kind:"combo",skin:"silver",spk:2},{n:"TWEED 112",kind:"combo",skin:"tweed",spk:1},
+      {n:"TWIN 212",kind:"combo",skin:"silver",spk:2},{n:"BLACK 112",kind:"combo",skin:"blackface",spk:1},{n:"VIB 212",kind:"combo",skin:"brown",spk:2},
+      {n:"JAZZ 212",kind:"combo",skin:"jazz",spk:2}
     ]},
     {g:"Amplifier Heads & 4x12 Cabinets (Stack Rig)",items:[
-      {n:"DIE VH4",kind:"stack",tag:"STACK"},{n:"DUAL RECT",kind:"stack",tag:"RECT"},{n:"FIREMAN HBE",kind:"stack",tag:"HBE"},
-      {n:"HIWIRE",kind:"stack",tag:"HIWRE"},{n:"1987 X 50",kind:"stack",tag:"50W"},{n:"MR.Z 38",kind:"stack",tag:"38W"},
-      {n:"BRIT 800",kind:"stack",tag:"800"},{n:"BRIT 2000",kind:"stack",tag:"2000"},{n:"PLEXI 45",kind:"stack",tag:"45W"},
-      {n:"PLEXI 100",kind:"stack",tag:"100W"},{n:"SLO 100",kind:"stack",tag:"SLO"},{n:"UBER",kind:"stack",tag:"UBER"}
+      {n:"DIE VH4",kind:"stack",skin:"vh4"},{n:"DUAL RECT",kind:"stack",skin:"rect"},{n:"FIREMAN HBE",kind:"stack",skin:"hbe"},
+      {n:"HIWIRE",kind:"stack",skin:"hiwire"},{n:"1987 X 50",kind:"stack",skin:"plexi"},{n:"MR.Z 38",kind:"stack",skin:"mrz"},
+      {n:"BRIT 800",kind:"stack",skin:"jcm"},{n:"BRIT 2000",kind:"stack",skin:"jcm"},{n:"PLEXI 45",kind:"stack",skin:"plexi"},
+      {n:"PLEXI 100",kind:"stack",skin:"plexi"},{n:"SLO 100",kind:"stack",skin:"slo"},{n:"UBER",kind:"stack",skin:"uber"}
     ]}
   ],
   IR:[
     {g:"4x12 / 2x12 Extension Cabs",items:[
-      {n:"BOTM 412",kind:"cab",tag:"4x12"},{n:"RECT 412",kind:"cab",tag:"4x12"},{n:"HBE 412",kind:"cab",tag:"4x12"},
-      {n:"CUSTOM 412",kind:"cab",tag:"4x12"},{n:"V30 412",kind:"cab",tag:"V30"},{n:"BUTQ 212",kind:"cab",tag:"2x12"},
-      {n:"T75 412",kind:"cab",tag:"T75"},{n:"G12M 412",kind:"cab",tag:"G12M"},{n:"G12L 412",kind:"cab",tag:"G12L"},
-      {n:"GREEN 412",kind:"cab",tag:"GRN"},{n:"SLO 412",kind:"cab",tag:"4x12"},{n:"UBER 412",kind:"cab",tag:"4x12"}
+      {n:"BOTM 412",kind:"cab",skin:"black",badge:"VHM"},{n:"RECT 412",kind:"cab",skin:"rect",badge:"RECT"},{n:"HBE 412",kind:"cab",skin:"gold",badge:"HBE"},
+      {n:"CUSTOM 412",kind:"cab",skin:"silver",badge:"CSTM"},{n:"V30 412",kind:"cab",skin:"black",badge:"V30"},{n:"BUTQ 212",kind:"cab",skin:"tan",badge:"212"},
+      {n:"T75 412",kind:"cab",skin:"black",badge:"T75"},{n:"G12M 412",kind:"cab",skin:"black",badge:"G12M"},{n:"G12L 412",kind:"cab",skin:"black",badge:"G12L"},
+      {n:"GREEN 412",kind:"cab",skin:"green",badge:"GRN"},{n:"SLO 412",kind:"cab",skin:"slo",badge:"SLO"},{n:"UBER 412",kind:"cab",skin:"uber",badge:"UBER"}
     ]},
     {g:"User IR Slots (01 - 12)",items:[
-      {n:"User IR 01",kind:"user",tag:"IR-01"},{n:"User IR 02",kind:"user",tag:"IR-02"},{n:"User IR 03",kind:"user",tag:"IR-03"},
-      {n:"User IR 04",kind:"user",tag:"IR-04"},{n:"User IR 05",kind:"user",tag:"IR-05"},{n:"User IR 06",kind:"user",tag:"IR-06"},
-      {n:"User IR 07",kind:"user",tag:"IR-07"},{n:"User IR 08",kind:"user",tag:"IR-08"},{n:"User IR 09",kind:"user",tag:"IR-09"},
-      {n:"User IR 10",kind:"user",tag:"IR-10"},{n:"User IR 11",kind:"user",tag:"IR-11"},{n:"User IR 12",kind:"user",tag:"IR-12"}
+      {n:"User IR 01",kind:"user",badge:"IR-01"},{n:"User IR 02",kind:"user",badge:"IR-02"},{n:"User IR 03",kind:"user",badge:"IR-03"},
+      {n:"User IR 04",kind:"user",badge:"IR-04"},{n:"User IR 05",kind:"user",badge:"IR-05"},{n:"User IR 06",kind:"user",badge:"IR-06"},
+      {n:"User IR 07",kind:"user",badge:"IR-07"},{n:"User IR 08",kind:"user",badge:"IR-08"},{n:"User IR 09",kind:"user",badge:"IR-09"},
+      {n:"User IR 10",kind:"user",badge:"IR-10"},{n:"User IR 11",kind:"user",badge:"IR-11"},{n:"User IR 12",kind:"user",badge:"IR-12"}
     ]}
   ],
-  EQ:[{g:"Equalizer (EQ)",items:[{n:"6-BAND EQ",c:"#5d4037",tag:"6-EQ"},{n:"ALIEN EQ",c:"#b71c1c",tag:"ALIEN"},{n:"10-BAND EQ",c:"#263238",tag:"10-EQ"}]}],
+  EQ:[{g:"Equalizer (EQ)",items:[{n:"6-BAND EQ",c:"#5d4037",style:"eq",tag:"6-EQ"},{n:"ALIEN EQ",c:"#b71c1c",style:"eq",tag:"ALIEN"},{n:"10-BAND EQ",c:"#263238",style:"eq",tag:"10-EQ"}]}],
   MOD:[{g:"Modulation (MOD)",items:[
-    {n:"CE-1",c:"#455a64",tag:"CHOR"},{n:"CE-2",c:"#00838f",tag:"CHOR"},{n:"ST. CHORUS",c:"#f9a825",tag:"ST-CH"},
-    {n:"VIBRATOR",c:"#0277bd",tag:"VIB"},{n:"DETUNE",c:"#546e7a",tag:"DETN"},{n:"FLANGER",c:"#6a1b9a",tag:"FLNG"},
-    {n:"PHASE 90",c:"#ef6c00",tag:"PH90"},{n:"PHASE 90 ORANGE",c:"#f57c00",tag:"PH90O"},{n:"SCF",c:"#00695c",tag:"SCF"},
-    {n:"ROTARY SPEAKER",c:"#6d4c41",tag:"ROTR"},{n:"STEREO CHORUS",c:"#1565c0",tag:"ST-CH"}
+    {n:"CE-1",c:"#455a64",style:"muff",tag:"CE-1"},{n:"CE-2",c:"#00838f",style:"boss",tag:"CE-2"},{n:"ST. CHORUS",c:"#f9a825",style:"mxr",tag:"CHOR"},
+    {n:"VIBRATOR",c:"#0277bd",style:"boss",tag:"VB-2"},{n:"DETUNE",c:"#546e7a",style:"boss",tag:"DTN"},{n:"FLANGER",c:"#6a1b9a",style:"boss",tag:"BF-2"},
+    {n:"PHASE 90",c:"#ef6c00",style:"mxr",tag:"PH90"},{n:"PHASE 90 ORANGE",c:"#f57c00",style:"mxr",tag:"PH90"},{n:"SCF",c:"#00695c",style:"ts",tag:"SCF"},
+    {n:"ROTARY SPEAKER",c:"#6d4c41",style:"muff",tag:"ROTR"},{n:"STEREO CHORUS",c:"#1565c0",style:"boss",tag:"CH-1"}
   ]}],
   DLY:[{g:"Delay (DLY)",items:[
-    {n:"ANALOG DELAY",c:"#ad1457",tag:"ANLG"},{n:"DIGITAL DELAY",c:"#78909c",tag:"DIGI"},{n:"MODULATION",c:"#00838f",tag:"MOD"},
-    {n:"TAPE ECHO",c:"#2e7d32",tag:"TAPE"},{n:"PAN DELAY",c:"#0277bd",tag:"PAN"}
+    {n:"ANALOG DELAY",c:"#ad1457",style:"boss",tag:"DM-2"},{n:"DIGITAL DELAY",c:"#cfd8dc",style:"boss",tag:"DD-3"},{n:"MODULATION",c:"#00838f",style:"ts",tag:"MOD"},
+    {n:"TAPE ECHO",c:"#2e7d32",style:"muff",tag:"TAPE"},{n:"PAN DELAY",c:"#0277bd",style:"boss",tag:"PAN"}
   ]}],
   RVB:[{g:"Reverb (RVB)",items:[
-    {n:"ROOM",c:"#37474f",tag:"ROOM"},{n:"HALL",c:"#8d6e63",tag:"HALL"},{n:"PLATE",c:"#90a4ae",tag:"PLAT"},
-    {n:"SPRING",c:"#fbc02d",tag:"SPRG"},{n:"SHIMMER",c:"#212121",tag:"SHMR"}
+    {n:"ROOM",c:"#37474f",style:"boss",tag:"ROOM"},{n:"HALL",c:"#8d6e63",style:"mxr",tag:"HALL"},{n:"PLATE",c:"#90a4ae",style:"mxr",tag:"PLAT"},
+    {n:"SPRING",c:"#fbc02d",style:"ts",tag:"SPRG"},{n:"SHIMMER",c:"#212121",style:"muff",tag:"SHMR"}
   ]}],
-  "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#1e88e5",tag:"LEVEL"}]}]
+  "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#1e88e5",style:"mxr",tag:"LEVEL"}]}]
 };
+function drawSpeaker(ctx,x,y,r){
+  var g=ctx.createRadialGradient(x-r*0.2,y-r*0.2,r*0.1,x,y,r);
+  g.addColorStop(0,"#374151");g.addColorStop(0.55,"#111827");g.addColorStop(0.85,"#030712");g.addColorStop(1,"#1f2937");
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,0.12)";ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle="#1f2937";ctx.beginPath();ctx.arc(x,y,r*0.34,0,Math.PI*2);ctx.fill();
+}
+
+function paintGearCanvas(cv,id,it){
+  var w=cv.width=180, h=cv.height=128, ctx=cv.getContext("2d");
+  ctx.clearRect(0,0,w,h);
+  if(id==="AMP"){
+    if(it.kind==="stack"){
+      var headCol="#181c23", faceCol="#94a3b8", grille="#11141a";
+      if(it.skin==="rect"){ faceCol="#cbd5e1"; grille="#1e242b"; }
+      else if(it.skin==="jcm"||it.skin==="plexi"){ faceCol="#eab308"; }
+      else if(it.skin==="slo"){ headCol="#e2e8f0"; faceCol="#1e293b"; }
+      else if(it.skin==="vh4"){ faceCol="#f8fafc"; }
+      ctx.fillStyle=headCol; ctx.fillRect(22,6,136,34);
+      ctx.strokeStyle="#05070a"; ctx.lineWidth=3; ctx.strokeRect(22,6,136,34);
+      ctx.fillStyle=faceCol; ctx.fillRect(28,18,124,16);
+      if(it.skin==="rect"){
+        ctx.fillStyle="#475569";
+        for(var rx=32;rx<148;rx+=8){ ctx.fillRect(rx,10,4,3); ctx.fillRect(rx+3,14,4,3); }
+      }else{ ctx.fillStyle=grille; ctx.fillRect(28,9,124,8); }
+      for(var kx=40;kx<=136;kx+=14){
+        ctx.fillStyle="#0f172a"; ctx.beginPath(); ctx.arc(kx,26,3.5,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle="#fff"; ctx.fillRect(kx-0.6,23,1.2,3);
+      }
+      ctx.fillStyle="#ef4444"; ctx.beginPath(); ctx.arc(146,26,3,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#141820"; ctx.fillRect(16,42,148,80);
+      ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1.5; ctx.strokeRect(20,46,140,72);
+      ctx.fillStyle="#0b0e14"; ctx.fillRect(22,48,136,68);
+      drawSpeaker(ctx,58,66,15); drawSpeaker(ctx,122,66,15);
+      drawSpeaker(ctx,58,100,15); drawSpeaker(ctx,122,100,15);
+      ctx.fillStyle="#f8fafc"; ctx.fillRect(72,79,36,8);
+    }else{
+      var body="#1e242d", grill="#141820", panel="#cbd5e1", pipe="#94a3b8";
+      if(it.skin==="tweed"){ body="#c89d54"; grill="#5c4020"; panel="#e2e8f0"; pipe="#785327"; }
+      else if(it.skin==="vox"){ body="#2b1919"; grill="#7c4a2d"; panel="#7f1d1d"; pipe="#eab308"; }
+      else if(it.skin==="cream"){ body="#e7d5b5"; grill="#a18256"; panel="#f8fafc"; pipe="#785327"; }
+      else if(it.skin==="silver"){ body="#181c23"; grill="#64748b"; panel="#e2e8f0"; pipe="#f8fafc"; }
+      else if(it.skin==="blackface"){ body="#111419"; grill="#334155"; panel="#0f172a"; pipe="#cbd5e1"; }
+      else if(it.skin==="jazz"){ body="#181c23"; grill="#475569"; panel="#1e293b"; pipe="#94a3b8"; }
+      ctx.fillStyle=body; ctx.fillRect(16,12,148,108);
+      ctx.strokeStyle="#06080b"; ctx.lineWidth=3; ctx.strokeRect(16,12,148,108);
+      ctx.fillStyle=panel; ctx.fillRect(22,18,136,20);
+      for(var cx=36;cx<=132;cx+=14){ ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.arc(cx,28,3.6,0,Math.PI*2); ctx.fill(); }
+      ctx.fillStyle="#ef4444"; ctx.beginPath(); ctx.arc(148,28,3,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=grill; ctx.fillRect(22,40,136,74);
+      ctx.strokeStyle=pipe; ctx.lineWidth=1.5; ctx.strokeRect(22,40,136,74);
+      if(it.spk===4){ drawSpeaker(ctx,60,60,15); drawSpeaker(ctx,120,60,15); drawSpeaker(ctx,60,94,15); drawSpeaker(ctx,120,94,15); }
+      else if(it.spk===2){ drawSpeaker(ctx,58,77,22); drawSpeaker(ctx,122,77,22); }
+      else{ drawSpeaker(ctx,90,77,26); }
+    }
+    return;
+  }
+  if(id==="IR"){
+    if(it.kind==="user"){
+      ctx.fillStyle="#111827"; ctx.fillRect(18,10,144,108);
+      ctx.strokeStyle="#38bdf8"; ctx.lineWidth=2; ctx.strokeRect(18,10,144,108);
+      ctx.fillStyle="#060d18"; ctx.fillRect(28,22,124,44);
+      ctx.strokeStyle="#38bdf8"; ctx.lineWidth=2.5; ctx.beginPath();
+      ctx.moveTo(34,48); ctx.lineTo(54,32); ctx.lineTo(72,54); ctx.lineTo(92,28); ctx.lineTo(112,50); ctx.lineTo(132,36); ctx.lineTo(146,44); ctx.stroke();
+      ctx.fillStyle="#7dd3fc"; ctx.font="bold 16px monospace"; ctx.textAlign="center"; ctx.fillText(it.badge,90,94);
+      return;
+    }
+    var cabBody="#161a22", cabGrill="#0c0f15", cabPipe="#cbd5e1";
+    if(it.skin==="tan"){ cabBody="#a17a48"; cabGrill="#4a351c"; cabPipe="#fef3c7"; }
+    else if(it.skin==="green"){ cabBody="#1b2620"; cabGrill="#2f4538"; cabPipe="#eab308"; }
+    else if(it.skin==="silver"){ cabBody="#1e242d"; cabGrill="#64748b"; cabPipe="#f8fafc"; }
+    ctx.fillStyle=cabBody; ctx.fillRect(18,8,144,112);
+    ctx.strokeStyle="#06080b"; ctx.lineWidth=3; ctx.strokeRect(18,8,144,112);
+    ctx.fillStyle=cabGrill; ctx.fillRect(24,14,132,100);
+    ctx.strokeStyle=cabPipe; ctx.lineWidth=1.8; ctx.strokeRect(24,14,132,100);
+    drawSpeaker(ctx,58,42,20); drawSpeaker(ctx,122,42,20); drawSpeaker(ctx,58,86,20); drawSpeaker(ctx,122,86,20);
+    ctx.fillStyle="#1e293b"; ctx.fillRect(66,58,48,14); ctx.strokeStyle="#94a3b8"; ctx.lineWidth=1; ctx.strokeRect(66,58,48,14);
+    ctx.fillStyle="#f8fafc"; ctx.font="bold 10px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.badge||"4x12",90,68);
+    return;
+  }
+  var pCol=it.c||"#37474f", px=44, py=6, pw=92, ph=116;
+  ctx.fillStyle=pCol; ctx.beginPath(); ctx.roundRect(px,py,pw,ph,12); ctx.fill();
+  ctx.strokeStyle="rgba(255,255,255,0.25)"; ctx.lineWidth=2; ctx.stroke();
+  var sheen=ctx.createLinearGradient(px,py,px+pw,py+ph);
+  sheen.addColorStop(0,"rgba(255,255,255,0.22)"); sheen.addColorStop(1,"rgba(0,0,0,0.35)");
+  ctx.fillStyle=sheen; ctx.beginPath(); ctx.roundRect(px,py,pw,ph,12); ctx.fill();
+  var knobCount=(it.style==="mxr")?2:3;
+  for(var i=0;i<knobCount;i++){
+    var kx=knobCount===2?(px+28+i*36):(px+20+i*26);
+    ctx.fillStyle="#0f172a"; ctx.beginPath(); ctx.arc(kx,26,8.5,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle="#fff"; ctx.fillRect(kx-1,18,2,7);
+  }
+  ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(90,44,4,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="rgba(255,23,68,0.35)"; ctx.beginPath(); ctx.arc(90,44,8,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#0b0e14"; ctx.fillRect(px+10,52,pw-20,22);
+  ctx.fillStyle="#f8fafc"; ctx.font="bold 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.tag||"FX",90,67);
+  if(it.style==="boss"||it.style==="ts"){
+    ctx.fillStyle="#111827"; ctx.beginPath(); ctx.roundRect(px+12,80,pw-24,34,6); ctx.fill();
+    ctx.strokeStyle="#475569"; ctx.lineWidth=1.5; ctx.stroke();
+  }else{
+    ctx.fillStyle="#cbd5e1"; ctx.beginPath(); ctx.arc(90,98,10,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle="#334155"; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle="#64748b"; ctx.beginPath(); ctx.arc(90,98,4,0,Math.PI*2); ctx.fill();
+  }
+}
+
+function paintMicCanvas(cv,micName){
+  var w=cv.width=92, h=cv.height=92, ctx=cv.getContext("2d");
+  ctx.clearRect(0,0,w,h);
+  if(micName==="E906"){
+    ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.roundRect(26,12,40,42,8); ctx.fill();
+    ctx.strokeStyle="#94a3b8"; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=2;
+    for(var y=22;y<=44;y+=7){ ctx.beginPath(); ctx.moveTo(32,y); ctx.lineTo(60,y); ctx.stroke(); }
+    ctx.fillStyle="#0f172a"; ctx.fillRect(38,54,16,28);
+  }else if(micName==="SM57"){
+    ctx.fillStyle="#94a3b8"; ctx.beginPath(); ctx.roundRect(36,10,20,18,4); ctx.fill();
+    ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.moveTo(34,28); ctx.lineTo(58,28); ctx.lineTo(52,82); ctx.lineTo(40,82); ctx.closePath(); ctx.fill();
+    ctx.fillStyle="#eab308"; ctx.fillRect(35,28,22,4);
+  }else if(micName==="U87"){
+    ctx.fillStyle="#e2e8f0"; ctx.beginPath(); ctx.roundRect(30,10,32,28,12); ctx.fill();
+    ctx.strokeStyle="#64748b"; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle="#cbd5e1"; ctx.beginPath(); ctx.moveTo(30,38); ctx.lineTo(62,38); ctx.lineTo(55,82); ctx.lineTo(37,82); ctx.closePath(); ctx.fill();
+  }else{
+    ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.roundRect(28,10,36,38,6); ctx.fill();
+    ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=2.5; ctx.stroke();
+    ctx.fillStyle="#f1f5f9"; ctx.fillRect(34,16,24,18);
+    ctx.fillStyle="#0f172a"; ctx.fillRect(40,48,12,34);
+  }
+}
 
 var midiOut=null;
 function flatModels(id){
@@ -240,7 +325,7 @@ function newPatch(code){
 function initState(){
   var patches={};
   for(var i=0;i<BANKS.length;i++) for(var j=0;j<SLOTS.length;j++){ var c=""+BANKS[i]+SLOTS[j]; patches[c]=newPatch(c); }
-  return {bank:2,slot:"A",sel:"IR",patches:patches};
+  return {bank:2,slot:"A",sel:"AMP",patches:patches};
 }
 var st=(function(){
   try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b["P.L"]) return o; } }catch(e){}
@@ -251,7 +336,7 @@ function code(){ return ""+st.bank+st.slot; }
 function patch(){
   var c=code();
   if(!st.patches[c]) st.patches[c]=newPatch(c);
-  if(!META[st.sel]) st.sel="IR";
+  if(!META[st.sel]) st.sel="AMP";
   if(st.patches[c].b && st.patches[c].b.IR){
     if(typeof st.patches[c].b.IR.micOn!=="boolean") st.patches[c].b.IR.micOn=true;
     if(!st.patches[c].b.IR.mic) st.patches[c].b.IR.mic=IR_MICS[1];
@@ -284,8 +369,7 @@ function connectMidi(){
       sendChain(patch());
     }else ms.textContent="MIDI: NO DEVICE";
   }).catch(function(){ ms.textContent="MIDI: BLOCKED"; });
-}
-// PART 1 END
+  }
   function draw(syncInp){
   var p=patch(), c=code(), id=st.sel, m=META[id], blk=p.b[id];
   document.getElementById("pCode").textContent=c;
@@ -321,9 +405,7 @@ function connectMidi(){
     var btn=document.createElement("button");
     btn.type="button";
     btn.className="chain-blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
-    btn.innerHTML=
-      "<span class='led-strip'></span>"+
-      "<span class='blk-screen'><span class='blk-code'>"+bid+"</span><span class='blk-model'>"+item.model+"</span></span>";
+    btn.innerHTML="<span class='led-strip'></span><span class='blk-screen'><span class='blk-code'>"+bid+"</span><span class='blk-model'>"+item.model+"</span></span>";
     btn.onclick=function(){
       if(st.sel===bid){ item.on=!item.on; sendCC(META[bid].cc,item.on?100:0); }
       else st.sel=bid;
@@ -345,15 +427,10 @@ function connectMidi(){
     grp.items.forEach(function(it){
       var card=document.createElement("button"); card.type="button";
       card.className="gear-card"+(blk.model===it.n?" active":"");
-      var artHtml="";
-      if(id==="AMP"){
-        artHtml=it.kind==="stack"?SVG_AMPS.stack:SVG_AMPS.combo;
-      }else if(id==="IR"){
-        artHtml=it.kind==="user"?SVG_CABS.user:SVG_CABS.cab;
-      }else{
-        artHtml=getPedalSVG(it.n,it.c||"#37474f",it.tag||"FX");
-      }
-      card.innerHTML="<div class='gear-art'>"+artHtml+"</div><div class='gear-name'>"+it.n+"</div>";
+      var cv=document.createElement("canvas"); cv.className="gear-canvas";
+      paintGearCanvas(cv,id,it);
+      var nm=document.createElement("div"); nm.className="gear-name"; nm.textContent=it.n;
+      card.appendChild(cv); card.appendChild(nm);
       card.onclick=function(){
         blk.model=it.n;
         var idx=allNames.indexOf(blk.model);
@@ -369,7 +446,7 @@ function connectMidi(){
   if(id==="IR"){
     var micPanel=document.createElement("div"); micPanel.className="mic-panel";
     var headRow=document.createElement("div"); headRow.className="row";
-    headRow.innerHTML="<span style='font-size:11px;font-weight:800;color:#7fb3ff;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
+    headRow.innerHTML="<span style='font-size:11px;font-weight:800;color:#82b8ff;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
     var micToggle=document.createElement("button"); micToggle.type="button";
     micToggle.textContent=blk.micOn?"MIC ON":"MIC OFF"; micToggle.className=blk.micOn?"blue":"";
     micToggle.onclick=function(){ blk.micOn=!blk.micOn; sendCC(55,blk.micOn?100:0); save(); draw(false); };
@@ -379,13 +456,11 @@ function connectMidi(){
     IR_MICS.forEach(function(micName,idx){
       var b=document.createElement("button"); b.type="button";
       b.className="mic-card"+(blk.mic===micName?" active":"");
-      b.innerHTML="<div class='mic-art'>"+SVG_MICS[micName]+"</div><div class='gear-name'>"+micName+"</div>";
-      b.onclick=function(){
-        blk.mic=micName;
-        blk.micOn=true;
-        sendCC(53,Math.round((idx/3)*127));
-        save(); draw(false);
-      };
+      var mcv=document.createElement("canvas"); mcv.className="mic-canvas";
+      paintMicCanvas(mcv,micName);
+      var mnm=document.createElement("div"); mnm.className="gear-name"; mnm.textContent=micName;
+      b.appendChild(mcv); b.appendChild(mnm);
+      b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*127)); save(); draw(false); };
       micGrid.appendChild(b);
     });
     micPanel.appendChild(micGrid);
@@ -396,19 +471,8 @@ function connectMidi(){
       var b=document.createElement("button"); b.type="button";
       var isSel=blk.pos===posName;
       b.className="pos-btn"+(isSel?" blue":"");
-      var dotLeft=posName==="Edge"?"3px":(posName==="Middle"?"15px":"27px");
-      b.innerHTML=
-        `<svg class='pos-art' viewBox='0 0 38 18'>`+
-          `<rect x='1' y='1' width='36' height='16' rx='8' fill='#0e1217' stroke='#455a64' stroke-width='1'/>`+
-          `<circle cx='${dotLeft}' cy='9' r='4' fill='${isSel?"#fff":"#ffb300"}'/>`+
-        `</svg>`+
-        `<span class='gear-name'>${posName}</span>`;
-      b.onclick=function(){
-        blk.pos=posName;
-        blk.micOn=true;
-        sendCC(54,Math.round((idx/2)*127));
-        save(); draw(false);
-      };
+      b.innerHTML="<span class='gear-name'>"+posName+"</span>";
+      b.onclick=function(){ blk.pos=posName; blk.micOn=true; sendCC(54,Math.round((idx/2)*127)); save(); draw(false); };
       posGrid.appendChild(b);
     });
     micPanel.appendChild(posGrid);
