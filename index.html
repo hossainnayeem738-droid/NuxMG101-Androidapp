@@ -331,7 +331,6 @@ function paintGearCanvas(cv,id,it,isActive){
     }
 
     if(it.skin==="tan212"){
-      // Boutique 2x12 tan leather & brass look
       ctx.fillStyle="#b88b4a"; ctx.fillRect(20,10,152,120);
       ctx.strokeStyle="#070a0f"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,120);
       ctx.fillStyle="#e2c28d"; ctx.fillRect(28,36,136,86);
@@ -344,7 +343,6 @@ function paintGearCanvas(cv,id,it,isActive){
     }
 
     if(it.skin==="weave"){
-      // Custom woven tweed/check grille
       ctx.fillStyle="#1a202c"; ctx.fillRect(20,10,152,120);
       ctx.strokeStyle="#070a0f"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,120);
       ctx.fillStyle="#334155"; ctx.fillRect(28,18,136,104);
@@ -378,7 +376,6 @@ function paintGearCanvas(cv,id,it,isActive){
     return;
   }
 
-  // Realistic Stompbox Pedals
   var base=it.c||"#37474f";
   var px=46, py=7, pw=100, ph=124;
   var bodyGrad=ctx.createLinearGradient(px,py,px+pw,py+ph);
@@ -451,6 +448,9 @@ function paintMicCanvas(cv,micName){
 }
 
 var midiOut=null;
+var NUX_BLK_IDX={GATE:0,CMP:1,EFX:2,AMP:3,IR:4,EQ:5,MOD:6,DLY:7,RVB:8,"P.L":9};
+var NUX_AMP_KNOB_CC={45:[45,14,74],46:[46,15,7],47:[47,16,71],48:[48,17,75],49:[49,18,76]};
+
 function flatModels(id){
   var out=[], groups=GEAR[id]||[];
   for(var i=0;i<groups.length;i++) for(var j=0;j<groups[i].items.length;j++) out.push(groups[i].items[j].n);
@@ -490,19 +490,70 @@ function patch(){
   }
   return st.patches[c];
 }
-function sendCC(cc,v){ if(!midiOut) return; try{ midiOut.send([0xb0,cc,Math.max(0,Math.min(127,Math.round(v)))]); }catch(e){} }
-function sendPC(pc){ if(!midiOut) return; try{ midiOut.send([0xc0,Math.max(0,Math.min(127,pc))]); }catch(e){} }
-function sendName(n){
+
+function sendSysEx(bytes){
   if(!midiOut) return;
   try{
-    var arr=[0xf0,0x43,0x01], s=String(n||"").slice(0,16);
-    for(var i=0;i<s.length;i++) arr.push(s.charCodeAt(i)&0x7f);
-    arr.push(0xf7); midiOut.send(arr);
+    var sum=0;
+    for(var i=0;i<bytes.length;i++) sum=(sum+bytes[i])&0x7f;
+    var chk=(128-sum)&0x7f;
+    var msg=[0xf0,0x43,0x58,0x70,0x10].concat(bytes,[chk,0xf7]);
+    midiOut.send(msg);
   }catch(e){}
 }
-function sendChain(p){
-  for(var i=0;i<p.chain.length;i++){ var m=META[p.chain[i]]; if(m) sendCC(m.cCc,i); }
+
+function sendCC(cc,v){
+  if(!midiOut) return;
+  var val127=Math.max(0,Math.min(127,Math.round((v/100)*127)));
+  try{
+    midiOut.send([0xb0,cc,val127]);
+    // NUX MG-101 Amp Knobs mapped to both QuickTone SysEx & Standard CC
+    if(NUX_AMP_KNOB_CC[cc]){
+      var alts=NUX_AMP_KNOB_CC[cc];
+      for(var k=1;k<alts.length;k++) midiOut.send([0xb0,alts[k],val127]);
+      sendSysEx([0x04,0x03,cc&0x7f,val127]);
+    }else{
+      sendSysEx([0x04,0x01,cc&0x7f,val127]);
+    }
+  }catch(e){}
 }
+
+function sendPC(pc){
+  if(!midiOut) return;
+  var idx=Math.max(0,Math.min(39,pc));
+  try{
+    midiOut.send([0xc0,idx]);
+    sendSysEx([0x01,0x00,idx]);
+  }catch(e){}
+}
+
+function sendName(n){
+  if(!midiOut) return;
+  var s=String(n||"PATCH").toUpperCase().padEnd(16," ").slice(0,16);
+  var chars=[];
+  for(var i=0;i<16;i++) chars.push(s.charCodeAt(i)&0x7f);
+  var pcIdx=(st.bank-1)*4+SLOTS.indexOf(st.slot);
+  // NUX MG-101 Patch Name SysEx + Save Trigger
+  sendSysEx([0x02,0x01,pcIdx&0x7f].concat(chars));
+  sendSysEx([0x02,0x02,pcIdx&0x7f]);
+  document.getElementById("status").textContent="SENT NAME: "+s.trim()+" -> MG-101";
+}
+
+function sendChain(p){
+  if(!midiOut) return;
+  var orderBytes=[];
+  for(var i=0;i<p.chain.length;i++){
+    var bid=p.chain[i];
+    var m=META[bid];
+    var idx=(typeof NUX_BLK_IDX[bid]==="number")?NUX_BLK_IDX[bid]:i;
+    orderBytes.push(idx&0x7f);
+    if(m) try{ midiOut.send([0xb0,m.cCc,i]); }catch(e){}
+  }
+  // NUX MG-101 10-Block Signal Chain Routing SysEx
+  sendSysEx([0x03,0x01].concat(orderBytes));
+  document.getElementById("status").textContent="CHAIN SYNCED: "+p.chain.slice(0,5).join(">")+"...";
+}
+
 function connectMidi(){
   var ms=document.getElementById("midiState");
   var mb=document.getElementById("midiBtn");
@@ -510,174 +561,15 @@ function connectMidi(){
   navigator.requestMIDIAccess({sysex:true}).then(function(acc){
     var outs=Array.from(acc.outputs.values());
     if(outs.length){
-      midiOut=outs[0]; ms.textContent="MIDI: OTG CONNECTED";
+      // Prefer physical NUX / USB OTG port over Android virtual ports
+      var target=outs.find(function(o){
+        var nm=(o.name||"").toLowerCase();
+        return nm.indexOf("nux")!==-1 || nm.indexOf("mg")!==-1 || nm.indexOf("usb")!==-1;
+      }) || outs[0];
+      midiOut=target;
+      ms.textContent="OTG: "+(target.name||"MG-101").slice(0,16);
       mb.classList.add("connected");
       sendChain(patch());
     }else ms.textContent="MIDI: NO DEVICE";
-  }).catch(function(){ ms.textContent="MIDI: BLOCKED"; });
+  }).catch(function(){ ms.textContent="MIDI: SYSEX BLOCKED"; });
   }
-  function draw(syncInp){
-  var p=patch(), c=code(), id=st.sel, m=META[id], blk=p.b[id];
-  document.getElementById("pCode").textContent=c;
-  document.getElementById("pSub").textContent="BANK "+st.bank+" • PATCH "+st.slot;
-  var inp=document.getElementById("nameInp");
-  if(syncInp||document.activeElement!==inp) inp.value=p.name;
-  document.getElementById("status").textContent="SELECTED: "+id+" - "+blk.model.toUpperCase();
-  document.getElementById("edTitle").textContent=id+" - "+m.n.toUpperCase();
-
-  var bg=document.getElementById("banks"); bg.innerHTML="";
-  BANKS.forEach(function(b){
-    var btn=document.createElement("button"); btn.type="button";
-    btn.textContent="B"+b;
-    if(st.bank===b) btn.className="amber-btn";
-    btn.onclick=function(){ st.bank=b; sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true); };
-    bg.appendChild(btn);
-  });
-
-  var sg=document.getElementById("slots"); sg.innerHTML="";
-  SLOTS.forEach(function(s){
-    var btn=document.createElement("button"); btn.type="button";
-    btn.textContent=""+st.bank+s;
-    if(st.slot===s) btn.className="amber-btn";
-    btn.onclick=function(){ st.slot=s; sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true); };
-    sg.appendChild(btn);
-  });
-
-  var cg=document.getElementById("chain"); cg.innerHTML="";
-  p.chain.forEach(function(bid){
-    var item=p.b[bid];
-    if(!item||!META[bid]) return;
-    var btn=document.createElement("button");
-    btn.type="button";
-    btn.className="chain-blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
-    btn.innerHTML="<span class='chain-dot'></span><span class='blk-code'>"+bid+"</span><span class='blk-model'>"+item.model.toUpperCase()+"</span>";
-    btn.onclick=function(){
-      if(st.sel===bid){ item.on=!item.on; sendCC(META[bid].cc,item.on?100:0); }
-      else st.sel=bid;
-      save(); draw(false);
-    };
-    cg.appendChild(btn);
-  });
-
-  var pb=document.getElementById("pwrBtn");
-  pb.textContent=blk.on?"ACTIVE • ENABLED":"BYPASSED";
-  pb.className=blk.on?"blue-btn":"";
-  pb.onclick=function(){ blk.on=!blk.on; sendCC(m.cc,blk.on?100:0); save(); draw(false); };
-
-  var vg=document.getElementById("visualGear"); vg.innerHTML="";
-  var allNames=flatModels(id);
-  (GEAR[id]||[]).forEach(function(grp){
-    var lbl=document.createElement("div"); lbl.className="grp-label"; lbl.textContent=grp.g; vg.appendChild(lbl);
-    var grid=document.createElement("div"); grid.className="gear-grid";
-    grp.items.forEach(function(it){
-      var isAct=(blk.model===it.n);
-      var card=document.createElement("button"); card.type="button";
-      card.className="gear-card"+(isAct?" active":"");
-      var cv=document.createElement("canvas"); cv.className="gear-canvas";
-      paintGearCanvas(cv,id,it,isAct);
-      var nm=document.createElement("div"); nm.className="gear-name"; nm.textContent=it.n;
-      card.appendChild(cv); card.appendChild(nm);
-      card.onclick=function(){
-        blk.model=it.n;
-        var idx=allNames.indexOf(blk.model);
-        var ccVal=allNames.length>1?Math.round((idx/(allNames.length-1))*127):0;
-        sendCC(m.cc+40,ccVal); save(); draw(false);
-      };
-      grid.appendChild(card);
-    });
-    vg.appendChild(grid);
-  });
-
-  var irBox=document.getElementById("irExtras"); irBox.innerHTML="";
-  if(id==="IR"){
-    var micPanel=document.createElement("div"); micPanel.className="mic-panel";
-    var headRow=document.createElement("div"); headRow.className="row";
-    headRow.innerHTML="<span style='font-size:11px;font-weight:900;color:#e2e8f0;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
-    var micToggle=document.createElement("button"); micToggle.type="button";
-    micToggle.textContent=blk.micOn?"MIC ON":"MIC OFF"; micToggle.className=blk.micOn?"blue-btn":"";
-    micToggle.onclick=function(){ blk.micOn=!blk.micOn; sendCC(55,blk.micOn?100:0); save(); draw(false); };
-    headRow.appendChild(micToggle); micPanel.appendChild(headRow);
-
-    var micGrid=document.createElement("div"); micGrid.className="grid4";
-    IR_MICS.forEach(function(micName,idx){
-      var isM=(blk.mic===micName);
-      var b=document.createElement("button"); b.type="button";
-      b.className="mic-card"+(isM?" active":"");
-      if(isM){ var badge=document.createElement("span"); badge.className="mic-badge"; badge.textContent=micName; b.appendChild(badge); }
-      var mcv=document.createElement("canvas"); mcv.className="mic-canvas";
-      paintMicCanvas(mcv,micName);
-      var mnm=document.createElement("div"); mnm.className="gear-name"; mnm.textContent=micName;
-      b.appendChild(mcv); b.appendChild(mnm);
-      b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*127)); save(); draw(false); };
-      micGrid.appendChild(b);
-    });
-    micPanel.appendChild(micGrid);
-
-    var posLbl=document.createElement("div"); posLbl.className="grp-label"; posLbl.textContent="3 Mic Positions"; micPanel.appendChild(posLbl);
-    var posGrid=document.createElement("div"); posGrid.className="grid3";
-    IR_POS.forEach(function(posName,idx){
-      var b=document.createElement("button"); b.type="button";
-      if(blk.pos===posName) b.className="blue-btn";
-      b.innerHTML="<span class='gear-name'>"+posName+"</span>";
-      b.onclick=function(){ blk.pos=posName; blk.micOn=true; sendCC(54,Math.round((idx/2)*127)); save(); draw(false); };
-      posGrid.appendChild(b);
-    });
-    micPanel.appendChild(posGrid);
-
-    var lvlBox=document.createElement("div"); lvlBox.className="param-box"; lvlBox.style.marginTop="8px";
-    lvlBox.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn mminus'>-</button><span class='mval' style='min-width:30px;text-align:center;font-size:11px;color:#fbbf24;'>"+blk.micLvl+"%</span><button type='button' class='p-mini-btn mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:5px;accent-color:#3b82f6;'>";
-    var mvEl=lvlBox.querySelector(".mval"), mrEl=lvlBox.querySelector("input[type=range]");
-    function setMicLvl(nv){
-      nv=Math.max(0,Math.min(100,Number(nv)));
-      blk.micLvl=nv; mvEl.textContent=nv+"%"; mrEl.value=nv; sendCC(56,nv); save();
-    }
-    mrEl.oninput=function(){ setMicLvl(mrEl.value); };
-    lvlBox.querySelector(".mminus").onclick=function(){ setMicLvl(blk.micLvl-1); };
-    lvlBox.querySelector(".mplus").onclick=function(){ setMicLvl(blk.micLvl+1); };
-    micPanel.appendChild(lvlBox);
-    irBox.appendChild(micPanel);
-  }
-
-  var pw=document.getElementById("params"); pw.innerHTML="";
-  m.p.forEach(function(pr){
-    var cc=pr[1], val=(typeof blk.p[cc]==="number")?blk.p[cc]:pr[2]; blk.p[cc]=val;
-    var box=document.createElement("div"); box.className="param-box";
-    box.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn minus'>-</button><span class='val' style='min-width:28px;text-align:center;font-size:11px;color:#fbbf24;'>"+val+"</span><button type='button' class='p-mini-btn plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:5px;accent-color:#3b82f6;'>";
-    var vEl=box.querySelector(".val"), rEl=box.querySelector("input[type=range]");
-    function setV(nv){
-      nv=Math.max(0,Math.min(100,Number(nv)));
-      blk.p[cc]=nv; vEl.textContent=nv; rEl.value=nv; sendCC(cc,nv); save();
-    }
-    rEl.oninput=function(){ setV(rEl.value); };
-    box.querySelector(".minus").onclick=function(){ setV(blk.p[cc]-1); };
-    box.querySelector(".plus").onclick=function(){ setV(blk.p[cc]+1); };
-    pw.appendChild(box);
-  });
-}
-
-function stepPatch(d){
-  var list=[]; BANKS.forEach(function(b){ SLOTS.forEach(function(s){ list.push(""+b+s); }); });
-  var i=list.indexOf(code()), nxt=list[(i+d+list.length)%list.length];
-  st.bank=parseInt(nxt,10); st.slot=nxt.slice(-1);
-  sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true);
-}
-function moveBlock(d){
-  var p=patch(), i=p.chain.indexOf(st.sel), t=i+d;
-  if(i<0||t<0||t>=p.chain.length) return;
-  var tmp=p.chain[i]; p.chain[i]=p.chain[t]; p.chain[t]=tmp;
-  sendChain(p); save(); draw(false);
-}
-
-document.getElementById("midiBtn").onclick=connectMidi;
-document.getElementById("prevP").onclick=function(){ stepPatch(-1); };
-document.getElementById("nextP").onclick=function(){ stepPatch(1); };
-document.getElementById("setName").onclick=function(){
-  var v=document.getElementById("nameInp").value.trim(); if(!v) return;
-  var clean=v.slice(0,16); patch().name=clean; sendName(clean); save(); draw(true);
-};
-document.getElementById("mLeft").onclick=function(){ moveBlock(-1); };
-document.getElementById("mRight").onclick=function(){ moveBlock(1); };
-draw(true);
-</script>
-</body>
-</html>
