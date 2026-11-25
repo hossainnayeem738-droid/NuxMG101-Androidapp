@@ -3,85 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NUX MG-101 Digital Rig Studio</title>
+  <title>NUX MG-101 Digital Rig Studio v3.0</title>
   <style>
     :root{
-      --bg:#0b0e14;--card:#131822;--card2:#1a212e;--border:#2a3446;
-      --text:#f1f5f9;--muted:#94a3b8;--blue:#2196f3;--amber:#ffb300;--green:#22c55e;--red:#ef4444;
+      --bg:#070b12;--card:rgba(16,23,36,0.88);--card2:#162032;--border:rgba(56,189,248,0.22);
+      --text:#f1f5f9;--muted:#94a3b8;--cyan:#38bdf8;--blue:#0284c7;--amber:#f59e0b;--green:#22c55e;--red:#ef4444;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-    body{margin:0;padding:10px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+    body{margin:0;padding:10px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at 50% 0%,#0f1e36 0%,#070b12 65%);color:var(--text);overflow-x:hidden;}
     .app{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
-    .card{background:linear-gradient(180deg,#161c27 0%,#10151e 100%);border:1px solid var(--border);border-radius:12px;padding:10px;overflow-x:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.45);}
+    .card{background:var(--card);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;padding:11px;overflow-x:hidden;box-shadow:0 10px 28px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,255,255,0.06);}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
-    .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:6px;}
-    .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:6px;}
-    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:6px;}
-    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px;}
-    button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 7px;font-weight:700;cursor:pointer;min-width:0;}
-    input{flex:1;background:#0b0f16;border-color:#334155;font-weight:500;cursor:text;}
-    .blue{background:linear-gradient(180deg,#2998ff 0%,#1565c0 100%);border-color:#2998ff;color:#fff;}
-    .red{background:linear-gradient(180deg,#ef4444 0%,#b91c1c 100%);border-color:#ef4444;color:#fff;}
+    .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:6px;}
+    .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:6px;}
+    .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px;}
+    .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;}
+    button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid rgba(148,163,184,0.24);border-radius:9px;padding:6px 8px;font-weight:700;cursor:pointer;min-width:0;}
+    input{flex:1;background:#080d16;border-color:rgba(56,189,248,0.35);font-weight:500;cursor:text;}
+    .blue{background:linear-gradient(180deg,#0ea5e9 0%,#0369a1 100%);border-color:#38bdf8;color:#fff;box-shadow:0 0 12px rgba(56,189,248,0.35);}
+    .cyan-btn{background:rgba(14,165,233,0.16);border-color:#38bdf8;color:#7dd3fc;}
 
-    /* Top Status Bar */
-    .top-status{background:#0d121a;border:1px solid #243044;border-radius:10px;padding:7px 10px;font-size:10.5px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:6px;}
-    .midi-pill{display:flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid #334155;background:#111827;}
+    /* Futuristic Top Status Bar */
+    .top-status{background:rgba(10,16,26,0.92);border:1px solid rgba(56,189,248,0.25);border-radius:10px;padding:7px 10px;font-size:10px;font-weight:800;display:flex;justify-content:space-between;align-items:center;gap:6px;}
+    .midi-pill{display:flex;align-items:center;gap:5px;padding:4px 8px;border-radius:999px;font-size:9.5px;font-weight:800;border:1px solid rgba(56,189,248,0.35);background:#0c1422;color:#bae6fd;}
     .midi-dot{width:7px;height:7px;border-radius:50%;background:var(--red);}
     .midi-pill.connected .midi-dot{background:var(--green);box-shadow:0 0 8px var(--green);}
 
-    /* QuickTone Compact Patch Header */
+    /* Hero Title & Patch Selector */
+    .brand-title{font-size:20px;font-weight:900;letter-spacing:0.6px;color:#7dd3fc;text-shadow:0 0 16px rgba(56,189,248,0.45);}
     .patch-top{display:grid;grid-template-columns:auto auto 1fr;gap:8px;align-items:center;margin-top:8px;}
-    .patch-badge{background:linear-gradient(180deg,#2998ff 0%,#1565c0 100%);color:#fff;font-size:20px;font-weight:900;padding:10px 14px;border-radius:10px;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(33,150,243,0.35);}
+    .patch-badge{background:linear-gradient(180deg,#0284c7 0%,#0c4a6e 100%);border:1px solid #38bdf8;color:#fff;font-size:20px;font-weight:900;padding:10px 14px;border-radius:10px;box-shadow:0 0 16px rgba(56,189,248,0.35);}
     .nav-pair{display:flex;gap:4px;}
-    .nav-pair button{padding:10px 9px;font-size:12px;}
+    .nav-pair button{padding:10px 9px;font-size:12px;border-color:rgba(56,189,248,0.35);color:#7dd3fc;}
     .bank-mini{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;}
     .bank-mini button{padding:3px 2px;font-size:9.5px;border-radius:5px;}
     .slot-mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:4px;}
     .slot-mini button{padding:4px 2px;font-size:10px;border-radius:6px;}
 
-    .sec-title{font-size:11px;font-weight:800;color:#cbd5e1;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
-    .grp-label{font-size:11px;font-weight:800;color:#60a5fa;margin:10px 0 6px 0;border-left:3px solid var(--blue);padding-left:7px;}
+    .sec-title{font-size:11px;font-weight:800;color:#e2e8f0;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px;}
+    .grp-label{font-size:11px;font-weight:800;color:#38bdf8;margin:10px 0 6px 0;border-left:3px solid var(--cyan);padding-left:7px;}
 
-    /* QuickTone Signal Chain Blocks */
-    .chain-blk{position:relative;background:linear-gradient(180deg,#1f2736 0%,#131822 100%);border:1px solid #2f3b50;border-radius:9px;padding:6px 4px;text-align:center;min-width:0;}
-    .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#2a3447 0%,#18202e 100%);box-shadow:0 0 12px rgba(255,179,0,0.3);}
-    .chain-dot{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:#475569;}
+    /* Futuristic Signal Chain with Bus Line */
+    .chain-wrap{position:relative;padding:4px 0;}
+    .chain-bus{position:absolute;left:4%;right:4%;top:50%;height:2px;background:linear-gradient(90deg,rgba(56,189,248,0.15),rgba(56,189,248,0.6),rgba(56,189,248,0.15));pointer-events:none;z-index:0;}
+    .chain-blk{position:relative;z-index:1;background:linear-gradient(180deg,#182336 0%,#0e1522 100%);border:1px solid rgba(148,163,184,0.28);border-radius:9px;padding:6px 4px;text-align:center;min-width:0;}
+    .chain-blk.on{border-color:rgba(56,189,248,0.55);box-shadow:inset 0 0 10px rgba(56,189,248,0.14);}
+    .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#262e3d 0%,#141b29 100%);box-shadow:0 0 14px rgba(245,158,11,0.38);}
+    .chain-dot{position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#475569;}
     .chain-blk.on .chain-dot{background:var(--green);box-shadow:0 0 7px var(--green);}
     .blk-code{display:block;font-size:10.5px;font-weight:900;color:#fff;}
     .blk-model{display:block;font-size:8.5px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
 
-    /* Gear & Cab Cards */
+    /* Shift Bar */
+    .shift-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;}
+    .chevrons{font-size:12px;font-weight:900;letter-spacing:-2px;color:#38bdf8;opacity:0.75;}
+
+    /* Futuristic Gear Cards */
     .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
-    .gear-card{background:linear-gradient(180deg,#1a2230 0%,#111620 100%);border:1px solid #2b3648;border-radius:10px;padding:5px 4px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;}
-    .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:linear-gradient(180deg,#253042 0%,#161e2b 100%);box-shadow:0 0 14px rgba(255,179,0,0.32);}
-    .gear-canvas{width:100%;height:68px;border-radius:6px;display:block;background:#0a0e14;}
+    .gear-card{background:linear-gradient(180deg,#151f30 0%,#0c121d 100%);border:1px solid rgba(148,163,184,0.22);border-radius:10px;padding:5px 4px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;}
+    .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:linear-gradient(180deg,#232b3b 0%,#121824 100%);box-shadow:0 0 16px rgba(245,158,11,0.35);}
+    .gear-canvas{width:100%;height:68px;border-radius:6px;display:block;background:#070b12;}
     .gear-name{font-size:9.5px;font-weight:800;line-height:1.15;color:#f1f5f9;word-break:break-word;}
 
     /* Mic & Compact Parameter Grid */
-    .mic-panel{background:#111620;border:1px solid #2a3548;border-radius:11px;padding:9px;margin-top:10px;}
-    .mic-card{background:linear-gradient(180deg,#19212e 0%,#10151e 100%);border:1px solid #2b3648;border-radius:9px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
-    .mic-card.active{border-color:#38bdf8;outline:2px solid #38bdf8;background:#1e2b3d;}
+    .mic-panel{background:rgba(12,18,29,0.9);border:1px solid rgba(56,189,248,0.25);border-radius:11px;padding:9px;margin-top:10px;}
+    .mic-card{background:linear-gradient(180deg,#162032 0%,#0d131f 100%);border:1px solid rgba(148,163,184,0.22);border-radius:9px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
+    .mic-card.active{border-color:#38bdf8;outline:2px solid #38bdf8;background:#192940;box-shadow:0 0 12px rgba(56,189,248,0.3);}
     .mic-canvas{width:46px;height:46px;display:block;}
     .param-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px;}
-    .param-box{background:#121722;border:1px solid #283244;border-radius:9px;padding:7px 8px;}
-    .p-mini-btn{padding:2px 7px;font-size:12px;border-radius:6px;}
+    .param-box{background:#0e1522;border:1px solid rgba(56,189,248,0.2);border-radius:9px;padding:7px 8px;}
+    .p-mini-btn{padding:2px 7px;font-size:12px;border-radius:6px;border-color:rgba(56,189,248,0.35);}
   </style>
 </head>
 <body>
 <div class="app">
   <div class="top-status">
-    <span id="status" style="color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">SELECTED: IR - User IR 04</span>
+    <span id="status" style="color:#e2e8f0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">SELECTED: IR - User IR 04 [ACTIVE]</span>
     <button id="midiBtn" class="midi-pill" type="button">
       <span class="midi-dot"></span>
-      <span id="midiState">MIDI: CONNECT OTG</span>
+      <span id="midiState">CONNECT OTG • 96kHz</span>
     </button>
   </div>
 
   <div class="card">
     <div class="row">
-      <div>
-        <div style="font-size:14px;font-weight:900;letter-spacing:0.3px;">NUX MG-101 DIGITAL RIG STUDIO</div>
-        <div id="subInfo" style="font-size:10.5px;color:var(--muted);">QuickTone™ OTG Controller • Patch 2A</div>
+      <div class="brand-title">NUX MG-101</div>
+      <div style="text-align:right;">
+        <div style="font-size:12px;font-weight:900;color:#f1f5f9;letter-spacing:0.4px;">DIGITAL RIG STUDIO</div>
+        <div style="font-size:9px;color:#38bdf8;font-weight:700;">QUICKTONE™ NEURAL ENGINE v3.0</div>
       </div>
     </div>
 
@@ -99,16 +108,23 @@
 
     <div class="row" style="margin-top:8px;">
       <input id="nameInp" maxlength="16" placeholder="Patch Name" />
-      <button id="setName" class="blue" type="button">Set Name</button>
+      <button id="setName" class="cyan-btn" type="button">RENAME</button>
     </div>
   </div>
 
   <div class="card">
     <div class="sec-title">Signal Chain (10 Blocks)</div>
-    <div id="chain" class="grid5"></div>
-    <div class="grid2">
-      <button id="mLeft" type="button">◀ Move Left</button>
-      <button id="mRight" type="button">Move Right ▶</button>
+    <div class="chain-wrap">
+      <div class="chain-bus"></div>
+      <div id="chain" class="grid5" style="margin-top:0;"></div>
+    </div>
+    <div class="shift-row">
+      <span class="chevrons">«««</span>
+      <div class="row" style="flex:1;justify-content:center;">
+        <button id="mLeft" type="button" style="flex:1;">&lt; SHIFT LEFT</button>
+        <button id="mRight" type="button" style="flex:1;">SHIFT RIGHT &gt;</button>
+      </div>
+      <span class="chevrons">»»»</span>
     </div>
   </div>
 
@@ -124,7 +140,7 @@
 </div>
 
 <script>
-var KEY="nux_mg101_quicktone_v3";
+var KEY="nux_mg101_neural_v3";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
@@ -170,10 +186,10 @@ var GEAR={
   ],
   IR:[
     {g:"4x12 / 2x12 Extension Cabinets",items:[
-      {n:"BOTM 412",kind:"cab",skin:"black",badge:"VHM"},{n:"RECT 412",kind:"cab",skin:"rect",badge:"RECT"},{n:"HBE 412",kind:"cab",skin:"gold",badge:"HBE"},
+      {n:"BOTM 412",kind:"cab",skin:"cyan",badge:"VHM"},{n:"RECT 412",kind:"cab",skin:"cyan",badge:"RECT"},{n:"HBE 412",kind:"cab",skin:"gold",badge:"HBE"},
       {n:"CUSTOM 412",kind:"cab",skin:"silver",badge:"CSTM"},{n:"V30 412",kind:"cab",skin:"gold",badge:"V30"},{n:"BUTQ 212",kind:"cab",skin:"tan",badge:"212"},
       {n:"T75 412",kind:"cab",skin:"black",badge:"T75"},{n:"G12M 412",kind:"cab",skin:"black",badge:"G12M"},{n:"G12L 412",kind:"cab",skin:"black",badge:"G12L"},
-      {n:"GREEN 412",kind:"cab",skin:"green",badge:"GRN"},{n:"SLO 412",kind:"cab",skin:"slo",badge:"SLO"},{n:"UBER 412",kind:"cab",skin:"uber",badge:"UBER"}
+      {n:"GREEN 412",kind:"cab",skin:"green",badge:"GRN"},{n:"SLO 412",kind:"cab",skin:"cyan",badge:"SLO"},{n:"UBER 412",kind:"cab",skin:"gold",badge:"UBER"}
     ]},
     {g:"User IR Slots (01 - 12)",items:[
       {n:"User IR 01",kind:"user",badge:"IR-01"},{n:"User IR 02",kind:"user",badge:"IR-02"},{n:"User IR 03",kind:"user",badge:"IR-03"},
@@ -197,7 +213,7 @@ var GEAR={
     {n:"ROOM",c:"#37474f",style:"boss",tag:"ROOM"},{n:"HALL",c:"#8d6e63",style:"mxr",tag:"HALL"},{n:"PLATE",c:"#90a4ae",style:"mxr",tag:"PLAT"},
     {n:"SPRING",c:"#fbc02d",style:"ts",tag:"SPRG"},{n:"SHIMMER",c:"#212121",style:"muff",tag:"SHMR"}
   ]}],
-  "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#1e88e5",style:"mxr",tag:"LEVEL"}]}]
+  "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#0284c7",style:"mxr",tag:"LEVEL"}]}]
 };
   function shadeHex(hex,amt){
   var c=(hex||"#37474f").replace("#","");
@@ -210,17 +226,17 @@ var GEAR={
 }
 
 function drawCorners(ctx,x,y,w,h){
-  ctx.fillStyle="#94a3b8";
-  var s=7;
+  ctx.fillStyle="#cbd5e1";
+  var s=6;
   ctx.fillRect(x-1,y-1,s,s); ctx.fillRect(x+w-s+1,y-1,s,s);
   ctx.fillRect(x-1,y+h-s+1,s,s); ctx.fillRect(x+w-s+1,y+h-s+1,s,s);
 }
 
-function drawSpeaker(ctx,x,y,r){
+function drawSpeaker(ctx,x,y,r,ringCol){
   var outer=ctx.createRadialGradient(x-r*0.25,y-r*0.25,r*0.1,x,y,r);
   outer.addColorStop(0,"#475569");outer.addColorStop(0.45,"#18202c");outer.addColorStop(0.82,"#05080d");outer.addColorStop(1,"#263042");
   ctx.fillStyle=outer;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
-  ctx.strokeStyle="rgba(255,255,255,0.2)";ctx.lineWidth=1.1;ctx.stroke();
+  ctx.strokeStyle=ringCol||"rgba(255,255,255,0.22)";ctx.lineWidth=1.2;ctx.stroke();
 
   var cone=ctx.createRadialGradient(x,y,r*0.32,x,y,r*0.85);
   cone.addColorStop(0,"#090c11");cone.addColorStop(0.7,"#18202c");cone.addColorStop(1,"#05070a");
@@ -231,20 +247,20 @@ function drawSpeaker(ctx,x,y,r){
   ctx.fillStyle=cap;ctx.beginPath();ctx.arc(x,y,r*0.34,0,Math.PI*2);ctx.fill();
 }
 
-function paintGearCanvas(cv,id,it){
+function paintGearCanvas(cv,id,it,isActive){
   var w=cv.width=190, h=cv.height=136, ctx=cv.getContext("2d");
   ctx.clearRect(0,0,w,h);
 
   if(id==="AMP"){
     if(it.kind==="stack"){
-      var headCol="#181d26", faceCol="#94a3b8", grille="#0e1218";
+      var headCol="#161d29", faceCol="#94a3b8", grille="#0c111a";
       if(it.skin==="rect"){ faceCol="#cbd5e1"; grille="#1e2530"; }
       else if(it.skin==="jcm"||it.skin==="plexi"){ faceCol="#f59e0b"; }
       else if(it.skin==="slo"){ headCol="#e2e8f0"; faceCol="#1e293b"; }
       else if(it.skin==="vh4"){ faceCol="#f8fafc"; }
 
       ctx.fillStyle=headCol; ctx.fillRect(24,6,142,36);
-      ctx.strokeStyle="#05070a"; ctx.lineWidth=2.5; ctx.strokeRect(24,6,142,36);
+      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(24,6,142,36);
       ctx.fillStyle=faceCol; ctx.fillRect(30,20,130,17);
       if(it.skin==="rect"){
         ctx.fillStyle="#64748b";
@@ -253,33 +269,33 @@ function paintGearCanvas(cv,id,it){
 
       for(var kx=42;kx<=140;kx+=14){
         ctx.fillStyle="#090d14"; ctx.beginPath(); ctx.arc(kx,28.5,4,0,Math.PI*2); ctx.fill();
-        ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1; ctx.stroke();
+        ctx.strokeStyle="#38bdf8"; ctx.lineWidth=1; ctx.stroke();
       }
-      ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(151,28.5,3.2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#38bdf8"; ctx.beginPath(); ctx.arc(151,28.5,3.2,0,Math.PI*2); ctx.fill();
 
-      ctx.fillStyle="#141923"; ctx.fillRect(18,45,154,84);
-      ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1.5; ctx.strokeRect(22,49,146,76);
-      ctx.fillStyle="#090c11"; ctx.fillRect(24,51,142,72);
-      drawSpeaker(ctx,60,70,15.5); drawSpeaker(ctx,130,70,15.5);
-      drawSpeaker(ctx,60,104,15.5); drawSpeaker(ctx,130,104,15.5);
+      ctx.fillStyle="#121824"; ctx.fillRect(18,45,154,84);
+      ctx.strokeStyle="#38bdf8"; ctx.lineWidth=1.3; ctx.strokeRect(22,49,146,76);
+      ctx.fillStyle="#080c14"; ctx.fillRect(24,51,142,72);
+      drawSpeaker(ctx,60,70,15.5,"rgba(56,189,248,0.4)"); drawSpeaker(ctx,130,70,15.5,"rgba(56,189,248,0.4)");
+      drawSpeaker(ctx,60,104,15.5,"rgba(56,189,248,0.4)"); drawSpeaker(ctx,130,104,15.5,"rgba(56,189,248,0.4)");
       drawCorners(ctx,18,45,154,84);
       ctx.fillStyle="#1e293b"; ctx.fillRect(76,83,38,9);
       ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=0.8; ctx.strokeRect(76,83,38,9);
     }else{
-      var body="#1e2530", grill="#131821", panel="#cbd5e1", pipe="#94a3b8";
+      var body="#1a2230", grill="#101622", panel="#cbd5e1", pipe="#38bdf8";
       if(it.skin==="tweed"){ body="#cfa257"; grill="#5a3e1e"; panel="#e2e8f0"; pipe="#785327"; }
       else if(it.skin==="vox"){ body="#2b1919"; grill="#7c4a2d"; panel="#7f1d1d"; pipe="#f59e0b"; }
       else if(it.skin==="cream"){ body="#e7d5b5"; grill="#a18256"; panel="#f8fafc"; pipe="#785327"; }
       else if(it.skin==="silver"){ body="#181c23"; grill="#64748b"; panel="#e2e8f0"; pipe="#f8fafc"; }
-      else if(it.skin==="blackface"){ body="#111419"; grill="#334155"; panel="#0f172a"; pipe="#cbd5e1"; }
-      else if(it.skin==="jazz"){ body="#181c23"; grill="#475569"; panel="#1e293b"; pipe="#94a3b8"; }
+      else if(it.skin==="blackface"){ body="#111419"; grill="#334155"; panel="#0f172a"; pipe="#38bdf8"; }
+      else if(it.skin==="jazz"){ body="#181c23"; grill="#475569"; panel="#1e293b"; pipe="#38bdf8"; }
 
       ctx.fillStyle=body; ctx.fillRect(18,12,154,114);
-      ctx.strokeStyle="#05070a"; ctx.lineWidth=2.5; ctx.strokeRect(18,12,154,114);
+      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(18,12,154,114);
       ctx.fillStyle=panel; ctx.fillRect(24,18,142,21);
       for(var cx=38;cx<=138;cx+=14){
         ctx.fillStyle="#0f172a"; ctx.beginPath(); ctx.arc(cx,28.5,4,0,Math.PI*2); ctx.fill();
-        ctx.strokeStyle="#fff"; ctx.lineWidth=0.8; ctx.stroke();
+        ctx.strokeStyle="#38bdf8"; ctx.lineWidth=0.8; ctx.stroke();
       }
       ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(154,28.5,3.2,0,Math.PI*2); ctx.fill();
 
@@ -295,25 +311,39 @@ function paintGearCanvas(cv,id,it){
 
   if(id==="IR"){
     if(it.kind==="user"){
-      ctx.fillStyle="#0f1724"; ctx.fillRect(20,14,150,108);
-      ctx.strokeStyle="#38bdf8"; ctx.lineWidth=1.8; ctx.strokeRect(20,14,150,108);
-      var scr=ctx.createLinearGradient(0,22,0,110);
-      scr.addColorStop(0,"#0d2642"); scr.addColorStop(1,"#060d18");
+      ctx.fillStyle="#0d1524"; ctx.fillRect(20,14,150,108);
+      ctx.strokeStyle=isActive?"#f59e0b":"#38bdf8"; ctx.lineWidth=1.8; ctx.strokeRect(20,14,150,108);
+      var scr=ctx.createLinearGradient(0,20,0,114);
+      scr.addColorStop(0,"#0d2847"); scr.addColorStop(1,"#060d18");
       ctx.fillStyle=scr; ctx.fillRect(26,20,138,96);
-      ctx.strokeStyle="#38bdf8"; ctx.lineWidth=2.6; ctx.beginPath();
-      ctx.moveTo(32,76); ctx.lineTo(54,54); ctx.lineTo(74,82); ctx.lineTo(95,48); ctx.lineTo(116,78); ctx.lineTo(136,58); ctx.lineTo(158,72); ctx.stroke();
+
+      if(isActive){
+        // Futuristic Audio Spectrum Waveform
+        var bars=[12,24,18,38,28,44,20,34,42,26,36,16,30,40,22,14];
+        for(var bi=0;bi<bars.length;bi++){
+          var bx=32+bi*8, bh=bars[bi];
+          ctx.fillStyle=(bi%3===0)?"#f59e0b":"#38bdf8";
+          ctx.fillRect(bx,68-bh/2,4,bh);
+        }
+      }else{
+        ctx.strokeStyle="#38bdf8"; ctx.lineWidth=2.6; ctx.beginPath();
+        ctx.moveTo(32,76); ctx.lineTo(54,54); ctx.lineTo(74,82); ctx.lineTo(95,48); ctx.lineTo(116,78); ctx.lineTo(136,58); ctx.lineTo(158,72); ctx.stroke();
+      }
       return;
     }
-    var cabBody="#161b24", cabGrill="#0b0e14", cabPipe="#cbd5e1";
+    var cabBody="#131926", cabGrill="#090d16", cabPipe="#cbd5e1", ring="#cbd5e1";
     if(it.skin==="tan"){ cabBody="#a17a48"; cabGrill="#4a351c"; cabPipe="#fef3c7"; }
-    else if(it.skin==="gold"){ cabBody="#161b24"; cabGrill="#0b0e14"; cabPipe="#eab308"; }
+    else if(it.skin==="gold"){ cabBody="#141a26"; cabGrill="#090d16"; cabPipe="#f59e0b"; ring="#f59e0b"; }
+    else if(it.skin==="cyan"){ cabBody="#141a26"; cabGrill="#090d16"; cabPipe="#38bdf8"; ring="#38bdf8"; }
     else if(it.skin==="green"){ cabBody="#1b2620"; cabGrill="#2f4538"; cabPipe="#eab308"; }
     else if(it.skin==="silver"){ cabBody="#1e242d"; cabGrill="#94a3b8"; cabPipe="#f8fafc"; }
+
     ctx.fillStyle=cabBody; ctx.fillRect(20,8,150,120);
-    ctx.strokeStyle="#05070a"; ctx.lineWidth=2.5; ctx.strokeRect(20,8,150,120);
+    ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(20,8,150,120);
     ctx.fillStyle=cabGrill; ctx.fillRect(26,14,138,108);
     ctx.strokeStyle=cabPipe; ctx.lineWidth=1.8; ctx.strokeRect(26,14,138,108);
-    drawSpeaker(ctx,60,44,20.5); drawSpeaker(ctx,130,44,20.5); drawSpeaker(ctx,60,91,20.5); drawSpeaker(ctx,130,91,20.5);
+    drawSpeaker(ctx,60,44,20.5,ring); drawSpeaker(ctx,130,44,20.5,ring);
+    drawSpeaker(ctx,60,91,20.5,ring); drawSpeaker(ctx,130,91,20.5,ring);
     drawCorners(ctx,20,8,150,120);
     ctx.fillStyle="#1e293b"; ctx.fillRect(70,60,50,15); ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1; ctx.strokeRect(70,60,50,15);
     ctx.fillStyle="#f8fafc"; ctx.font="bold 10.5px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.badge||"4x12",95,71);
@@ -329,26 +359,25 @@ function paintGearCanvas(cv,id,it){
 
   ctx.fillStyle=bodyGrad;
   ctx.beginPath(); ctx.roundRect(px,py,pw,ph,13); ctx.fill();
-  ctx.strokeStyle="rgba(255,255,255,0.28)"; ctx.lineWidth=1.8; ctx.stroke();
+  ctx.strokeStyle="rgba(56,189,248,0.42)"; ctx.lineWidth=1.8; ctx.stroke();
 
   var knobCount=(it.style==="mxr")?2:3;
   for(var i=0;i<knobCount;i++){
     var kx=knobCount===2?(px+30+i*38):(px+21+i*28);
-    ctx.fillStyle="rgba(0,0,0,0.45)"; ctx.beginPath(); ctx.arc(kx,28,10,0,Math.PI*2); ctx.fill();
     var kGrad=ctx.createRadialGradient(kx-2.5,25.5,1,kx,27,8.5);
     kGrad.addColorStop(0,"#ffffff"); kGrad.addColorStop(0.45,"#334155"); kGrad.addColorStop(1,"#090d12");
     ctx.fillStyle=kGrad; ctx.beginPath(); ctx.arc(kx,27,8.5,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1.2; ctx.stroke();
+    ctx.strokeStyle="#38bdf8"; ctx.lineWidth=1.2; ctx.stroke();
     ctx.fillStyle="#fff"; ctx.fillRect(kx-1.1,18.5,2.2,7.5);
   }
 
   var glow=ctx.createRadialGradient(95,46,1,95,46,10);
-  glow.addColorStop(0,"#ff1744"); glow.addColorStop(0.5,"rgba(255,23,68,0.45)"); glow.addColorStop(1,"rgba(255,23,68,0)");
+  glow.addColorStop(0,"#38bdf8"); glow.addColorStop(0.5,"rgba(56,189,248,0.45)"); glow.addColorStop(1,"rgba(56,189,248,0)");
   ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(95,46,10,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#ff5252"; ctx.beginPath(); ctx.arc(95,46,3.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#e0f2fe"; ctx.beginPath(); ctx.arc(95,46,3.5,0,Math.PI*2); ctx.fill();
 
-  ctx.fillStyle="#080b10"; ctx.fillRect(px+11,55,pw-22,22);
-  ctx.strokeStyle="rgba(255,255,255,0.2)"; ctx.lineWidth=1; ctx.strokeRect(px+11,55,pw-22,22);
+  ctx.fillStyle="#070b12"; ctx.fillRect(px+11,55,pw-22,22);
+  ctx.strokeStyle="rgba(56,189,248,0.35)"; ctx.lineWidth=1; ctx.strokeRect(px+11,55,pw-22,22);
   ctx.fillStyle="#f8fafc"; ctx.font="bold 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.tag||"FX",95,70);
 
   if(it.style==="boss"||it.style==="ts"){
@@ -452,7 +481,7 @@ function connectMidi(){
   navigator.requestMIDIAccess({sysex:true}).then(function(acc){
     var outs=Array.from(acc.outputs.values());
     if(outs.length){
-      midiOut=outs[0]; ms.textContent="MIDI: OTG CONNECTED";
+      midiOut=outs[0]; ms.textContent="MIDI: OTG CONNECTED • 96kHz";
       mb.classList.add("connected");
       sendChain(patch());
     }else ms.textContent="MIDI: NO DEVICE";
@@ -461,10 +490,9 @@ function connectMidi(){
   function draw(syncInp){
   var p=patch(), c=code(), id=st.sel, m=META[id], blk=p.b[id];
   document.getElementById("pCode").textContent=c;
-  document.getElementById("subInfo").textContent="QuickTone™ OTG Controller • "+p.name;
   var inp=document.getElementById("nameInp");
   if(syncInp||document.activeElement!==inp) inp.value=p.name;
-  document.getElementById("status").textContent="SELECTED: "+id+" - "+blk.model+" ["+(blk.on?"ACTIVE":"BYPASS")+"]";
+  document.getElementById("status").textContent="SELECTED: "+id+" - "+blk.model.toUpperCase()+" ["+(blk.on?"ACTIVE":"BYPASS")+"]";
   document.getElementById("edTitle").textContent=id+" - "+m.n.toUpperCase();
 
   var bg=document.getElementById("banks"); bg.innerHTML="";
@@ -502,7 +530,7 @@ function connectMidi(){
   });
 
   var pb=document.getElementById("pwrBtn");
-  pb.textContent=blk.on?"ACTIVE":"BYPASS";
+  pb.textContent=blk.on?"ACTIVE • ENABLED":"BYPASSED";
   pb.className=blk.on?"blue":"";
   pb.onclick=function(){ blk.on=!blk.on; sendCC(m.cc,blk.on?100:0); save(); draw(false); };
 
@@ -512,10 +540,11 @@ function connectMidi(){
     var lbl=document.createElement("div"); lbl.className="grp-label"; lbl.textContent=grp.g; vg.appendChild(lbl);
     var grid=document.createElement("div"); grid.className="gear-grid";
     grp.items.forEach(function(it){
+      var isAct=(blk.model===it.n);
       var card=document.createElement("button"); card.type="button";
-      card.className="gear-card"+(blk.model===it.n?" active":"");
+      card.className="gear-card"+(isAct?" active":"");
       var cv=document.createElement("canvas"); cv.className="gear-canvas";
-      paintGearCanvas(cv,id,it);
+      paintGearCanvas(cv,id,it,isAct);
       var nm=document.createElement("div"); nm.className="gear-name"; nm.textContent=it.n;
       card.appendChild(cv); card.appendChild(nm);
       card.onclick=function(){
@@ -533,7 +562,7 @@ function connectMidi(){
   if(id==="IR"){
     var micPanel=document.createElement("div"); micPanel.className="mic-panel";
     var headRow=document.createElement("div"); headRow.className="row";
-    headRow.innerHTML="<span style='font-size:11px;font-weight:800;color:#60a5fa;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
+    headRow.innerHTML="<span style='font-size:11px;font-weight:800;color:#38bdf8;'>CAB MIC CONTROL &amp; PARAMETERS</span>";
     var micToggle=document.createElement("button"); micToggle.type="button";
     micToggle.textContent=blk.micOn?"MIC ON":"MIC OFF"; micToggle.className=blk.micOn?"blue":"";
     micToggle.onclick=function(){ blk.micOn=!blk.micOn; sendCC(55,blk.micOn?100:0); save(); draw(false); };
@@ -565,11 +594,11 @@ function connectMidi(){
     micPanel.appendChild(posGrid);
 
     var lvlBox=document.createElement("div"); lvlBox.className="param-box"; lvlBox.style.marginTop="8px";
-    lvlBox.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn mminus'>-</button><span class='mval' style='min-width:26px;text-align:center;font-size:11px;'>"+blk.micLvl+"</span><button type='button' class='p-mini-btn mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:5px;accent-color:#2196f3;'>";
+    lvlBox.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn mminus'>-</button><span class='mval' style='min-width:30px;text-align:center;font-size:11px;color:#7dd3fc;'>"+blk.micLvl+"%</span><button type='button' class='p-mini-btn mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:5px;accent-color:#38bdf8;'>";
     var mvEl=lvlBox.querySelector(".mval"), mrEl=lvlBox.querySelector("input[type=range]");
     function setMicLvl(nv){
       nv=Math.max(0,Math.min(100,Number(nv)));
-      blk.micLvl=nv; mvEl.textContent=nv; mrEl.value=nv; sendCC(56,nv); save();
+      blk.micLvl=nv; mvEl.textContent=nv+"%"; mrEl.value=nv; sendCC(56,nv); save();
     }
     mrEl.oninput=function(){ setMicLvl(mrEl.value); };
     lvlBox.querySelector(".mminus").onclick=function(){ setMicLvl(blk.micLvl-1); };
@@ -582,7 +611,7 @@ function connectMidi(){
   m.p.forEach(function(pr){
     var cc=pr[1], val=(typeof blk.p[cc]==="number")?blk.p[cc]:pr[2]; blk.p[cc]=val;
     var box=document.createElement("div"); box.className="param-box";
-    box.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn minus'>-</button><span class='val' style='min-width:26px;text-align:center;font-size:11px;'>"+val+"</span><button type='button' class='p-mini-btn plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:5px;accent-color:#2196f3;'>";
+    box.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn minus'>-</button><span class='val' style='min-width:26px;text-align:center;font-size:11px;color:#7dd3fc;'>"+val+"</span><button type='button' class='p-mini-btn plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:5px;accent-color:#38bdf8;'>";
     var vEl=box.querySelector(".val"), rEl=box.querySelector("input[type=range]");
     function setV(nv){
       nv=Math.max(0,Math.min(100,Number(nv)));
