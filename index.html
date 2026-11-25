@@ -3,28 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NUX MG-101 Digital Rig Studio</title>
+  <title>NUX MG-101 Digital Rig Studio v2.6</title>
   <style>
     :root{
-      --bg:#080b10;--card:#121720;--card2:#19202c;--border:#2b3648;
-      --text:#f1f5f9;--muted:#94a3b8;--amber:#f59e0b;--blue:#2563eb;--green:#22c55e;--red:#ef4444;
+      --bg:#090c12;--card:#121720;--card2:#1a212e;--border:#2b3648;
+      --text:#f1f5f9;--muted:#94a3b8;--amber:#f59e0b;--cream:#d6dfc2;
+      --blue:#2563eb;--green:#22c55e;--red:#ef4444;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     body{margin:0;padding:10px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
     .app{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
     .card{background:linear-gradient(180deg,#151b26 0%,#0f141d 100%);border:1px solid var(--border);border-radius:12px;padding:10px;overflow-x:hidden;box-shadow:0 10px 24px rgba(0,0,0,0.5);}
     .row{display:flex;gap:8px;align-items:center;justify-content:space-between;}
+    .grid7{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
     .grid5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:6px;}
     .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:6px;}
     .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:6px;}
     .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px;}
-    button,input{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid #303c52;border-radius:8px;padding:6px 8px;font-weight:700;cursor:pointer;min-width:0;}
+    button,input,select{font-family:inherit;color:var(--text);background:var(--card2);border:1px solid #303c52;border-radius:8px;padding:6px 8px;font-weight:700;cursor:pointer;min-width:0;}
     input{flex:1;background:#090d14;border-color:#2f3b50;font-weight:600;cursor:text;}
     .amber-btn{background:linear-gradient(180deg,#f59e0b 0%,#d97706 100%);border-color:#fbbf24;color:#090d14;font-weight:900;}
     .blue-btn{background:linear-gradient(180deg,#3b82f6 0%,#1d4ed8 100%);border-color:#60a5fa;color:#fff;}
 
     .top-bar{background:#0c1017;border:1px solid #232d3f;border-radius:10px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;font-weight:800;}
-    .brand-mark{font-size:13px;font-weight:900;letter-spacing:0.6px;color:#f8fafc;}
+    .brand-mark{font-size:12.5px;font-weight:900;letter-spacing:0.5px;color:#f8fafc;}
     .brand-mark span{color:var(--amber);}
     .midi-pill{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font-size:9.5px;font-weight:800;border:1px solid #334155;background:#121824;color:#e2e8f0;}
     .midi-dot{width:7px;height:7px;border-radius:50%;background:var(--red);}
@@ -32,9 +34,9 @@
 
     .patch-grid{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-top:6px;}
     .patch-left{display:flex;flex-direction:column;align-items:center;gap:5px;}
-    .patch-box{background:linear-gradient(180deg,#261d12 0%,#15110b 100%);border:1.5px solid var(--amber);border-radius:10px;padding:8px 14px;text-align:center;box-shadow:0 0 16px rgba(245,158,11,0.22);min-width:74px;}
-    .patch-num{font-size:24px;font-weight:900;line-height:1.05;color:#fbbf24;}
-    .patch-sub{font-size:8px;font-weight:800;color:#cbd5e1;letter-spacing:0.4px;margin-top:2px;}
+    .patch-box{background:linear-gradient(180deg,#f59e0b 0%,#d97706 100%);border:1.5px solid #fde68a;border-radius:10px;padding:7px 14px;text-align:center;box-shadow:0 0 16px rgba(245,158,11,0.35);min-width:76px;color:#090d14;}
+    .patch-num{font-size:24px;font-weight:900;line-height:1.05;}
+    .patch-sub{font-size:7.5px;font-weight:900;letter-spacing:0.3px;margin-top:2px;}
     .step-row{display:flex;gap:4px;width:100%;}
     .step-row button{flex:1;padding:5px 4px;font-size:9.5px;}
 
@@ -43,9 +45,18 @@
     .slot-mini{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:5px;}
     .slot-mini button{padding:5px 2px;font-size:10px;border-radius:6px;}
 
+    /* Hardware Round Buttons */
+    .hw-btn{background:radial-gradient(circle at 35% 30%,#273142 0%,#111620 85%);border:1.5px solid #39465c;border-radius:50%;aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;font-size:8px;font-weight:900;line-height:1.1;text-align:center;box-shadow:0 4px 8px rgba(0,0,0,0.45);}
+    .hw-led{width:10px;height:3px;border-radius:2px;background:#475569;margin-bottom:3px;}
+    .hw-btn.active{border-color:var(--amber);box-shadow:0 0 10px rgba(245,158,11,0.35);}
+    .hw-btn.active .hw-led{background:var(--amber);box-shadow:0 0 6px var(--amber);}
+    .hw-btn.green-on{border-color:var(--green);}
+    .hw-btn.green-on .hw-led{background:var(--green);box-shadow:0 0 6px var(--green);}
+
     .sec-title{font-size:11px;font-weight:900;color:#e2e8f0;text-transform:uppercase;letter-spacing:0.65px;margin-bottom:6px;}
     .grp-label{font-size:11px;font-weight:800;color:#f59e0b;margin:10px 0 6px 0;border-left:3px solid var(--amber);padding-left:7px;}
 
+    /* 10-Block Signal Chain */
     .chain-blk{background:linear-gradient(180deg,#1c2331 0%,#111620 100%);border:1px solid #2b3648;border-radius:8px;padding:6px 4px;text-align:center;min-width:0;}
     .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#2a2419 0%,#161410 100%);box-shadow:0 0 14px rgba(245,158,11,0.3);}
     .chain-dot{display:block;width:6px;height:6px;border-radius:50%;margin:0 auto 3px auto;background:#475569;}
@@ -53,46 +64,62 @@
     .blk-code{display:block;font-size:10.5px;font-weight:900;color:#fff;}
     .blk-model{display:block;font-size:8px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
 
+    /* Cream Rotary Knobs (SELECT, 1, 2, 3) */
+    .knob-box{background:#0d121a;border:1px solid #253042;border-radius:9px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+    .knob-dial{width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#eef4e1 0%,#c7d2b0 70%,#9aa683 100%);border:2.5px solid #1e293b;box-shadow:0 4px 10px rgba(0,0,0,0.65),inset 0 1px 2px #fff;position:relative;display:flex;align-items:center;justify-content:center;}
+    .knob-ptr{position:absolute;top:4px;left:50%;width:3px;height:13px;background:#111827;border-radius:2px;transform-origin:50% 17px;}
+    .knob-lbl{font-size:8.5px;font-weight:900;color:#94a3b8;text-transform:uppercase;}
+    .knob-val{font-size:10.5px;font-weight:900;color:#fbbf24;background:#080b10;border:1px solid #283345;border-radius:5px;padding:2px 6px;min-width:44px;}
+    .k-step{display:flex;gap:4px;width:100%;justify-content:center;}
+    .k-step button{padding:2px 8px;font-size:11px;border-radius:5px;}
+
+    /* Realistic Gear Cards */
     .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
     .gear-card{background:linear-gradient(180deg,#181f2c 0%,#0f141d 100%);border:1px solid #293446;border-radius:9px;padding:5px 4px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;}
     .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:linear-gradient(180deg,#262118 0%,#14120e 100%);box-shadow:0 0 14px rgba(245,158,11,0.32);}
-    .gear-canvas{width:100%;height:70px;border-radius:6px;display:block;background:#080b10;}
-    .gear-name{font-size:9.5px;font-weight:800;line-height:1.15;color:#f1f5f9;word-break:break-word;}
+    .gear-canvas{width:100%;height:68px;border-radius:6px;display:block;background:#080b10;}
+    .gear-name{font-size:9px;font-weight:800;line-height:1.15;color:#f1f5f9;word-break:break-word;}
 
+    /* Mic & Parameter Grid */
     .mic-panel{background:#0e131b;border:1px solid #283345;border-radius:10px;padding:9px;margin-top:10px;}
     .mic-card{position:relative;background:linear-gradient(180deg,#171e2b 0%,#0e131c 100%);border:1px solid #293446;border-radius:9px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
     .mic-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#211d15;}
-    .mic-badge{position:absolute;top:-6px;right:4px;background:var(--amber);color:#090d14;font-size:8px;font-weight:900;padding:1px 5px;border-radius:5px;}
-    .mic-canvas{width:46px;height:46px;display:block;}
+    .mic-canvas{width:44px;height:44px;display:block;}
     .param-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:8px;}
     .param-box{background:#0d121a;border:1px solid #253042;border-radius:8px;padding:7px 8px;}
     .p-mini-btn{padding:2px 7px;font-size:12px;border-radius:5px;}
+
+    /* Utilities: Loop, Drum, Tuner */
+    .util-box{background:#0d121a;border:1px solid #253042;border-radius:9px;padding:7px;display:flex;flex-direction:column;justify-content:space-between;gap:6px;}
+    .tuner-bar{display:grid;grid-template-columns:repeat(9,1fr);gap:2px;margin-top:4px;}
+    .tuner-led{height:6px;border-radius:2px;background:#1e293b;}
+    .tuner-led.mid{background:#22c55e;box-shadow:0 0 6px #22c55e;}
   </style>
 </head>
 <body>
 <div class="app">
-  <div class="top-bar">
+<div class="top-bar">
     <div class="brand-mark">N<span>U</span>X MG-101 • M-VAVE STUDIO</div>
     <button id="midiBtn" class="midi-pill" type="button">
       <span class="midi-dot"></span>
-      <span id="midiState">MIDI: OTG • 44.1kHz</span>
+      <span id="midiState">CONNECT OTG MIDI</span>
     </button>
   </div>
 
   <div class="card">
     <div class="row" style="margin-bottom:4px;">
       <div>
-        <div style="font-size:13px;font-weight:900;letter-spacing:0.3px;">MG-101 DIGITAL RIG STUDIO</div>
-        <div style="font-size:9.5px;color:var(--muted);">QuickTone™ • Cube Suite Engine v2.5</div>
+        <div style="font-size:13px;font-weight:900;">MG-101 DIGITAL RIG STUDIO</div>
+        <div style="font-size:9.5px;color:var(--muted);">QuickTone™ Companion • TS/AC-HD Engine</div>
       </div>
-      <div id="status" style="font-size:9.5px;font-weight:800;color:#fbbf24;text-align:right;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">SELECTED: IR - USER IR 04</div>
+      <div id="status" style="font-size:9px;font-weight:800;color:#fbbf24;text-align:right;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">READY</div>
     </div>
 
     <div class="patch-grid">
       <div class="patch-left">
         <div class="patch-box">
-          <div id="pCode" class="patch-num">2A</div>
-          <div id="pSub" class="patch-sub">BANK 2 • PATCH A</div>
+          <div id="pCode" class="patch-num">5B</div>
+          <div id="pSub" class="patch-sub">BANK 5 • PATCH B</div>
         </div>
         <div class="step-row">
           <button id="prevP" type="button">&lt; PREV</button>
@@ -106,11 +133,25 @@
     </div>
 
     <div class="row" style="margin-top:8px;">
-      <input id="nameInp" maxlength="16" placeholder="PATCH 2A - HIGH GAIN LEAD" />
-      <button id="setName" class="amber-btn" type="button">EDIT/SAVE</button>
+      <input id="nameInp" maxlength="16" placeholder="Jack Clean" />
+      <button id="setName" class="amber-btn" type="button">EDIT / SAVE</button>
     </div>
   </div>
 
+  <!-- Hardware Round Buttons Row -->
+  <div class="card" style="padding:8px;">
+    <div class="grid7">
+      <button id="btnGlobal" class="hw-btn" type="button"><span class="hw-led"></span>GLOBAL</button>
+      <button id="btnEdit" class="hw-btn active" type="button"><span class="hw-led"></span>EDIT/<br>EXIT</button>
+      <button id="btnSave" class="hw-btn" type="button"><span class="hw-led"></span>SAVE</button>
+      <button id="btnMode" class="hw-btn" type="button"><span class="hw-led"></span>MODE</button>
+      <button id="btnJam" class="hw-btn" type="button"><span class="hw-led"></span>JAM</button>
+      <button id="btnTap" class="hw-btn" type="button"><span class="hw-led"></span>TAP</button>
+      <button id="btnExp" class="hw-btn green-on" type="button"><span class="hw-led"></span>EXP</button>
+    </div>
+  </div>
+
+  <!-- 10-Block Signal Chain -->
   <div class="card">
     <div class="sec-title">Signal Chain (10 Blocks)</div>
     <div id="chain" class="grid5"></div>
@@ -120,30 +161,73 @@
     </div>
   </div>
 
+  <!-- Cream Rotary Knobs (SELECT, 1, 2, 3) + Visual Gear + Params -->
   <div class="card">
     <div class="row">
-      <span id="edTitle" class="sec-title" style="margin:0;">IR - EXTENSION CABS / IMPULSE RESPONSES</span>
+      <span id="edTitle" class="sec-title" style="margin:0;">AMP - GUITAR AMPS</span>
       <button id="pwrBtn" type="button">ACTIVE • ENABLED</button>
     </div>
+
+    <div id="hwKnobs" class="grid4" style="margin-top:8px;"></div>
     <div id="visualGear" style="margin-top:6px;"></div>
     <div id="irExtras"></div>
     <div id="params" class="param-grid"></div>
   </div>
+
+  <!-- Performance & Utilities (LOOP, DRUM, TUNER) -->
+  <div class="card">
+    <div class="sec-title">Performance &amp; Utilities</div>
+    <div class="grid3">
+      <div class="util-box">
+        <div class="row"><span style="font-size:10px;font-weight:900;">LOOP</span><span id="loopState" style="font-size:9px;color:#ef4444;font-weight:800;">STOP</span></div>
+        <div class="row" style="gap:4px;">
+          <button id="loopRec" type="button" style="flex:1;padding:5px 2px;font-size:9px;">REC/PLAY</button>
+          <button id="loopStop" type="button" style="padding:5px 6px;font-size:9px;">■</button>
+        </div>
+        <div class="row"><span style="font-size:9px;color:var(--muted);">LEVEL</span><span id="loopLvlVal" style="font-size:9.5px;color:#fbbf24;font-weight:800;">70%</span></div>
+        <input id="loopLvl" type="range" min="0" max="100" value="70" style="width:100%;accent-color:#f59e0b;" />
+      </div>
+
+      <div class="util-box">
+        <div class="row"><span style="font-size:10px;font-weight:900;">DRUM</span><button id="drumToggle" type="button" style="padding:2px 6px;font-size:9px;">▶/■</button></div>
+        <select id="drumPat" style="font-size:9.5px;padding:4px;">
+          <option value="0">Rock Beat 1</option>
+          <option value="1">Metal Double</option>
+          <option value="2">Blues Shuffle</option>
+          <option value="3">Funk Groove</option>
+          <option value="4">Metronome</option>
+        </select>
+        <div class="row"><span style="font-size:9px;color:var(--muted);">BPM</span><span id="bpmVal" style="font-size:9.5px;color:#fbbf24;font-weight:800;">120</span></div>
+        <input id="drumBpm" type="range" min="40" max="240" value="120" style="width:100%;accent-color:#3b82f6;" />
+      </div>
+
+      <div class="util-box" style="text-align:center;">
+        <div class="row"><span style="font-size:10px;font-weight:900;">TUNER</span><button id="tunerBtn" type="button" style="padding:2px 6px;font-size:9px;">BYPASS</button></div>
+        <div id="tunerNote" style="font-size:22px;font-weight:900;color:#22c55e;line-height:1;">E</div>
+        <div class="tuner-bar">
+          <div class="tuner-led"></div><div class="tuner-led"></div><div class="tuner-led"></div><div class="tuner-led"></div>
+          <div class="tuner-led mid"></div>
+          <div class="tuner-led"></div><div class="tuner-led"></div><div class="tuner-led"></div><div class="tuner-led"></div>
+        </div>
+        <div style="font-size:8.5px;color:var(--muted);">440Hz STANDARD</div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-var KEY="nux_mg101_mvave_clean_v5";
+var KEY="nux_mg101_hw_studio_v6";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
-var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
+var ORDER=["NG","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
 var IR_POS=["Edge","Middle","Center"];
 
 var META={
-  GATE:{n:"Noise Gate",cc:21,cCc:101,p:[["Threshold",31,45],["Decay",32,50],["Damp",33,30]]},
+  NG:{n:"Noise Gate",cc:21,cCc:101,p:[["Threshold",31,45],["Decay",32,50],["Damp",33,30]]},
   CMP:{n:"Compression",cc:22,cCc:102,p:[["Sustain",34,55],["Output",35,65],["Tone",36,50]]},
   EFX:{n:"Drive & Distortion",cc:23,cCc:103,p:[["Drive",37,65],["Tone",38,55],["Level",39,70]]},
-  AMP:{n:"Guitar Amps",cc:24,cCc:104,p:[["Gain",45,75],["Master",46,70],["Bass",47,55],["Mid",48,60],["Treble",49,65]]},
-  IR:{n:"Extension Cabs / Impulse Responses",cc:25,cCc:105,p:[["Cab Level",50,80],["LowCut",51,40],["HighCut",52,85]]},
+  AMP:{n:"Guitar Amps",cc:24,cCc:104,p:[["Gain",45,25],["Bright",46,0],["Level",47,90],["Bass",48,55],["Mid",49,60],["Treble",50,65]]},
+  IR:{n:"Extension Cabs / IR",cc:25,cCc:105,p:[["Cab Level",51,80],["LowCut",52,40],["HighCut",53,85]]},
   EQ:{n:"Equalizer",cc:26,cCc:106,p:[["120Hz",55,50],["500Hz",56,52],["1.5kHz",57,54],["4kHz",58,56]]},
   MOD:{n:"Modulation",cc:27,cCc:107,p:[["Rate",60,48],["Depth",61,55],["Mix",62,40]]},
   DLY:{n:"Delay",cc:28,cCc:108,p:[["Time",65,52],["Feedback",66,45],["Mix",67,38]]},
@@ -152,7 +236,7 @@ var META={
 };
 
 var GEAR={
-  GATE:[{g:"Noise Reduction",items:[{n:"NOISE GATE",c:"#37474f",style:"mxr",tag:"GATE"}]}],
+  NG:[{g:"Noise Reduction",items:[{n:"NOISE GATE",c:"#37474f",style:"mxr",tag:"GATE"}]}],
   CMP:[{g:"Compression Pedals",items:[{n:"ROSE COMPRESSOR",c:"#ad1457",style:"mxr",tag:"COMP"},{n:"4 COMP",c:"#546e7a",style:"boss",tag:"COMP"}]}],
   EFX:[{g:"Drive & Distortion (EFX)",items:[
     {n:"DISTORTION+",c:"#f9a825",style:"mxr",tag:"DIST+"},{n:"RE BOOST",c:"#cfd8dc",style:"mxr",tag:"BOOST"},{n:"AC BOOST",c:"#fbc02d",style:"mxr",tag:"AC+"},
@@ -163,10 +247,10 @@ var GEAR={
   ]}],
   AMP:[
     {g:"Combo Amps & Open-Back Cabinets",items:[
-      {n:"TWEED 410",kind:"combo",skin:"tweed",spk:4},{n:"BRIT 212",kind:"combo",skin:"brit",spk:2},{n:"EVL 112",kind:"combo",skin:"dark",spk:1},
-      {n:"CALI 112",kind:"combo",skin:"cream",spk:1},{n:"BLUE 112",kind:"combo",skin:"vox",spk:1},{n:"BLUE 212",kind:"combo",skin:"vox",spk:2},
-      {n:"DC 212",kind:"combo",skin:"dark",spk:2},{n:"SUPER 212",kind:"combo",skin:"silver",spk:2},{n:"TWEED 112",kind:"combo",skin:"tweed",spk:1},
-      {n:"TWIN 212",kind:"combo",skin:"silver",spk:2},{n:"BLACK 112",kind:"combo",skin:"blackface",spk:1},{n:"VIB 212",kind:"combo",skin:"brown",spk:2},
+      {n:"TWIN RVB",kind:"combo",skin:"silver",spk:2},{n:"TWEED 410",kind:"combo",skin:"tweed",spk:4},{n:"BRIT 212",kind:"combo",skin:"brit",spk:2},
+      {n:"EVL 112",kind:"combo",skin:"dark",spk:1},{n:"CALI 112",kind:"combo",skin:"cream",spk:1},{n:"BLUE 112",kind:"combo",skin:"vox",spk:1},
+      {n:"BLUE 212",kind:"combo",skin:"vox",spk:2},{n:"DC 212",kind:"combo",skin:"dark",spk:2},{n:"SUPER 212",kind:"combo",skin:"silver",spk:2},
+      {n:"TWEED 112",kind:"combo",skin:"tweed",spk:1},{n:"BLACK 112",kind:"combo",skin:"blackface",spk:1},{n:"VIB 212",kind:"combo",skin:"brown",spk:2},
       {n:"JAZZ 212",kind:"combo",skin:"jazz",spk:2}
     ]},
     {g:"Amplifier Heads & 4x12 Cabinets (Stack Rig)",items:[
@@ -240,7 +324,7 @@ function drawSpeaker(ctx,x,y,r,ringCol){
 }
 
 function paintGearCanvas(cv,id,it,isActive){
-  var w=cv.width=192, h=cv.height=140, ctx=cv.getContext("2d");
+  var w=cv.width=192, h=cv.height=136, ctx=cv.getContext("2d");
   ctx.clearRect(0,0,w,h);
 
   if(id==="AMP"){
@@ -251,28 +335,26 @@ function paintGearCanvas(cv,id,it,isActive){
       else if(it.skin==="slo"){ headCol="#e2e8f0"; faceCol="#1e293b"; }
       else if(it.skin==="vh4"){ faceCol="#f8fafc"; }
 
-      ctx.fillStyle=headCol; ctx.fillRect(24,6,144,36);
-      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(24,6,144,36);
-      ctx.fillStyle=faceCol; ctx.fillRect(30,20,132,17);
+      ctx.fillStyle=headCol; ctx.fillRect(24,6,144,35);
+      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(24,6,144,35);
+      ctx.fillStyle=faceCol; ctx.fillRect(30,20,132,16);
       if(it.skin==="rect"){
         ctx.fillStyle="#64748b";
         for(var rx=34;rx<156;rx+=9){ ctx.fillRect(rx,10,4.5,3.5); ctx.fillRect(rx+3.5,14.5,4.5,3.5); }
       }else{ ctx.fillStyle=grille; ctx.fillRect(30,9,132,9); }
 
       for(var kx=42;kx<=142;kx+=14){
-        ctx.fillStyle="#090d14"; ctx.beginPath(); ctx.arc(kx,28.5,4,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle="#090d14"; ctx.beginPath(); ctx.arc(kx,28,4,0,Math.PI*2); ctx.fill();
         ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1; ctx.stroke();
       }
-      ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(153,28.5,3.2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(153,28,3.2,0,Math.PI*2); ctx.fill();
 
-      ctx.fillStyle="#121824"; ctx.fillRect(18,45,156,88);
-      ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1.4; ctx.strokeRect(22,49,148,80);
-      ctx.fillStyle="#080c14"; ctx.fillRect(24,51,144,76);
-      drawSpeaker(ctx,60,71,16); drawSpeaker(ctx,132,71,16);
-      drawSpeaker(ctx,60,107,16); drawSpeaker(ctx,132,107,16);
-      drawCorners(ctx,18,45,156,88,"#cbd5e1");
-      ctx.fillStyle="#1e293b"; ctx.fillRect(76,84,40,10);
-      ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=0.9; ctx.strokeRect(76,84,40,10);
+      ctx.fillStyle="#121824"; ctx.fillRect(18,44,156,86);
+      ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1.4; ctx.strokeRect(22,48,148,78);
+      ctx.fillStyle="#080c14"; ctx.fillRect(24,50,144,74);
+      drawSpeaker(ctx,60,70,15.5); drawSpeaker(ctx,132,70,15.5);
+      drawSpeaker(ctx,60,105,15.5); drawSpeaker(ctx,132,105,15.5);
+      drawCorners(ctx,18,44,156,86,"#cbd5e1");
     }else{
       var body="#1a2230", grill="#101622", panel="#cbd5e1", pipe="#94a3b8";
       if(it.skin==="tweed"){ body="#cfa257"; grill="#5a3e1e"; panel="#e2e8f0"; pipe="#785327"; }
@@ -282,71 +364,42 @@ function paintGearCanvas(cv,id,it,isActive){
       else if(it.skin==="blackface"){ body="#111419"; grill="#334155"; panel="#0f172a"; pipe="#cbd5e1"; }
       else if(it.skin==="jazz"){ body="#181c23"; grill="#475569"; panel="#1e293b"; pipe="#94a3b8"; }
 
-      ctx.fillStyle=body; ctx.fillRect(18,10,156,120);
-      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(18,10,156,120);
-      ctx.fillStyle=panel; ctx.fillRect(24,16,144,21);
+      ctx.fillStyle=body; ctx.fillRect(18,10,156,116);
+      ctx.strokeStyle="#04070c"; ctx.lineWidth=2.5; ctx.strokeRect(18,10,156,116);
+      ctx.fillStyle=panel; ctx.fillRect(24,16,144,20);
       for(var cx=38;cx<=140;cx+=14){
-        ctx.fillStyle="#0f172a"; ctx.beginPath(); ctx.arc(cx,26.5,4,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle="#0f172a"; ctx.beginPath(); ctx.arc(cx,26,4,0,Math.PI*2); ctx.fill();
         ctx.strokeStyle="#fff"; ctx.lineWidth=0.8; ctx.stroke();
       }
-      ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(156,26.5,3.2,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#ff1744"; ctx.beginPath(); ctx.arc(156,26,3.2,0,Math.PI*2); ctx.fill();
 
-      ctx.fillStyle=grill; ctx.fillRect(24,40,144,82);
-      ctx.strokeStyle=pipe; ctx.lineWidth=1.5; ctx.strokeRect(24,40,144,82);
-      if(it.spk===4){ drawSpeaker(ctx,62,61,16); drawSpeaker(ctx,130,61,16); drawSpeaker(ctx,62,99,16); drawSpeaker(ctx,130,99,16); }
-      else if(it.spk===2){ drawSpeaker(ctx,60,82,23); drawSpeaker(ctx,132,82,23); }
-      else{ drawSpeaker(ctx,96,82,28); }
-      drawCorners(ctx,18,10,156,120,"#cbd5e1");
+      ctx.fillStyle=grill; ctx.fillRect(24,39,144,80);
+      ctx.strokeStyle=pipe; ctx.lineWidth=1.5; ctx.strokeRect(24,39,144,80);
+      if(it.spk===4){ drawSpeaker(ctx,62,60,15.5); drawSpeaker(ctx,130,60,15.5); drawSpeaker(ctx,62,97,15.5); drawSpeaker(ctx,130,97,15.5); }
+      else if(it.spk===2){ drawSpeaker(ctx,60,79,22.5); drawSpeaker(ctx,132,79,22.5); }
+      else{ drawSpeaker(ctx,96,79,27); }
+      drawCorners(ctx,18,10,156,116,"#cbd5e1");
     }
     return;
   }
 
   if(id==="IR"){
     if(it.kind==="user"){
-      ctx.fillStyle="#0c1320"; ctx.fillRect(18,16,156,108);
-      ctx.strokeStyle=isActive?"#f59e0b":"#334155"; ctx.lineWidth=1.8; ctx.strokeRect(18,16,156,108);
-      var scr=ctx.createLinearGradient(0,22,0,118);
-      scr.addColorStop(0,"#0f2138"); scr.addColorStop(1,"#070c14");
-      ctx.fillStyle=scr; ctx.fillRect(24,22,144,96);
-
+      ctx.fillStyle="#0c1320"; ctx.fillRect(18,15,156,106);
+      ctx.strokeStyle=isActive?"#f59e0b":"#334155"; ctx.lineWidth=1.8; ctx.strokeRect(18,15,156,106);
+      ctx.fillStyle="#081222"; ctx.fillRect(24,21,144,94);
       if(isActive){
         var amp=[8,18,12,28,36,22,42,16,38,26,34,14,24,18,10,6];
         for(var bi=0;bi<amp.length;bi++){
           var bx=30+bi*8.5, hBar=amp[bi];
           ctx.fillStyle=(bi>=4&&bi<=10)?"#f59e0b":"#38bdf8";
-          ctx.fillRect(bx,70-hBar/2,4.5,hBar);
+          ctx.fillRect(bx,68-hBar/2,4.5,hBar);
         }
       }else{
         ctx.strokeStyle="#38bdf8"; ctx.lineWidth=2.5; ctx.beginPath();
-        ctx.moveTo(28,82); ctx.lineTo(48,66); ctx.lineTo(68,86); ctx.lineTo(88,58);
-        ctx.lineTo(108,84); ctx.lineTo(128,64); ctx.lineTo(148,78); ctx.lineTo(164,70); ctx.stroke();
+        ctx.moveTo(28,80); ctx.lineTo(48,64); ctx.lineTo(68,84); ctx.lineTo(88,56);
+        ctx.lineTo(108,82); ctx.lineTo(128,62); ctx.lineTo(148,76); ctx.lineTo(164,68); ctx.stroke();
       }
-      return;
-    }
-
-    if(it.skin==="tan212"){
-      ctx.fillStyle="#b88b4a"; ctx.fillRect(20,10,152,120);
-      ctx.strokeStyle="#070a0f"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,120);
-      ctx.fillStyle="#e2c28d"; ctx.fillRect(28,36,136,86);
-      ctx.strokeStyle="#785327"; ctx.lineWidth=1.5; ctx.strokeRect(28,36,136,86);
-      ctx.fillStyle="#1e293b"; ctx.fillRect(72,46,48,14);
-      ctx.strokeStyle="#eab308"; ctx.lineWidth=1; ctx.strokeRect(72,46,48,14);
-      ctx.fillStyle="#f8fafc"; ctx.font="bold 10px sans-serif"; ctx.textAlign="center"; ctx.fillText("212",96,56);
-      drawCorners(ctx,20,10,152,120,"#eab308");
-      return;
-    }
-
-    if(it.skin==="weave"){
-      ctx.fillStyle="#1a202c"; ctx.fillRect(20,10,152,120);
-      ctx.strokeStyle="#070a0f"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,120);
-      ctx.fillStyle="#334155"; ctx.fillRect(28,18,136,104);
-      ctx.strokeStyle="rgba(255,255,255,0.14)"; ctx.lineWidth=1;
-      for(var gx=32;gx<160;gx+=6){ ctx.beginPath(); ctx.moveTo(gx,18); ctx.lineTo(gx,122); ctx.stroke(); }
-      for(var gy=22;gy<118;gy+=6){ ctx.beginPath(); ctx.moveTo(28,gy); ctx.lineTo(164,gy); ctx.stroke(); }
-      ctx.fillStyle="#0f172a"; ctx.fillRect(42,26,38,13);
-      ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1; ctx.strokeRect(42,26,38,13);
-      ctx.fillStyle="#f8fafc"; ctx.font="italic bold 9px serif"; ctx.textAlign="center"; ctx.fillText("Custom",61,35);
-      drawCorners(ctx,20,10,152,120,"#cbd5e1");
       return;
     }
 
@@ -354,29 +407,27 @@ function paintGearCanvas(cv,id,it,isActive){
     if(it.skin==="gold"){ cabPipe="#eab308"; ring="#eab308"; }
     else if(it.skin==="green"){ cabBody="#1b4332"; cabGrill="#2d5a43"; cabPipe="#111827"; badgeBg="#f8fafc"; badgeText="#ea580c"; }
     else if(it.skin==="bluecab"){ cabBody="#172554"; cabGrill="#0f172a"; cabPipe="#38bdf8"; ring="#38bdf8"; }
+    else if(it.skin==="tan212"){ cabBody="#b88b4a"; cabGrill="#e2c28d"; cabPipe="#785327"; }
 
-    ctx.fillStyle=cabBody; ctx.fillRect(20,10,152,120);
-    ctx.strokeStyle="#05070b"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,120);
-    ctx.fillStyle=cabGrill; ctx.fillRect(27,17,138,106);
-    ctx.strokeStyle=cabPipe; ctx.lineWidth=1.8; ctx.strokeRect(27,17,138,106);
-
-    drawSpeaker(ctx,61,45,21,ring); drawSpeaker(ctx,131,45,21,ring);
-    drawSpeaker(ctx,61,93,21,ring); drawSpeaker(ctx,131,93,21,ring);
-    drawCorners(ctx,20,10,152,120,it.skin==="gold"?"#eab308":"#cbd5e1");
-
-    ctx.fillStyle=badgeBg; ctx.fillRect(72,62,48,15);
-    ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1; ctx.strokeRect(72,62,48,15);
-    ctx.fillStyle=badgeText; ctx.font="bold 9.5px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.badge||"4x12",96,73);
+    ctx.fillStyle=cabBody; ctx.fillRect(20,10,152,116);
+    ctx.strokeStyle="#05070b"; ctx.lineWidth=2.5; ctx.strokeRect(20,10,152,116);
+    ctx.fillStyle=cabGrill; ctx.fillRect(27,17,138,102);
+    ctx.strokeStyle=cabPipe; ctx.lineWidth=1.8; ctx.strokeRect(27,17,138,102);
+    drawSpeaker(ctx,61,44,20,ring); drawSpeaker(ctx,131,44,20,ring);
+    drawSpeaker(ctx,61,90,20,ring); drawSpeaker(ctx,131,90,20,ring);
+    drawCorners(ctx,20,10,152,116,it.skin==="gold"?"#eab308":"#cbd5e1");
+    ctx.fillStyle=badgeBg; ctx.fillRect(72,60,48,15);
+    ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=1; ctx.strokeRect(72,60,48,15);
+    ctx.fillStyle=badgeText; ctx.font="bold 9.5px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.badge||"4x12",96,71);
     return;
   }
 
   var base=it.c||"#37474f";
-  var px=46, py=7, pw=100, ph=124;
+  var px=46, py=7, pw=100, ph=120;
   var bodyGrad=ctx.createLinearGradient(px,py,px+pw,py+ph);
   bodyGrad.addColorStop(0,shadeHex(base,28));
   bodyGrad.addColorStop(0.5,base);
   bodyGrad.addColorStop(1,shadeHex(base,-38));
-
   ctx.fillStyle=bodyGrad;
   ctx.beginPath(); ctx.roundRect(px,py,pw,ph,12); ctx.fill();
   ctx.strokeStyle="rgba(255,255,255,0.28)"; ctx.lineWidth=1.8; ctx.stroke();
@@ -384,34 +435,14 @@ function paintGearCanvas(cv,id,it,isActive){
   var knobCount=(it.style==="mxr")?2:3;
   for(var i=0;i<knobCount;i++){
     var kx=knobCount===2?(px+31+i*38):(px+22+i*28);
-    var kGrad=ctx.createRadialGradient(kx-2.5,26.5,1,kx,28,8.5);
-    kGrad.addColorStop(0,"#ffffff"); kGrad.addColorStop(0.45,"#334155"); kGrad.addColorStop(1,"#090d12");
-    ctx.fillStyle=kGrad; ctx.beginPath(); ctx.arc(kx,28,8.5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.arc(kx,27,8.5,0,Math.PI*2); ctx.fill();
     ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=1.2; ctx.stroke();
-    ctx.fillStyle="#fff"; ctx.fillRect(kx-1.1,19.5,2.2,7.5);
+    ctx.fillStyle="#fff"; ctx.fillRect(kx-1.1,19,2.2,7);
   }
-
-  var glow=ctx.createRadialGradient(96,47,1,96,47,10);
-  glow.addColorStop(0,"#ff1744"); glow.addColorStop(0.5,"rgba(255,23,68,0.45)"); glow.addColorStop(1,"rgba(255,23,68,0)");
-  ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(96,47,10,0,Math.PI*2); ctx.fill();
-  ctx.fillStyle="#ff5252"; ctx.beginPath(); ctx.arc(96,47,3.5,0,Math.PI*2); ctx.fill();
-
-  ctx.fillStyle="#080b10"; ctx.fillRect(px+11,56,pw-22,22);
-  ctx.strokeStyle="rgba(255,255,255,0.22)"; ctx.lineWidth=1; ctx.strokeRect(px+11,56,pw-22,22);
-  ctx.fillStyle="#f8fafc"; ctx.font="bold 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.tag||"FX",96,71);
-
-  if(it.style==="boss"||it.style==="ts"){
-    var padGrad=ctx.createLinearGradient(0,84,0,122);
-    padGrad.addColorStop(0,"#1e293b"); padGrad.addColorStop(1,"#090d12");
-    ctx.fillStyle=padGrad; ctx.beginPath(); ctx.roundRect(px+12,84,pw-24,38,7); ctx.fill();
-    ctx.strokeStyle="#64748b"; ctx.lineWidth=1.4; ctx.stroke();
-  }else{
-    var swGrad=ctx.createRadialGradient(93,101,2,96,103,11);
-    swGrad.addColorStop(0,"#ffffff"); swGrad.addColorStop(0.55,"#cbd5e1"); swGrad.addColorStop(1,"#475569");
-    ctx.fillStyle=swGrad; ctx.beginPath(); ctx.arc(96,103,10.5,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle="#1e293b"; ctx.lineWidth=2; ctx.stroke();
-    ctx.fillStyle="#64748b"; ctx.beginPath(); ctx.arc(96,103,4.2,0,Math.PI*2); ctx.fill();
-  }
+  ctx.fillStyle="#ff5252"; ctx.beginPath(); ctx.arc(96,46,3.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#080b10"; ctx.fillRect(px+11,55,pw-22,22);
+  ctx.fillStyle="#f8fafc"; ctx.font="bold 11px sans-serif"; ctx.textAlign="center"; ctx.fillText(it.tag||"FX",96,70);
+  ctx.fillStyle="#cbd5e1"; ctx.beginPath(); ctx.arc(96,100,10,0,Math.PI*2); ctx.fill();
 }
 
 function paintMicCanvas(cv,micName){
@@ -420,8 +451,6 @@ function paintMicCanvas(cv,micName){
   if(micName==="E906"){
     ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.roundRect(28,12,40,44,8); ctx.fill();
     ctx.strokeStyle="#cbd5e1"; ctx.lineWidth=2.2; ctx.stroke();
-    ctx.strokeStyle="#f1f5f9"; ctx.lineWidth=2;
-    for(var y=22;y<=46;y+=7.5){ ctx.beginPath(); ctx.moveTo(34,y); ctx.lineTo(62,y); ctx.stroke(); }
     ctx.fillStyle="#0f172a"; ctx.fillRect(40,56,16,30);
   }else if(micName==="SM57"){
     ctx.save(); ctx.translate(48,48); ctx.rotate(0.45); ctx.translate(-48,-48);
@@ -431,19 +460,17 @@ function paintMicCanvas(cv,micName){
     ctx.restore();
   }else if(micName==="U87"){
     ctx.fillStyle="#f1f5f9"; ctx.beginPath(); ctx.roundRect(32,10,32,29,12); ctx.fill();
-    ctx.strokeStyle="#64748b"; ctx.lineWidth=2; ctx.stroke();
     ctx.fillStyle="#cbd5e1"; ctx.beginPath(); ctx.moveTo(32,39); ctx.lineTo(64,39); ctx.lineTo(57,86); ctx.lineTo(39,86); ctx.closePath(); ctx.fill();
   }else{
     ctx.fillStyle="#1e293b"; ctx.beginPath(); ctx.roundRect(30,10,36,40,6); ctx.fill();
-    ctx.strokeStyle="#e2e8f0"; ctx.lineWidth=2.2; ctx.stroke();
     ctx.fillStyle="#f8fafc"; ctx.fillRect(36,16,24,19);
     ctx.fillStyle="#0f172a"; ctx.fillRect(42,50,12,36);
   }
 }
 
 var midiOut=null;
-var NUX_BLK_IDX={GATE:0,CMP:1,EFX:2,AMP:3,IR:4,EQ:5,MOD:6,DLY:7,RVB:8,"P.L":9};
-var NUX_AMP_KNOB_CC={45:[45,14,74],46:[46,15,7],47:[47,16,71],48:[48,17,75],49:[49,18,76]};
+var NUX_BLK_IDX={NG:0,CMP:1,EFX:2,AMP:3,IR:4,EQ:5,MOD:6,DLY:7,RVB:8,"P.L":9};
+var loopOn=false, drumOn=false, tunerOn=false, tapTimes=[];
 
 function flatModels(id){
   var out=[], groups=GEAR[id]||[];
@@ -456,18 +483,18 @@ function newPatch(code){
     var id=ORDER[i], pr={};
     for(var j=0;j<META[id].p.length;j++) pr[META[id].p[j][1]]=META[id].p[j][2];
     var list=flatModels(id);
-    b[id]={on:(id!=="EQ"&&id!=="MOD"),model:list[0],p:pr};
+    b[id]={on:true,model:list[0],p:pr};
     if(id==="IR"){ b[id].model="User IR 04"; b[id].micOn=true; b[id].mic="SM57"; b[id].pos="Middle"; b[id].micLvl=75; }
   }
-  return {name:"PATCH "+code+" - HIGH GAIN LEAD",chain:ORDER.slice(),b:b};
+  return {name:(code==="5B"?"Jack Clean":"PATCH "+code),chain:ORDER.slice(),b:b};
 }
 function initState(){
   var patches={};
   for(var i=0;i<BANKS.length;i++) for(var j=0;j<SLOTS.length;j++){ var c=""+BANKS[i]+SLOTS[j]; patches[c]=newPatch(c); }
-  return {bank:2,slot:"A",sel:"IR",patches:patches};
+  return {bank:5,slot:"B",sel:"AMP",patches:patches};
 }
 var st=(function(){
-  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["2A"]&&o.patches["2A"].b&&o.patches["2A"].b["P.L"]) return o; } }catch(e){}
+  try{ var r=localStorage.getItem(KEY); if(r){ var o=JSON.parse(r); if(o&&o.patches&&o.patches["5B"]&&o.patches["5B"].b&&o.patches["5B"].b["P.L"]) return o; } }catch(e){}
   return initState();
 })();
 function save(){ try{ localStorage.setItem(KEY,JSON.stringify(st)); }catch(e){} }
@@ -475,13 +502,7 @@ function code(){ return ""+st.bank+st.slot; }
 function patch(){
   var c=code();
   if(!st.patches[c]) st.patches[c]=newPatch(c);
-  if(!META[st.sel]) st.sel="IR";
-  if(st.patches[c].b && st.patches[c].b.IR){
-    if(typeof st.patches[c].b.IR.micOn!=="boolean") st.patches[c].b.IR.micOn=true;
-    if(!st.patches[c].b.IR.mic) st.patches[c].b.IR.mic="SM57";
-    if(!st.patches[c].b.IR.pos) st.patches[c].b.IR.pos="Middle";
-    if(typeof st.patches[c].b.IR.micLvl!=="number") st.patches[c].b.IR.micLvl=75;
-  }
+  if(!META[st.sel]) st.sel="AMP";
   return st.patches[c];
 }
 
@@ -500,14 +521,10 @@ function sendCC(cc,v){
   if(!midiOut) return;
   var val127=Math.max(0,Math.min(127,Math.round((v/100)*127)));
   try{
-    midiOut.send([0xb0,cc,val127]);
-    if(NUX_AMP_KNOB_CC[cc]){
-      var alts=NUX_AMP_KNOB_CC[cc];
-      for(var k=1;k<alts.length;k++) midiOut.send([0xb0,alts[k],val127]);
-      sendSysEx([0x04,0x03,cc&0x7f,val127]);
-    }else{
-      sendSysEx([0x04,0x01,cc&0x7f,val127]);
-    }
+    // Broadcast on Ch 1 & Ch 2 + NUX QuickTone SysEx
+    midiOut.send([0xb0,cc&0x7f,val127]);
+    midiOut.send([0xb1,cc&0x7f,val127]);
+    sendSysEx([0x04,0x01,cc&0x7f,val127]);
   }catch(e){}
 }
 
@@ -516,13 +533,13 @@ function sendPC(pc){
   var idx=Math.max(0,Math.min(39,pc));
   try{
     midiOut.send([0xc0,idx]);
+    midiOut.send([0xc1,idx]);
     sendSysEx([0x01,0x00,idx]);
   }catch(e){}
 }
 
 function sendName(n){
-  if(!midiOut) return;
-  var s=String(n||"PATCH").toUpperCase();
+  var s=String(n||"PATCH");
   while(s.length<16) s+=" ";
   s=s.slice(0,16);
   var chars=[];
@@ -531,22 +548,21 @@ function sendName(n){
   sendSysEx([0x02,0x01,pcIdx&0x7f].concat(chars));
   sendSysEx([0x02,0x02,pcIdx&0x7f]);
   var stEl=document.getElementById("status");
-  if(stEl) stEl.textContent="SENT NAME: "+s.trim()+" -> MG-101";
+  if(stEl) stEl.textContent="SAVED: "+s.trim()+" -> MG-101";
 }
 
 function sendChain(p){
-  if(!midiOut) return;
   var orderBytes=[];
   for(var i=0;i<p.chain.length;i++){
     var bid=p.chain[i];
     var m=META[bid];
     var idx=(typeof NUX_BLK_IDX[bid]==="number")?NUX_BLK_IDX[bid]:i;
     orderBytes.push(idx&0x7f);
-    if(m) try{ midiOut.send([0xb0,m.cCc,i]); }catch(e){}
+    if(m && midiOut) try{ midiOut.send([0xb0,m.cCc,i]); }catch(e){}
   }
   sendSysEx([0x03,0x01].concat(orderBytes));
   var stEl=document.getElementById("status");
-  if(stEl) stEl.textContent="CHAIN SYNCED: "+p.chain.slice(0,5).join(">")+"...";
+  if(stEl) stEl.textContent="CHAIN: "+p.chain.slice(0,5).join(">")+"...";
 }
 
 function connectMidi(){
@@ -571,8 +587,8 @@ function safeGet(id){ return document.getElementById(id); }
 
 function draw(syncInp){
   try{
-    var p=patch(), c=code(), id=st.sel, m=META[id]||META.IR, blk=p.b[id];
-    if(!blk){ id="IR"; st.sel="IR"; m=META.IR; blk=p.b.IR; }
+    var p=patch(), c=code(), id=st.sel, m=META[id]||META.AMP, blk=p.b[id];
+    if(!blk){ id="AMP"; st.sel="AMP"; m=META.AMP; blk=p.b.AMP; }
 
     if(safeGet("pCode")) safeGet("pCode").textContent=c;
     if(safeGet("pSub")) safeGet("pSub").textContent="BANK "+st.bank+" • PATCH "+st.slot;
@@ -583,7 +599,7 @@ function draw(syncInp){
     if(safeGet("status")){
       safeGet("status").textContent="SELECTED: "+id+" - "+(blk.model||"")+" ["+(blk.on?"ACTIVE":"BYPASS")+"]";
     }
-    if(safeGet("edTitle")) safeGet("edTitle").textContent=id+" - "+m.n.toUpperCase();
+    if(safeGet("edTitle")) safeGet("edTitle").textContent=id+" - "+m.n.toUpperCase()+" ("+blk.model+")";
 
     var bg=safeGet("banks");
     if(bg){
@@ -635,10 +651,59 @@ function draw(syncInp){
       pb.onclick=function(){ blk.on=!blk.on; sendCC(m.cc,blk.on?100:0); save(); draw(false); };
     }
 
+    // 4 Hardware Cream Rotary Knobs (SELECT + First 3 Block Params)
+    var hk=safeGet("hwKnobs");
+    if(hk){
+      hk.innerHTML="";
+      var allNames=flatModels(id);
+      var mIdx=Math.max(0,allNames.indexOf(blk.model));
+      var selDeg=-130+(allNames.length>1?(mIdx/(allNames.length-1))*260:130);
+
+      var selBox=document.createElement("div"); selBox.className="knob-box";
+      selBox.innerHTML="<div class='knob-dial'><div class='knob-ptr' style='transform:translateX(-50%) rotate("+selDeg+"deg);'></div></div><div class='knob-lbl'>SELECT</div><div class='knob-val'>"+blk.model.slice(0,8)+"</div><div class='k-step'><button type='button' class='km'>-</button><button type='button' class='kp'>+</button></div>";
+      selBox.querySelector(".km").onclick=function(){
+        var ni=(mIdx-1+allNames.length)%allNames.length;
+        blk.model=allNames[ni];
+        sendCC(m.cc+40,allNames.length>1?Math.round((ni/(allNames.length-1))*100):0);
+        save(); draw(false);
+      };
+      selBox.querySelector(".kp").onclick=function(){
+        var ni=(mIdx+1)%allNames.length;
+        blk.model=allNames[ni];
+        sendCC(m.cc+40,allNames.length>1?Math.round((ni/(allNames.length-1))*100):0);
+        save(); draw(false);
+      };
+      hk.appendChild(selBox);
+
+      for(var ki=0;ki<3;ki++){
+        var pr=m.p[ki];
+        var kBox=document.createElement("div"); kBox.className="knob-box";
+        if(pr){
+          var kCc=pr[1], kv=(typeof blk.p[kCc]==="number")?blk.p[kCc]:pr[2]; blk.p[kCc]=kv;
+          var deg=-135+(kv/100)*270;
+          var disp=(pr[0]==="Bright")?(kv>=50?"ON":"OFF"):kv;
+          kBox.innerHTML="<div class='knob-dial'><div class='knob-ptr' style='transform:translateX(-50%) rotate("+deg+"deg);'></div></div><div class='knob-lbl'>"+pr[0]+"</div><div class='knob-val'>"+disp+"</div><div class='k-step'><button type='button' class='km'>-</button><button type='button' class='kp'>+</button></div>";
+          (function(ccNum){
+            kBox.querySelector(".km").onclick=function(){
+              var nv=Math.max(0,(blk.p[ccNum]||0)-5);
+              blk.p[ccNum]=nv; sendCC(ccNum,nv); save(); draw(false);
+            };
+            kBox.querySelector(".kp").onclick=function(){
+              var nv=Math.min(100,(blk.p[ccNum]||0)+5);
+              blk.p[ccNum]=nv; sendCC(ccNum,nv); save(); draw(false);
+            };
+          })(kCc);
+        }else{
+          kBox.innerHTML="<div class='knob-dial'><div class='knob-ptr' style='transform:translateX(-50%) rotate(0deg);'></div></div><div class='knob-lbl'>KNOB "+(ki+1)+"</div><div class='knob-val'>--</div>";
+        }
+        hk.appendChild(kBox);
+      }
+    }
+
     var vg=safeGet("visualGear");
     if(vg){
       vg.innerHTML="";
-      var allNames=flatModels(id);
+      var allNames2=flatModels(id);
       (GEAR[id]||[]).forEach(function(grp){
         var lbl=document.createElement("div"); lbl.className="grp-label"; lbl.textContent=grp.g; vg.appendChild(lbl);
         var grid=document.createElement("div"); grid.className="gear-grid";
@@ -652,8 +717,8 @@ function draw(syncInp){
           card.appendChild(cv); card.appendChild(nm);
           card.onclick=function(){
             blk.model=it.n;
-            var idx=allNames.indexOf(blk.model);
-            var ccVal=allNames.length>1?Math.round((idx/(allNames.length-1))*127):0;
+            var idx=allNames2.indexOf(blk.model);
+            var ccVal=allNames2.length>1?Math.round((idx/(allNames2.length-1))*100):0;
             sendCC(m.cc+40,ccVal); save(); draw(false);
           };
           grid.appendChild(card);
@@ -679,38 +744,24 @@ function draw(syncInp){
           var isM=(blk.mic===micName);
           var b=document.createElement("button"); b.type="button";
           b.className="mic-card"+(isM?" active":"");
-          if(isM){ var badge=document.createElement("span"); badge.className="mic-badge"; badge.textContent=micName; b.appendChild(badge); }
           var mcv=document.createElement("canvas"); mcv.className="mic-canvas";
           try{ paintMicCanvas(mcv,micName); }catch(e){}
           var mnm=document.createElement("div"); mnm.className="gear-name"; mnm.textContent=micName;
           b.appendChild(mcv); b.appendChild(mnm);
-          b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*127)); save(); draw(false); };
+          b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*100)); save(); draw(false); };
           micGrid.appendChild(b);
         });
         micPanel.appendChild(micGrid);
 
-        var posLbl=document.createElement("div"); posLbl.className="grp-label"; posLbl.textContent="3 Mic Positions"; micPanel.appendChild(posLbl);
         var posGrid=document.createElement("div"); posGrid.className="grid3";
         IR_POS.forEach(function(posName,idx){
           var b=document.createElement("button"); b.type="button";
           if(blk.pos===posName) b.className="blue-btn";
           b.innerHTML="<span class='gear-name'>"+posName+"</span>";
-          b.onclick=function(){ blk.pos=posName; blk.micOn=true; sendCC(54,Math.round((idx/2)*127)); save(); draw(false); };
+          b.onclick=function(){ blk.pos=posName; blk.micOn=true; sendCC(54,Math.round((idx/2)*100)); save(); draw(false); };
           posGrid.appendChild(b);
         });
         micPanel.appendChild(posGrid);
-
-        var lvlBox=document.createElement("div"); lvlBox.className="param-box"; lvlBox.style.marginTop="8px";
-        lvlBox.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn mminus'>-</button><span class='mval' style='min-width:30px;text-align:center;font-size:11px;color:#fbbf24;'>"+blk.micLvl+"%</span><button type='button' class='p-mini-btn mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:5px;accent-color:#3b82f6;'>";
-        var mvEl=lvlBox.querySelector(".mval"), mrEl=lvlBox.querySelector("input[type=range]");
-        function setMicLvl(nv){
-          nv=Math.max(0,Math.min(100,Number(nv)));
-          blk.micLvl=nv; mvEl.textContent=nv+"%"; mrEl.value=nv; sendCC(56,nv); save();
-        }
-        mrEl.oninput=function(){ setMicLvl(mrEl.value); };
-        lvlBox.querySelector(".mminus").onclick=function(){ setMicLvl(blk.micLvl-1); };
-        lvlBox.querySelector(".mplus").onclick=function(){ setMicLvl(blk.micLvl+1); };
-        micPanel.appendChild(lvlBox);
         irBox.appendChild(micPanel);
       }
     }
@@ -734,7 +785,7 @@ function draw(syncInp){
       });
     }
   }catch(err){
-    if(safeGet("status")) safeGet("status").textContent="UI ERR: "+(err && err.message ? err.message : err);
+    if(safeGet("status")) safeGet("status").textContent="ERR: "+(err && err.message ? err.message : err);
   }
 }
 
@@ -758,8 +809,42 @@ safeGet("setName").onclick=function(){
   var v=safeGet("nameInp").value.trim(); if(!v) return;
   var clean=v.slice(0,16); patch().name=clean; sendName(clean); save(); draw(true);
 };
+safeGet("btnSave").onclick=function(){ safeGet("setName").click(); };
+safeGet("btnGlobal").onclick=function(){ sendSysEx([0x05,0x01]); safeGet("status").textContent="GLOBAL SETTINGS SYNCED"; };
+safeGet("btnEdit").onclick=function(){ sendSysEx([0x05,0x02]); safeGet("status").textContent="EDIT / EXIT TOGGLED"; };
+safeGet("btnMode").onclick=function(){ sendCC(80,100); safeGet("status").textContent="MODE SWITCHED"; };
+safeGet("btnJam").onclick=function(){ sendCC(81,100); safeGet("status").textContent="JAM MODE ACTIVE"; };
+safeGet("btnExp").onclick=function(){
+  var b=safeGet("btnExp"); b.classList.toggle("green-on");
+  sendCC(11,b.classList.contains("green-on")?100:0);
+};
+safeGet("btnTap").onclick=function(){
+  var now=Date.now(); tapTimes.push(now);
+  if(tapTimes.length>4) tapTimes.shift();
+  if(tapTimes.length>=2){
+    var avg=(tapTimes[tapTimes.length-1]-tapTimes[0])/(tapTimes.length-1);
+    var bpm=Math.max(40,Math.min(240,Math.round(60000/avg)));
+    safeGet("drumBpm").value=bpm; safeGet("bpmVal").textContent=bpm;
+    sendCC(82,Math.round(((bpm-40)/200)*100));
+  }
+};
+safeGet("loopRec").onclick=function(){
+  loopOn=!loopOn; safeGet("loopState").textContent=loopOn?"PLAYING":"OVERDUB";
+  sendCC(85,loopOn?100:50);
+};
+safeGet("loopStop").onclick=function(){ loopOn=false; safeGet("loopState").textContent="STOP"; sendCC(86,0); };
+safeGet("loopLvl").oninput=function(){ var v=this.value; safeGet("loopLvlVal").textContent=v+"%"; sendCC(87,v); };
+safeGet("drumToggle").onclick=function(){ drumOn=!drumOn; sendCC(88,drumOn?100:0); };
+safeGet("drumPat").onchange=function(){ sendCC(89,this.value*20); };
+safeGet("drumBpm").oninput=function(){ var v=this.value; safeGet("bpmVal").textContent=v; sendCC(82,Math.round(((v-40)/200)*100)); };
+safeGet("tunerBtn").onclick=function(){
+  tunerOn=!tunerOn; this.textContent=tunerOn?"ACTIVE":"BYPASS";
+  if(tunerOn) this.className="amber-btn"; else this.className="";
+  sendCC(90,tunerOn?100:0);
+};
 safeGet("mLeft").onclick=function(){ moveBlock(-1); };
 safeGet("mRight").onclick=function(){ moveBlock(1); };
+
 draw(true);
 if(navigator.requestMIDIAccess){ connectMidi(); }
 </script>
