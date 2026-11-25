@@ -573,3 +573,201 @@ function connectMidi(){
     }else ms.textContent="MIDI: NO DEVICE";
   }).catch(function(){ ms.textContent="MIDI: SYSEX BLOCKED"; });
   }
+function safeGet(id){ return document.getElementById(id); }
+
+function draw(syncInp){
+  try{
+    var p=patch(), c=code(), id=st.sel, m=META[id]||META.IR, blk=p.b[id];
+    if(!blk){ id="IR"; st.sel="IR"; m=META.IR; blk=p.b.IR; }
+
+    if(safeGet("pCode")) safeGet("pCode").textContent=c;
+    if(safeGet("pSub")) safeGet("pSub").textContent="BANK "+st.bank+" • PATCH "+st.slot;
+
+    var inp=safeGet("nameInp");
+    if(inp && (syncInp||document.activeElement!==inp)) inp.value=p.name||("PATCH "+c);
+
+    if(safeGet("status") && !safeGet("status").dataset.lock){
+      safeGet("status").textContent="SELECTED: "+id+" - "+(blk.model||"")+" ["+(blk.on?"ACTIVE":"BYPASS")+"]";
+    }
+    if(safeGet("edTitle")) safeGet("edTitle").textContent=id+" - "+m.n.toUpperCase();
+
+    var bg=safeGet("banks");
+    if(bg){
+      bg.innerHTML="";
+      BANKS.forEach(function(b){
+        var btn=document.createElement("button"); btn.type="button";
+        btn.textContent="B"+b;
+        if(st.bank===b) btn.className="amber-btn";
+        btn.onclick=function(){ st.bank=b; sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true); };
+        bg.appendChild(btn);
+      });
+    }
+
+    var sg=safeGet("slots");
+    if(sg){
+      sg.innerHTML="";
+      SLOTS.forEach(function(s){
+        var btn=document.createElement("button"); btn.type="button";
+        btn.textContent=""+st.bank+s;
+        if(st.slot===s) btn.className="amber-btn";
+        btn.onclick=function(){ st.slot=s; sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true); };
+        sg.appendChild(btn);
+      });
+    }
+
+    var cg=safeGet("chain");
+    if(cg){
+      cg.innerHTML="";
+      (p.chain||ORDER).forEach(function(bid){
+        var item=p.b[bid];
+        if(!item||!META[bid]) return;
+        var btn=document.createElement("button");
+        btn.type="button";
+        btn.className="chain-blk"+(item.on?" on":"")+(st.sel===bid?" sel":"");
+        btn.innerHTML="<span class='chain-dot'></span><span class='blk-code'>"+bid+"</span><span class='blk-model'>"+String(item.model||"").toUpperCase()+"</span>";
+        btn.onclick=function(){
+          if(st.sel===bid){ item.on=!item.on; sendCC(META[bid].cc,item.on?100:0); }
+          else st.sel=bid;
+          save(); draw(false);
+        };
+        cg.appendChild(btn);
+      });
+    }
+
+    var pb=safeGet("pwrBtn");
+    if(pb){
+      pb.textContent=blk.on?"ACTIVE • ENABLED":"BYPASSED";
+      pb.className=blk.on?"blue-btn":"";
+      pb.onclick=function(){ blk.on=!blk.on; sendCC(m.cc,blk.on?100:0); save(); draw(false); };
+    }
+
+    var vg=safeGet("visualGear");
+    if(vg){
+      vg.innerHTML="";
+      var allNames=flatModels(id);
+      (GEAR[id]||[]).forEach(function(grp){
+        var lbl=document.createElement("div"); lbl.className="grp-label"; lbl.textContent=grp.g; vg.appendChild(lbl);
+        var grid=document.createElement("div"); grid.className="gear-grid";
+        grp.items.forEach(function(it){
+          var isAct=(blk.model===it.n);
+          var card=document.createElement("button"); card.type="button";
+          card.className="gear-card"+(isAct?" active":"");
+          var cv=document.createElement("canvas"); cv.className="gear-canvas";
+          try{ paintGearCanvas(cv,id,it,isAct); }catch(e){}
+          var nm=document.createElement("div"); nm.className="gear-name"; nm.textContent=it.n;
+          card.appendChild(cv); card.appendChild(nm);
+          card.onclick=function(){
+            blk.model=it.n;
+            var idx=allNames.indexOf(blk.model);
+            var ccVal=allNames.length>1?Math.round((idx/(allNames.length-1))*127):0;
+            sendCC(m.cc+40,ccVal); save(); draw(false);
+          };
+          grid.appendChild(card);
+        });
+        vg.appendChild(grid);
+      });
+    }
+
+    var irBox=safeGet("irExtras");
+    if(irBox){
+      irBox.innerHTML="";
+      if(id==="IR"){
+        var micPanel=document.createElement("div"); micPanel.className="mic-panel";
+        var headRow=document.createElement("div"); headRow.className="row";
+        headRow.innerHTML="<span style='font-size:11px;font-weight:900;color:#e2e8f0;'>CAB MIC CONTROL (4 MICS &amp; 3 POSITIONS)</span>";
+        var micToggle=document.createElement("button"); micToggle.type="button";
+        micToggle.textContent=blk.micOn?"MIC ON":"MIC OFF"; micToggle.className=blk.micOn?"blue-btn":"";
+        micToggle.onclick=function(){ blk.micOn=!blk.micOn; sendCC(55,blk.micOn?100:0); save(); draw(false); };
+        headRow.appendChild(micToggle); micPanel.appendChild(headRow);
+
+        var micGrid=document.createElement("div"); micGrid.className="grid4";
+        IR_MICS.forEach(function(micName,idx){
+          var isM=(blk.mic===micName);
+          var b=document.createElement("button"); b.type="button";
+          b.className="mic-card"+(isM?" active":"");
+          if(isM){ var badge=document.createElement("span"); badge.className="mic-badge"; badge.textContent=micName; b.appendChild(badge); }
+          var mcv=document.createElement("canvas"); mcv.className="mic-canvas";
+          try{ paintMicCanvas(mcv,micName); }catch(e){}
+          var mnm=document.createElement("div"); mnm.className="gear-name"; mnm.textContent=micName;
+          b.appendChild(mcv); b.appendChild(mnm);
+          b.onclick=function(){ blk.mic=micName; blk.micOn=true; sendCC(53,Math.round((idx/3)*127)); save(); draw(false); };
+          micGrid.appendChild(b);
+        });
+        micPanel.appendChild(micGrid);
+
+        var posLbl=document.createElement("div"); posLbl.className="grp-label"; posLbl.textContent="3 Mic Positions"; micPanel.appendChild(posLbl);
+        var posGrid=document.createElement("div"); posGrid.className="grid3";
+        IR_POS.forEach(function(posName,idx){
+          var b=document.createElement("button"); b.type="button";
+          if(blk.pos===posName) b.className="blue-btn";
+          b.innerHTML="<span class='gear-name'>"+posName+"</span>";
+          b.onclick=function(){ blk.pos=posName; blk.micOn=true; sendCC(54,Math.round((idx/2)*127)); save(); draw(false); };
+          posGrid.appendChild(b);
+        });
+        micPanel.appendChild(posGrid);
+
+        var lvlBox=document.createElement("div"); lvlBox.className="param-box"; lvlBox.style.marginTop="8px";
+        lvlBox.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>Mic Level</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn mminus'>-</button><span class='mval' style='min-width:30px;text-align:center;font-size:11px;color:#fbbf24;'>"+blk.micLvl+"%</span><button type='button' class='p-mini-btn mplus'>+</button></div></div><input type='range' min='0' max='100' value='"+blk.micLvl+"' style='width:100%;margin-top:5px;accent-color:#3b82f6;'>";
+        var mvEl=lvlBox.querySelector(".mval"), mrEl=lvlBox.querySelector("input[type=range]");
+        function setMicLvl(nv){
+          nv=Math.max(0,Math.min(100,Number(nv)));
+          blk.micLvl=nv; mvEl.textContent=nv+"%"; mrEl.value=nv; sendCC(56,nv); save();
+        }
+        mrEl.oninput=function(){ setMicLvl(mrEl.value); };
+        lvlBox.querySelector(".mminus").onclick=function(){ setMicLvl(blk.micLvl-1); };
+        lvlBox.querySelector(".mplus").onclick=function(){ setMicLvl(blk.micLvl+1); };
+        micPanel.appendChild(lvlBox);
+        irBox.appendChild(micPanel);
+      }
+    }
+
+    var pw=safeGet("params");
+    if(pw){
+      pw.innerHTML="";
+      (m.p||[]).forEach(function(pr){
+        var cc=pr[1], val=(typeof blk.p[cc]==="number")?blk.p[cc]:pr[2]; blk.p[cc]=val;
+        var box=document.createElement("div"); box.className="param-box";
+        box.innerHTML="<div class='row'><span style='font-size:11px;font-weight:700;'>"+pr[0]+"</span><div class='row' style='gap:4px;'><button type='button' class='p-mini-btn minus'>-</button><span class='val' style='min-width:28px;text-align:center;font-size:11px;color:#fbbf24;'>"+val+"</span><button type='button' class='p-mini-btn plus'>+</button></div></div><input type='range' min='0' max='100' value='"+val+"' style='width:100%;margin-top:5px;accent-color:#3b82f6;'>";
+        var vEl=box.querySelector(".val"), rEl=box.querySelector("input[type=range]");
+        function setV(nv){
+          nv=Math.max(0,Math.min(100,Number(nv)));
+          blk.p[cc]=nv; vEl.textContent=nv; rEl.value=nv; sendCC(cc,nv); save();
+        }
+        rEl.oninput=function(){ setV(rEl.value); };
+        box.querySelector(".minus").onclick=function(){ setV(blk.p[cc]-1); };
+        box.querySelector(".plus").onclick=function(){ setV(blk.p[cc]+1); };
+        pw.appendChild(box);
+      });
+    }
+  }catch(err){
+    if(safeGet("status")) safeGet("status").textContent="UI ERR: "+(err && err.message ? err.message : err);
+  }
+}
+
+function stepPatch(d){
+  var list=[]; BANKS.forEach(function(b){ SLOTS.forEach(function(s){ list.push(""+b+s); }); });
+  var i=list.indexOf(code()), nxt=list[(i+d+list.length)%list.length];
+  st.bank=parseInt(nxt,10); st.slot=nxt.slice(-1);
+  sendPC((st.bank-1)*4+SLOTS.indexOf(st.slot)); save(); draw(true);
+}
+function moveBlock(d){
+  var p=patch(), i=p.chain.indexOf(st.sel), t=i+d;
+  if(i<0||t<0||t>=p.chain.length) return;
+  var tmp=p.chain[i]; p.chain[i]=p.chain[t]; p.chain[t]=tmp;
+  sendChain(p); save(); draw(false);
+}
+
+safeGet("midiBtn").onclick=connectMidi;
+safeGet("prevP").onclick=function(){ stepPatch(-1); };
+safeGet("nextP").onclick=function(){ stepPatch(1); };
+safeGet("setName").onclick=function(){
+  var v=safeGet("nameInp").value.trim(); if(!v) return;
+  var clean=v.slice(0,16); patch().name=clean; sendName(clean); save(); draw(true);
+};
+safeGet("mLeft").onclick=function(){ moveBlock(-1); };
+safeGet("mRight").onclick=function(){ moveBlock(1); };
+draw(true);
+if(navigator.requestMIDIAccess){ connectMidi(); }
+</script>
+</body>
+</html>
