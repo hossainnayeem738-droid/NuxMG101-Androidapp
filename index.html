@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MG-101 Digital Rig Studio</title>
+  <title>NUX MG-101 Digital Rig Studio</title>
   <style>
     :root{
       --bg:#080b10;--card:#121720;--card2:#19202c;--border:#2b3648;
-      --text:#f1f5f9;--muted:#94a3b8;--amber:#f59e0b;--amber-soft:rgba(245,158,11,0.22);
-      --blue:#2563eb;--green:#22c55e;--red:#ef4444;
+      --text:#f1f5f9;--muted:#94a3b8;--amber:#f59e0b;--blue:#2563eb;--green:#22c55e;--red:#ef4444;
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
     body{margin:0;padding:10px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
@@ -24,7 +23,6 @@
     .amber-btn{background:linear-gradient(180deg,#f59e0b 0%,#d97706 100%);border-color:#fbbf24;color:#090d14;font-weight:900;}
     .blue-btn{background:linear-gradient(180deg,#3b82f6 0%,#1d4ed8 100%);border-color:#60a5fa;color:#fff;}
 
-    /* Top Companion Bar */
     .top-bar{background:#0c1017;border:1px solid #232d3f;border-radius:10px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:10px;font-weight:800;}
     .brand-mark{font-size:13px;font-weight:900;letter-spacing:0.6px;color:#f8fafc;}
     .brand-mark span{color:var(--amber);}
@@ -32,7 +30,6 @@
     .midi-dot{width:7px;height:7px;border-radius:50%;background:var(--red);}
     .midi-pill.connected .midi-dot{background:var(--green);box-shadow:0 0 8px var(--green);}
 
-    /* Patch Selector Layout */
     .patch-grid{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;margin-top:6px;}
     .patch-left{display:flex;flex-direction:column;align-items:center;gap:5px;}
     .patch-box{background:linear-gradient(180deg,#261d12 0%,#15110b 100%);border:1.5px solid var(--amber);border-radius:10px;padding:8px 14px;text-align:center;box-shadow:0 0 16px rgba(245,158,11,0.22);min-width:74px;}
@@ -49,7 +46,6 @@
     .sec-title{font-size:11px;font-weight:900;color:#e2e8f0;text-transform:uppercase;letter-spacing:0.65px;margin-bottom:6px;}
     .grp-label{font-size:11px;font-weight:800;color:#f59e0b;margin:10px 0 6px 0;border-left:3px solid var(--amber);padding-left:7px;}
 
-    /* 10-Block Signal Chain */
     .chain-blk{background:linear-gradient(180deg,#1c2331 0%,#111620 100%);border:1px solid #2b3648;border-radius:8px;padding:6px 4px;text-align:center;min-width:0;}
     .chain-blk.sel{outline:2px solid var(--amber);border-color:var(--amber);background:linear-gradient(180deg,#2a2419 0%,#161410 100%);box-shadow:0 0 14px rgba(245,158,11,0.3);}
     .chain-dot{display:block;width:6px;height:6px;border-radius:50%;margin:0 auto 3px auto;background:#475569;}
@@ -57,14 +53,12 @@
     .blk-code{display:block;font-size:10.5px;font-weight:900;color:#fff;}
     .blk-model{display:block;font-size:8px;color:#94a3b8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
 
-    /* Realistic Gear Cards */
     .gear-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;}
     .gear-card{background:linear-gradient(180deg,#181f2c 0%,#0f141d 100%);border:1px solid #293446;border-radius:9px;padding:5px 4px 6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;min-width:0;}
     .gear-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:linear-gradient(180deg,#262118 0%,#14120e 100%);box-shadow:0 0 14px rgba(245,158,11,0.32);}
     .gear-canvas{width:100%;height:70px;border-radius:6px;display:block;background:#080b10;}
     .gear-name{font-size:9.5px;font-weight:800;line-height:1.15;color:#f1f5f9;word-break:break-word;}
 
-    /* Mic & Compact Parameter Grid */
     .mic-panel{background:#0e131b;border:1px solid #283345;border-radius:10px;padding:9px;margin-top:10px;}
     .mic-card{position:relative;background:linear-gradient(180deg,#171e2b 0%,#0e131c 100%);border:1px solid #293446;border-radius:9px;padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;}
     .mic-card.active{border-color:var(--amber);outline:2px solid var(--amber);background:#211d15;}
@@ -138,7 +132,7 @@
 </div>
 
 <script>
-var KEY="nux_mg101_mvave_real_v4";
+var KEY="nux_mg101_mvave_clean_v5";
 var BANKS=[1,2,3,4,5,6,7,8,9,10], SLOTS=["A","B","C","D"];
 var ORDER=["GATE","CMP","EFX","AMP","IR","EQ","MOD","DLY","RVB","P.L"];
 var IR_MICS=["E906","SM57","U87","C414"];
@@ -213,7 +207,7 @@ var GEAR={
   ]}],
   "P.L":[{g:"Output Level",items:[{n:"PATCH LEVEL",c:"#2563eb",style:"mxr",tag:"LEVEL"}]}]
 };
-  function shadeHex(hex,amt){
+function shadeHex(hex,amt){
   var c=(hex||"#37474f").replace("#","");
   if(c.length===3) c=c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
   var n=parseInt(c,16);
@@ -507,7 +501,6 @@ function sendCC(cc,v){
   var val127=Math.max(0,Math.min(127,Math.round((v/100)*127)));
   try{
     midiOut.send([0xb0,cc,val127]);
-    // NUX MG-101 Amp Knobs mapped to both QuickTone SysEx & Standard CC
     if(NUX_AMP_KNOB_CC[cc]){
       var alts=NUX_AMP_KNOB_CC[cc];
       for(var k=1;k<alts.length;k++) midiOut.send([0xb0,alts[k],val127]);
@@ -529,14 +522,16 @@ function sendPC(pc){
 
 function sendName(n){
   if(!midiOut) return;
-  var s=String(n||"PATCH").toUpperCase().padEnd(16," ").slice(0,16);
+  var s=String(n||"PATCH").toUpperCase();
+  while(s.length<16) s+=" ";
+  s=s.slice(0,16);
   var chars=[];
   for(var i=0;i<16;i++) chars.push(s.charCodeAt(i)&0x7f);
   var pcIdx=(st.bank-1)*4+SLOTS.indexOf(st.slot);
-  // NUX MG-101 Patch Name SysEx + Save Trigger
   sendSysEx([0x02,0x01,pcIdx&0x7f].concat(chars));
   sendSysEx([0x02,0x02,pcIdx&0x7f]);
-  document.getElementById("status").textContent="SENT NAME: "+s.trim()+" -> MG-101";
+  var stEl=document.getElementById("status");
+  if(stEl) stEl.textContent="SENT NAME: "+s.trim()+" -> MG-101";
 }
 
 function sendChain(p){
@@ -549,29 +544,28 @@ function sendChain(p){
     orderBytes.push(idx&0x7f);
     if(m) try{ midiOut.send([0xb0,m.cCc,i]); }catch(e){}
   }
-  // NUX MG-101 10-Block Signal Chain Routing SysEx
   sendSysEx([0x03,0x01].concat(orderBytes));
-  document.getElementById("status").textContent="CHAIN SYNCED: "+p.chain.slice(0,5).join(">")+"...";
+  var stEl=document.getElementById("status");
+  if(stEl) stEl.textContent="CHAIN SYNCED: "+p.chain.slice(0,5).join(">")+"...";
 }
 
 function connectMidi(){
   var ms=document.getElementById("midiState");
   var mb=document.getElementById("midiBtn");
-  if(!navigator.requestMIDIAccess){ ms.textContent="MIDI: UNSUPPORTED"; return; }
+  if(!navigator.requestMIDIAccess){ if(ms) ms.textContent="MIDI: UNSUPPORTED"; return; }
   navigator.requestMIDIAccess({sysex:true}).then(function(acc){
     var outs=Array.from(acc.outputs.values());
     if(outs.length){
-      // Prefer physical NUX / USB OTG port over Android virtual ports
       var target=outs.find(function(o){
         var nm=(o.name||"").toLowerCase();
         return nm.indexOf("nux")!==-1 || nm.indexOf("mg")!==-1 || nm.indexOf("usb")!==-1;
       }) || outs[0];
       midiOut=target;
-      ms.textContent="OTG: "+(target.name||"MG-101").slice(0,16);
-      mb.classList.add("connected");
+      if(ms) ms.textContent="OTG: "+(target.name||"MG-101").slice(0,16);
+      if(mb) mb.classList.add("connected");
       sendChain(patch());
-    }else ms.textContent="MIDI: NO DEVICE";
-  }).catch(function(){ ms.textContent="MIDI: SYSEX BLOCKED"; });
+    }else if(ms) ms.textContent="MIDI: NO DEVICE";
+  }).catch(function(){ if(ms) ms.textContent="MIDI: SYSEX BLOCKED"; });
   }
 function safeGet(id){ return document.getElementById(id); }
 
@@ -586,7 +580,7 @@ function draw(syncInp){
     var inp=safeGet("nameInp");
     if(inp && (syncInp||document.activeElement!==inp)) inp.value=p.name||("PATCH "+c);
 
-    if(safeGet("status") && !safeGet("status").dataset.lock){
+    if(safeGet("status")){
       safeGet("status").textContent="SELECTED: "+id+" - "+(blk.model||"")+" ["+(blk.on?"ACTIVE":"BYPASS")+"]";
     }
     if(safeGet("edTitle")) safeGet("edTitle").textContent=id+" - "+m.n.toUpperCase();
